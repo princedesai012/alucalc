@@ -10,7 +10,15 @@ import retrofit2.Retrofit
 
 object RetrofitClient {
 
-    private const val BASE_URL = "http://10.0.2.2:8080/" // Default Spring Boot local API base URL
+    // Base URL for API requests.
+    // Note: '10.0.2.2' is only for Android Emulator.
+    // For physical phone on local Wi-Fi (e.g. OnePlus 10R 5G), use your PC's Wi-Fi IP address:
+    var baseUrl: String = "http://192.168.0.5:3000/"
+        set(value) {
+            val formatted = if (!value.endsWith("/")) "$value/" else value
+            field = formatted
+            _apiService = null // Force re-creation of Retrofit client with new URL
+        }
 
     // Holds the bearer token in memory for the current session.
     var authToken: String? = null
@@ -32,12 +40,18 @@ object RetrofitClient {
 
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
 
-    val apiService: ApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
-            .create(ApiService::class.java)
-    }
+    private var _apiService: ApiService? = null
+
+    val apiService: ApiService
+        get() {
+            if (_apiService == null) {
+                _apiService = Retrofit.Builder()
+                    .baseUrl(baseUrl)
+                    .client(okHttpClient)
+                    .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+                    .build()
+                    .create(ApiService::class.java)
+            }
+            return _apiService!!
+        }
 }

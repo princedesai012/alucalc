@@ -1,35 +1,54 @@
 package com.softellix.alucalc.navigation
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.softellix.alucalc.screens.AddWindowsScreen
-import com.softellix.alucalc.screens.CreateAccountScreen
-import com.softellix.alucalc.screens.DashboardScreen
-import com.softellix.alucalc.screens.LoginScreen
-import com.softellix.alucalc.screens.NewProjectScreen
-import com.softellix.alucalc.screens.ReportScreen
-import com.softellix.alucalc.screens.SelectProfileScreen
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.softellix.alucalc.data.remote.RetrofitClient
+import com.softellix.alucalc.data.remote.TokenStore
+import com.softellix.alucalc.screens.*
+import com.softellix.alucalc.viewmodels.AuthViewModel
 import com.softellix.alucalc.viewmodels.ProjectViewModel
+
+// 1. Create a Factory to instantiate the AuthViewModel with its required dependencies
+class AuthViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
+            val tokenStore = TokenStore(context)
+            // Note: Ensure your RetrofitClient exposes the apiService instance like this
+            val apiService = RetrofitClient.apiService
+            @Suppress("UNCHECKED_CAST")
+            return AuthViewModel(apiService, tokenStore) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
 
 @Composable
 fun AppNavigation() {
-    // This controller is the engine that drives the navigation
     val navController = rememberNavController()
-    val sharedViewModel : ProjectViewModel = viewModel()
+    val context = LocalContext.current
 
-    // NavHost acts as the container for our screens
+    // 2. Instantiate the ViewModels
+    val authViewModel: AuthViewModel = viewModel(
+        factory = AuthViewModelFactory(context)
+    )
+    val sharedViewModel: ProjectViewModel = viewModel()
+
     NavHost(navController = navController, startDestination = "create_account") {
 
-        // Route 1: Create Account
         composable("create_account") {
+            // 3. Pass the AuthViewModel to the screen
             CreateAccountScreen(
+                viewModel = authViewModel,
                 onNavigateToLogin = {
                     navController.navigate("login") {
-                        // Clears the backstack so you don't pile up infinite screens
                         popUpTo("create_account") { inclusive = true }
                     }
                 },
@@ -41,9 +60,10 @@ fun AppNavigation() {
             )
         }
 
-        // Route 2: Login
         composable("login") {
+            // 4. Pass the AuthViewModel to the screen
             LoginScreen(
+                viewModel = authViewModel,
                 onLoginSuccess = {
                     navController.navigate("dashboard") {
                         popUpTo("login") { inclusive = true }
@@ -57,7 +77,6 @@ fun AppNavigation() {
             )
         }
 
-        // Route 3: Dashboard (Placeholder)
         composable("dashboard") {
             DashboardScreen(
                 onNewProjectClick = {
@@ -66,7 +85,6 @@ fun AppNavigation() {
             )
         }
 
-        // Route 4: New Project Step 1 (Placeholder)
         composable("new_project_step_1") {
             LaunchedEffect(Unit) { sharedViewModel.resetProject() }
             NewProjectScreen(
@@ -80,7 +98,6 @@ fun AppNavigation() {
             )
         }
 
-        // Route 5: New Project Step 2 (Placeholder)
         composable("new_project_step_2") {
             SelectProfileScreen(
                 viewModel = sharedViewModel,
@@ -93,7 +110,6 @@ fun AppNavigation() {
             )
         }
 
-        // Route 6: New Project Step 3 (Placeholder)
         composable("new_project_step_3") {
             AddWindowsScreen(
                 viewModel = sharedViewModel,
@@ -106,7 +122,6 @@ fun AppNavigation() {
             )
         }
 
-        // Route 7: Report Screen (Placeholder)
         composable("report") {
             ReportScreen(
                 viewModel = sharedViewModel,

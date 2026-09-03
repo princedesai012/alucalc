@@ -3,8 +3,10 @@ package com.softellix.alucalc.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -14,14 +16,24 @@ import androidx.compose.ui.unit.sp
 import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.ui.theme.BackgroundGray
+import com.softellix.alucalc.viewmodels.AuthViewModel
 
 @Composable
 fun LoginScreen(
+    viewModel: AuthViewModel,
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    // Trigger navigation only when authentication is successful
+    LaunchedEffect(viewModel.authSuccess) {
+        if (viewModel.authSuccess) {
+            viewModel.resetState()
+            onLoginSuccess()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -46,19 +58,27 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(8.dp))
         AluTextField(value = password, onValueChange = { password = it }, placeholder = "Enter password", isPassword = true)
 
+        // Error Message Display
+        viewModel.errorMessage?.let { error ->
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = error, color = Color.Red, fontSize = 14.sp)
+        }
+
         Spacer(modifier = Modifier.weight(1f))
 
-        AluPrimaryButton(
-            text = "Login",
-            onClick = {
-                // TODO: Wire up the Retrofit API call here later
-                onLoginSuccess()
+        if (viewModel.isLoading) {
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
-        )
+        } else {
+            AluPrimaryButton(
+                text = "Login",
+                onClick = { viewModel.login(phone, password) }
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Text link to navigate back to Register
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
