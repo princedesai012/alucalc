@@ -32,6 +32,11 @@ fun AppNavigation() {
                         // Clears the backstack so you don't pile up infinite screens
                         popUpTo("create_account") { inclusive = true }
                     }
+                },
+                onRegisterSuccess = {
+                    navController.navigate("dashboard") {
+                        popUpTo("create_account") { inclusive = true }
+                    }
                 }
             )
         }
@@ -91,6 +96,7 @@ fun AppNavigation() {
         // Route 6: New Project Step 3 (Placeholder)
         composable("new_project_step_3") {
             AddWindowsScreen(
+                viewModel = sharedViewModel,
                 onCalculateClick = {
                     navController.navigate("report")
                 },
@@ -103,6 +109,7 @@ fun AppNavigation() {
         // Route 7: Report Screen (Placeholder)
         composable("report") {
             ReportScreen(
+                viewModel = sharedViewModel,
                 onBackClick = {
                     navController.popBackStack()
                 }

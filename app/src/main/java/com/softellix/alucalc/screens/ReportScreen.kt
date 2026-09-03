@@ -1,18 +1,20 @@
 package com.softellix.alucalc.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -20,9 +22,22 @@ import com.softellix.alucalc.components.AluOutlinedButton
 import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.BorderGray
+import com.softellix.alucalc.viewmodels.ProjectViewModel
 
 @Composable
-fun ReportScreen(onBackClick: () -> Unit) {
+fun ReportScreen(
+    viewModel: ProjectViewModel,
+    onBackClick: () -> Unit
+) {
+    val context = LocalContext.current
+    val projectName = viewModel.projectName.ifBlank { "Marina Heights - A" }
+    val totalUnits = if (viewModel.addedWindows.isEmpty()) {
+        "6 Units"
+    } else {
+        "${viewModel.addedWindows.sumOf { it.qty.toIntOrNull() ?: 1 }} Units"
+    }
+    val profileName = if (viewModel.selectedProfile == "65mm") "Slim 65mm" else "Reg ${viewModel.selectedProfile}"
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -33,7 +48,7 @@ fun ReportScreen(onBackClick: () -> Unit) {
         // Top Header
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onBackClick) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
             Spacer(modifier = Modifier.width(8.dp))
             Text("Report", fontSize = 20.sp, fontWeight = FontWeight.Bold)
@@ -53,7 +68,7 @@ fun ReportScreen(onBackClick: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("Marina Heights - A", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text(projectName, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                     Text("#AP-098", color = Color.Gray, fontSize = 14.sp)
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -63,7 +78,7 @@ fun ReportScreen(onBackClick: () -> Unit) {
                 ) {
                     ReportInfoColumn("ESTIMATOR", "John Doe")
                     ReportInfoColumn("CREATED DATE", "Jan 26, 2025")
-                    ReportInfoColumn("TOTAL WINDOWS", "6 Units")
+                    ReportInfoColumn("TOTAL WINDOWS", totalUnits)
                 }
             }
         }
@@ -90,23 +105,36 @@ fun ReportScreen(onBackClick: () -> Unit) {
             }
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = BorderGray)
 
-            // Data Row 1
-            Row(modifier = Modifier.fillMaxWidth()) {
-                TableCell("#1", 1f)
-                TableCell("Reg 40mm", 1.5f)
-                TableCell("1500 x 1200", 2f)
-                TableCell("2T", 1f)
-                TableCell("4", 1f)
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Data Row 2
-            Row(modifier = Modifier.fillMaxWidth()) {
-                TableCell("#2", 1f)
-                TableCell("Reg 40mm", 1.5f)
-                TableCell("1800 x 2400", 2f)
-                TableCell("3T", 1f)
-                TableCell("2", 1f)
+            if (viewModel.addedWindows.isEmpty()) {
+                // Fallback demo rows
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    TableCell("#1", 1f)
+                    TableCell("Reg 40mm", 1.5f)
+                    TableCell("1500 x 1200", 2f)
+                    TableCell("2T", 1f)
+                    TableCell("4", 1f)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    TableCell("#2", 1f)
+                    TableCell("Reg 40mm", 1.5f)
+                    TableCell("1800 x 2400", 2f)
+                    TableCell("3T", 1f)
+                    TableCell("2", 1f)
+                }
+            } else {
+                viewModel.addedWindows.forEachIndexed { index, item ->
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        TableCell("#${index + 1}", 1f)
+                        TableCell(profileName, 1.5f)
+                        TableCell("${item.height} x ${item.width}", 2f)
+                        TableCell(item.track, 1f)
+                        TableCell(item.qty, 1f)
+                    }
+                    if (index < viewModel.addedWindows.size - 1) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
             }
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = BorderGray)
@@ -114,10 +142,10 @@ fun ReportScreen(onBackClick: () -> Unit) {
             // Total Row
             Row(modifier = Modifier.fillMaxWidth()) {
                 TableCell("Total", 1f, isHeader = true)
-                TableCell("Aluminum: 36.4 m", 1.5f)
-                TableCell("Glass: 14.2 m²", 2f)
+                TableCell("Aluminum: Ready for API", 1.5f)
+                TableCell("Glass: Ready for API", 2f)
                 TableCell("", 1f)
-                TableCell("6", 1f, isHeader = true)
+                TableCell(if (viewModel.addedWindows.isEmpty()) "6" else "${viewModel.addedWindows.sumOf { it.qty.toIntOrNull() ?: 1 }}", 1f, isHeader = true)
             }
         }
 
@@ -128,7 +156,7 @@ fun ReportScreen(onBackClick: () -> Unit) {
             Icon(Icons.Default.Check, contentDescription = "Check", tint = Color.Gray, modifier = Modifier.size(16.dp))
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                "Calculation generated using Aluminum Standard Multipliers. Total waste coefficient has been accounted for.",
+                "Calculation generated using Aluminum Standard Multipliers. Backend calculation API will provide live material metrics.",
                 fontSize = 11.sp,
                 color = Color.Gray,
                 lineHeight = 16.sp
@@ -137,9 +165,28 @@ fun ReportScreen(onBackClick: () -> Unit) {
 
         Spacer(modifier = Modifier.weight(1f))
 
-        AluOutlinedButton(text = "Download PDF", onClick = { /* TODO */ })
+        AluOutlinedButton(
+            text = "Download PDF",
+            onClick = {
+                Toast.makeText(context, "Preparing PDF report for $projectName...", Toast.LENGTH_SHORT).show()
+            }
+        )
         Spacer(modifier = Modifier.height(12.dp))
-        AluPrimaryButton(text = "Share Report", onClick = { /* TODO */ })
+        AluPrimaryButton(
+            text = "Share Report",
+            onClick = {
+                val sendIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(android.content.Intent.EXTRA_SUBJECT, "AluCalc Window Estimation - $projectName")
+                    putExtra(
+                        android.content.Intent.EXTRA_TEXT,
+                        "AluCalc Window Estimation Report\nProject: $projectName\nProfile: $profileName\nTotal Windows: $totalUnits\nEstimator: John Doe"
+                    )
+                }
+                val shareIntent = android.content.Intent.createChooser(sendIntent, "Share Report")
+                context.startActivity(shareIntent)
+            }
+        )
         Spacer(modifier = Modifier.height(24.dp))
     }
 }

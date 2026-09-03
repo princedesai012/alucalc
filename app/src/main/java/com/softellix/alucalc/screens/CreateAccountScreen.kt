@@ -1,13 +1,14 @@
 package com.softellix.alucalc.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softellix.alucalc.components.AluPrimaryButton
@@ -15,7 +16,11 @@ import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.ui.theme.BackgroundGray
 
 @Composable
-fun CreateAccountScreen(onNavigateToLogin: () -> Unit) {
+fun CreateAccountScreen(
+    onNavigateToLogin: () -> Unit,
+    onRegisterSuccess: () -> Unit = {}
+) {
+    val context = LocalContext.current
     // State variables to hold user input
     var name by remember { mutableStateOf("") }
     var businessName by remember { mutableStateOf("") }
@@ -65,6 +70,18 @@ fun CreateAccountScreen(onNavigateToLogin: () -> Unit) {
             )
         }
 
-        AluPrimaryButton(text = "Register", onClick = { /* TODO: Trigger API Call */ })
+        Spacer(modifier = Modifier.height(8.dp))
+
+        AluPrimaryButton(
+            text = "Register",
+            onClick = {
+                if (name.isBlank() || phone.isBlank()) {
+                    Toast.makeText(context, "Please enter your name and phone number", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Account created successfully!", Toast.LENGTH_SHORT).show()
+                    onRegisterSuccess()
+                }
+            }
+        )
     }
 }

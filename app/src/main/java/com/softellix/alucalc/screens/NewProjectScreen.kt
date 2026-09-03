@@ -21,11 +21,6 @@ fun NewProjectScreen(
     onNextClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    // Temporary state to hold input before we introduce the ViewModel
-    var projectName by remember { mutableStateOf("") }
-    var contactInfo by remember { mutableStateOf("") }
-    var streetAddress by remember { mutableStateOf("") }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,13 +43,21 @@ fun NewProjectScreen(
 
         Text("Project Name", fontSize = 14.sp, color = Color.DarkGray)
         Spacer(modifier = Modifier.height(4.dp))
-        AluTextField(value = projectName, onValueChange = { projectName = it }, placeholder = "e.g. Marina heights apartment")
+        AluTextField(
+            value = viewModel.projectName,
+            onValueChange = { viewModel.projectName = it },
+            placeholder = "e.g. Marina heights apartment"
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text("Contact Information", fontSize = 14.sp, color = Color.DarkGray)
         Spacer(modifier = Modifier.height(4.dp))
-        AluTextField(value = contactInfo, onValueChange = { contactInfo = it }, placeholder = "Owner / Site head phone number")
+        AluTextField(
+            value = viewModel.contactInfo,
+            onValueChange = { viewModel.contactInfo = it },
+            placeholder = "Owner / Site head phone number"
+        )
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -63,7 +66,11 @@ fun NewProjectScreen(
 
         Text("Street Address", fontSize = 14.sp, color = Color.DarkGray)
         Spacer(modifier = Modifier.height(4.dp))
-        AluTextField(value = streetAddress, onValueChange = { streetAddress = it }, placeholder = "Street line 1")
+        AluTextField(
+            value = viewModel.streetAddress,
+            onValueChange = { viewModel.streetAddress = it },
+            placeholder = "Street line 1"
+        )
 
         Spacer(modifier = Modifier.weight(1f))
 

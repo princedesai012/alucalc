@@ -1,8 +1,10 @@
 package com.softellix.alucalc.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,11 +15,12 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,9 +30,29 @@ import com.softellix.alucalc.ui.theme.BorderGray
 import com.softellix.alucalc.ui.theme.PrimaryDark
 
 @Composable
-fun DashboardScreen(onNewProjectClick: () -> Unit) {
+fun DashboardScreen(
+    onNewProjectClick: () -> Unit,
+    onRecentProjectsClick: () -> Unit = {},
+    onReportHistoryClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {}
+) {
+    val context = LocalContext.current
+    var selectedTab by remember { mutableIntStateOf(0) }
+
     Scaffold(
-        bottomBar = { AluBottomNavigation() },
+        bottomBar = {
+            AluBottomNavigation(
+                selectedTab = selectedTab,
+                onTabSelected = { tab ->
+                    selectedTab = tab
+                    when (tab) {
+                        1 -> Toast.makeText(context, "Projects Tab Selected", Toast.LENGTH_SHORT).show()
+                        2 -> Toast.makeText(context, "Reports History Tab Selected", Toast.LENGTH_SHORT).show()
+                        3 -> Toast.makeText(context, "Settings Tab Selected", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
+        },
         containerColor = BackgroundGray
     ) { paddingValues ->
         Column(
@@ -49,7 +72,10 @@ fun DashboardScreen(onNewProjectClick: () -> Unit) {
                     Text("John Doe", fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 }
                 IconButton(
-                    onClick = { /* TODO: Profile */ },
+                    onClick = {
+                        onProfileClick()
+                        Toast.makeText(context, "Profile clicked - John Doe", Toast.LENGTH_SHORT).show()
+                    },
                     modifier = Modifier
                         .border(1.dp, BorderGray, CircleShape)
                         .background(Color.White, CircleShape)
@@ -98,12 +124,20 @@ fun DashboardScreen(onNewProjectClick: () -> Unit) {
                     title = "Recent Projects",
                     value = "12 Projects",
                     icon = Icons.Outlined.Folder,
+                    onClick = {
+                        onRecentProjectsClick()
+                        Toast.makeText(context, "Opening Recent Projects", Toast.LENGTH_SHORT).show()
+                    },
                     modifier = Modifier.weight(1f)
                 )
                 SummaryCard(
                     title = "Report History",
                     value = "8 Reports",
                     icon = Icons.Outlined.Description,
+                    onClick = {
+                        onReportHistoryClick()
+                        Toast.makeText(context, "Opening Report History", Toast.LENGTH_SHORT).show()
+                    },
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -112,9 +146,17 @@ fun DashboardScreen(onNewProjectClick: () -> Unit) {
 }
 
 @Composable
-fun SummaryCard(title: String, value: String, icon: ImageVector, modifier: Modifier = Modifier) {
+fun SummaryCard(
+    title: String,
+    value: String,
+    icon: ImageVector,
+    onClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
     Card(
-        modifier = modifier.height(110.dp),
+        modifier = modifier
+            .height(110.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(1.dp, BorderGray)

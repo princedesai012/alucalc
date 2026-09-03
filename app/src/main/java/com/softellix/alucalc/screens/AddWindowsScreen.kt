@@ -17,17 +17,35 @@ import androidx.compose.ui.unit.sp
 import com.softellix.alucalc.components.*
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.BorderGray
+import com.softellix.alucalc.viewmodels.ProjectViewModel
 
 @Composable
 fun AddWindowsScreen(
+    viewModel: ProjectViewModel,
     onCalculateClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    // Temporary state variables
+    // Temporary state variables for current input fields
     var height by remember { mutableStateOf("") }
     var width by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
     var selectedTrack by remember { mutableStateOf("2T") }
+
+    val headerTitle = if (viewModel.selectedProfile == "65mm") "Slim 65mm" else "Regular ${viewModel.selectedProfile}"
+
+    val onAddWindowClick = {
+        if (height.isNotBlank() && width.isNotBlank()) {
+            viewModel.addWindow(
+                height = height,
+                width = width,
+                track = selectedTrack,
+                qty = quantity.ifBlank { "1" }
+            )
+            height = ""
+            width = ""
+            quantity = ""
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -38,7 +56,7 @@ fun AddWindowsScreen(
             .verticalScroll(rememberScrollState()) // Makes the screen scrollable
     ) {
         WizardHeader(
-            title = "Regular 40mm", // In a real app, this title is dynamic based on Step 2
+            title = headerTitle,
             stepText = "STEP 3 OF 3",
             percentageText = "100% Complete",
             progress = 1.0f,
@@ -95,21 +113,46 @@ fun AddWindowsScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Text("ADDED WINDOWS (2)", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text("ADDED WINDOWS (${viewModel.addedWindows.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Hardcoded dummy data to match the Figma design temporarily
-        AddedWindowCard(windowNumber = 1, height = "1500", width = "1200", track = "2T", qty = "4", onDelete = {})
-        Spacer(modifier = Modifier.height(8.dp))
-        AddedWindowCard(windowNumber = 2, height = "1800", width = "2400", track = "3T", qty = "2", onDelete = {})
+        // Dynamic window list from ProjectViewModel
+        if (viewModel.addedWindows.isEmpty()) {
+            Text("No windows added yet. Enter dimensions above and tap 'Add Another Window'.", fontSize = 12.sp, color = Color.Gray)
+        } else {
+            viewModel.addedWindows.forEachIndexed { index, window ->
+                AddedWindowCard(
+                    windowNumber = index + 1,
+                    height = window.height,
+                    width = window.width,
+                    track = window.track,
+                    qty = window.qty,
+                    onDelete = { viewModel.removeWindow(window) }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        AluOutlinedButton(text = "Add Another Window", onClick = { /* TODO */ })
+        AluOutlinedButton(text = "Add Another Window", onClick = onAddWindowClick)
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        AluPrimaryButton(text = "Save & Calculate", onClick = onCalculateClick)
+        AluPrimaryButton(
+            text = "Save & Calculate",
+            onClick = {
+                if (height.isNotBlank() && width.isNotBlank()) {
+                    viewModel.addWindow(
+                        height = height,
+                        width = width,
+                        track = selectedTrack,
+                        qty = quantity.ifBlank { "1" }
+                    )
+                }
+                onCalculateClick()
+            }
+        )
 
         Spacer(modifier = Modifier.height(24.dp)) // Bottom padding
     }

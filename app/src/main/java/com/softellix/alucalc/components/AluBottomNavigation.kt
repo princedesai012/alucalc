@@ -15,7 +15,10 @@ import androidx.compose.ui.graphics.Color
 import com.softellix.alucalc.ui.theme.PrimaryDark
 
 @Composable
-fun AluBottomNavigation() {
+fun AluBottomNavigation(
+    selectedTab: Int = 0,
+    onTabSelected: (Int) -> Unit = {}
+) {
     NavigationBar(
         containerColor = Color.White,
         contentColor = Color.Gray
@@ -23,8 +26,8 @@ fun AluBottomNavigation() {
         NavigationBarItem(
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
             label = { Text("Home") },
-            selected = true, // Hardcoded for now since we are just building the UI shell
-            onClick = { /* TODO */ },
+            selected = selectedTab == 0,
+            onClick = { onTabSelected(0) },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = PrimaryDark,
                 selectedTextColor = PrimaryDark,
@@ -34,20 +37,35 @@ fun AluBottomNavigation() {
         NavigationBarItem(
             icon = { Icon(Icons.Outlined.Folder, contentDescription = "Projects") },
             label = { Text("Projects") },
-            selected = false,
-            onClick = { /* TODO */ }
+            selected = selectedTab == 1,
+            onClick = { onTabSelected(1) },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = PrimaryDark,
+                selectedTextColor = PrimaryDark,
+                indicatorColor = Color.Transparent
+            )
         )
         NavigationBarItem(
             icon = { Icon(Icons.Outlined.Description, contentDescription = "Reports") },
             label = { Text("Reports") },
-            selected = false,
-            onClick = { /* TODO */ }
+            selected = selectedTab == 2,
+            onClick = { onTabSelected(2) },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = PrimaryDark,
+                selectedTextColor = PrimaryDark,
+                indicatorColor = Color.Transparent
+            )
         )
         NavigationBarItem(
             icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
             label = { Text("Settings") },
-            selected = false,
-            onClick = { /* TODO */ }
+            selected = selectedTab == 3,
+            onClick = { onTabSelected(3) },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = PrimaryDark,
+                selectedTextColor = PrimaryDark,
+                indicatorColor = Color.Transparent
+            )
         )
     }
 }

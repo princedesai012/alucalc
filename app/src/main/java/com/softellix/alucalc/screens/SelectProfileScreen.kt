@@ -21,9 +21,6 @@ fun SelectProfileScreen(
     onNextClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    // State to hold the currently selected profile. Defaulting to 40mm.
-    var selectedProfile by remember { mutableStateOf("40mm") }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -63,15 +60,15 @@ fun SelectProfileScreen(
             ProfileSelectionCard(
                 title = "40 mm",
                 seriesName = "Regular",
-                isSelected = selectedProfile == "40mm",
-                onClick = { selectedProfile = "40mm" },
+                isSelected = viewModel.selectedProfile == "40mm",
+                onClick = { viewModel.selectedProfile = "40mm" },
                 modifier = Modifier.weight(1f)
             )
             ProfileSelectionCard(
                 title = "60 mm",
                 seriesName = "Regular",
-                isSelected = selectedProfile == "60mm",
-                onClick = { selectedProfile = "60mm" },
+                isSelected = viewModel.selectedProfile == "60mm",
+                onClick = { viewModel.selectedProfile = "60mm" },
                 modifier = Modifier.weight(1f)
             )
         }
@@ -88,8 +85,8 @@ fun SelectProfileScreen(
             ProfileSelectionCard(
                 title = "65 mm",
                 seriesName = "Slim Series",
-                isSelected = selectedProfile == "65mm",
-                onClick = { selectedProfile = "65mm" },
+                isSelected = viewModel.selectedProfile == "65mm",
+                onClick = { viewModel.selectedProfile = "65mm" },
                 modifier = Modifier.weight(0.5f) // Takes up half the screen width
             )
             Spacer(modifier = Modifier.weight(0.5f)) // Empty space for the other half
