@@ -1,4 +1,4 @@
-package com.alucalc.app.data.remote
+package com.softellix.alucalc.data.remote
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json

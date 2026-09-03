@@ -1,4 +1,4 @@
-package com.alucalc.app.data.model
+package com.softellix.alucalc.data.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

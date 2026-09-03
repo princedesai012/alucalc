@@ -1,6 +1,13 @@
-package com.alucalc.app.data.remote
+package com.softellix.alucalc.data.remote
 
-import com.alucalc.app.data.model.*
+import com.softellix.alucalc.data.model.AuthResponse
+import com.softellix.alucalc.data.model.CreateProjectRequest
+import com.softellix.alucalc.data.model.LoginRequest
+import com.softellix.alucalc.data.model.ProjectDetail
+import com.softellix.alucalc.data.model.ProjectSummary
+import com.softellix.alucalc.data.model.RegisterRequest
+import com.softellix.alucalc.data.model.ReportResponse
+import com.softellix.alucalc.data.model.WindowItem
 import retrofit2.Response
 import retrofit2.http.*
 

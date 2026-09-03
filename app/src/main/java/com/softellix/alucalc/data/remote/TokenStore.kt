@@ -1,4 +1,4 @@
-package com.alucalc.app.data.remote
+package com.softellix.alucalc.data.remote
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit

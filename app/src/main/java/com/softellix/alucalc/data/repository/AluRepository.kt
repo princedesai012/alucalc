@@ -1,7 +1,11 @@
-package com.alucalc.app.data.repository
+package com.softellix.alucalc.data.repository
 
-import com.alucalc.app.data.model.*
-import com.alucalc.app.data.remote.RetrofitClient
+import com.softellix.alucalc.data.model.CreateProjectRequest
+import com.softellix.alucalc.data.model.LoginRequest
+import com.softellix.alucalc.data.model.RegisterRequest
+import com.softellix.alucalc.data.model.WindowItem
+import com.softellix.alucalc.data.remote.RetrofitClient
+import retrofit2.Response
 
 // Thin wrapper around ApiService. Each call returns Result so screens can show
 // errors without try/catch scattered everywhere.
@@ -9,7 +13,7 @@ class AluRepository {
 
     private val api = RetrofitClient.apiService
 
-    private suspend fun <T> safeCall(block: suspend () -> retrofit2.Response<T>): Result<T> {
+    private suspend fun <T> safeCall(block: suspend () -> Response<T>): Result<T> {
         return try {
             val response = block()
             if (response.isSuccessful) {
