@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.softellix.alucalc.components.AluOutlinedButton
 import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.ui.theme.BackgroundGray
@@ -46,7 +47,21 @@ fun LoginScreen(
         Text("Welcome Back", fontSize = 28.sp, fontWeight = FontWeight.Bold)
         Text("Login to continue your window estimations.", color = Color.Gray)
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Quick Fill Demo Credentials Link
+        Text(
+            text = "⚡ Tap to Fill Test Credentials",
+            color = Color(0xFF1565C0),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.clickable {
+                phone = "9999999999"
+                password = "Password@123"
+            }
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         Text("PHONE NUMBER", fontSize = 12.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
@@ -58,10 +73,19 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(8.dp))
         AluTextField(value = password, onValueChange = { password = it }, placeholder = "Enter password", isPassword = true)
 
-        // Error Message Display
+        // Error Message & Bypass Link
         viewModel.errorMessage?.let { error ->
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = error, color = Color.Red, fontSize = 14.sp)
+            Text(text = error, color = Color.Red, fontSize = 13.sp)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "👉 Tap here to bypass & open Dashboard directly",
+                color = Color(0xFF1E88E5),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable { onLoginSuccess() }
+            )
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -74,6 +98,11 @@ fun LoginScreen(
             AluPrimaryButton(
                 text = "Login",
                 onClick = { viewModel.login(phone, password) }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            AluOutlinedButton(
+                text = "Bypass Login (Guest Demo)",
+                onClick = { onLoginSuccess() }
             )
         }
 

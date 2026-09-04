@@ -10,10 +10,8 @@ import retrofit2.Retrofit
 
 object RetrofitClient {
 
-    // Base URL for API requests.
-    // Note: '10.0.2.2' is only for Android Emulator.
-    // For physical phone on local Wi-Fi (e.g. OnePlus 10R 5G), use your PC's Wi-Fi IP address:
-    var baseUrl: String = "http://192.168.0.5:3000/"
+    // Backend Deployment Base URL
+    var baseUrl: String = "https://dev.softellixtech.com/"
         set(value) {
             val formatted = if (!value.endsWith("/")) "$value/" else value
             field = formatted

@@ -1,6 +1,5 @@
 package com.softellix.alucalc.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,8 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Folder
@@ -20,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,23 +32,14 @@ fun DashboardScreen(
     onNewProjectClick: () -> Unit,
     onRecentProjectsClick: () -> Unit = {},
     onReportHistoryClick: () -> Unit = {},
-    onProfileClick: () -> Unit = {}
+    onProfileClick: () -> Unit = {},
+    onTabSelected: (Int) -> Unit = {}
 ) {
-    val context = LocalContext.current
-    var selectedTab by remember { mutableIntStateOf(0) }
-
     Scaffold(
         bottomBar = {
             AluBottomNavigation(
-                selectedTab = selectedTab,
-                onTabSelected = { tab ->
-                    selectedTab = tab
-                    when (tab) {
-                        1 -> Toast.makeText(context, "Projects Tab Selected", Toast.LENGTH_SHORT).show()
-                        2 -> Toast.makeText(context, "Reports History Tab Selected", Toast.LENGTH_SHORT).show()
-                        3 -> Toast.makeText(context, "Settings Tab Selected", Toast.LENGTH_SHORT).show()
-                    }
-                }
+                selectedTab = 0,
+                onTabSelected = onTabSelected
             )
         },
         containerColor = BackgroundGray
@@ -72,10 +61,7 @@ fun DashboardScreen(
                     Text("John Doe", fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 }
                 IconButton(
-                    onClick = {
-                        onProfileClick()
-                        Toast.makeText(context, "Profile clicked - John Doe", Toast.LENGTH_SHORT).show()
-                    },
+                    onClick = onProfileClick,
                     modifier = Modifier
                         .border(1.dp, BorderGray, CircleShape)
                         .background(Color.White, CircleShape)
@@ -124,20 +110,14 @@ fun DashboardScreen(
                     title = "Recent Projects",
                     value = "12 Projects",
                     icon = Icons.Outlined.Folder,
-                    onClick = {
-                        onRecentProjectsClick()
-                        Toast.makeText(context, "Opening Recent Projects", Toast.LENGTH_SHORT).show()
-                    },
+                    onClick = onRecentProjectsClick,
                     modifier = Modifier.weight(1f)
                 )
                 SummaryCard(
                     title = "Report History",
                     value = "8 Reports",
                     icon = Icons.Outlined.Description,
-                    onClick = {
-                        onReportHistoryClick()
-                        Toast.makeText(context, "Opening Report History", Toast.LENGTH_SHORT).show()
-                    },
+                    onClick = onReportHistoryClick,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -172,7 +152,7 @@ fun SummaryCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Icon(icon, contentDescription = title, tint = Color.Gray)
-                Icon(Icons.Default.ArrowForward, contentDescription = "Go", tint = Color.LightGray, modifier = Modifier.size(16.dp))
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Go", tint = Color.LightGray, modifier = Modifier.size(16.dp))
             }
             Column {
                 Text(title, color = Color.Gray, fontSize = 12.sp)

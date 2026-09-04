@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.softellix.alucalc.components.AluOutlinedButton
 import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.ui.theme.BackgroundGray
@@ -45,10 +46,34 @@ fun CreateAccountScreen(
     ) {
         Spacer(modifier = Modifier.height(32.dp))
 
-        Text("Create Account", fontSize = 28.sp, fontWeight = FontWeight.Bold)
-        Text("Register AluCalc to start your window estimations.", color = Color.Gray)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text("Create Account", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+                Text("Register AluCalc to start estimations.", color = Color.Gray)
+            }
+        }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Quick Fill Demo Credentials Link
+        Text(
+            text = "⚡ Tap to Fill Demo Data",
+            color = Color(0xFF1565C0),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.clickable {
+                name = "John Doe"
+                businessName = "Doe Windows"
+                phone = "9999999999"
+                password = "Password@123"
+            }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text("PERSONAL INFO", fontSize = 12.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
@@ -64,10 +89,19 @@ fun CreateAccountScreen(
 
         AluTextField(value = password, onValueChange = { password = it }, placeholder = "Minimum 8 characters", isPassword = true)
 
-        // Error Message Display
+        // Error Message & Bypass Link
         viewModel.errorMessage?.let { error ->
             Spacer(modifier = Modifier.height(12.dp))
-            Text(text = error, color = Color.Red, fontSize = 14.sp)
+            Text(text = error, color = Color.Red, fontSize = 13.sp)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "👉 Tap here to bypass & open Dashboard directly",
+                color = Color(0xFF1E88E5),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable { onRegisterSuccess() }
+            )
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -96,6 +130,11 @@ fun CreateAccountScreen(
             AluPrimaryButton(
                 text = "Register",
                 onClick = { viewModel.register(name, businessName, phone, password) }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            AluOutlinedButton(
+                text = "Bypass Login (Guest Demo)",
+                onClick = { onRegisterSuccess() }
             )
         }
     }
