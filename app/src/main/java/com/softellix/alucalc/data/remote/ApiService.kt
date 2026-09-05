@@ -1,6 +1,7 @@
 package com.softellix.alucalc.data.remote
 
 import com.softellix.alucalc.data.model.*
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -8,7 +9,7 @@ interface ApiService {
 
     // 1. Authentication Endpoints
     @POST("api/auth/register")
-    suspend fun register(@Body body: RegisterRequest): Response<String>
+    suspend fun register(@Body body: RegisterRequest): Response<ResponseBody>
 
     @POST("api/auth/login")
     suspend fun login(@Body body: LoginRequest): Response<LoginResponse>
@@ -17,23 +18,23 @@ interface ApiService {
     suspend fun refreshToken(@Body body: RefreshTokenRequest): Response<LoginResponse>
 
     @POST("api/auth/logout")
-    suspend fun logout(@Body body: LogoutRequest): Response<String>
+    suspend fun logout(@Body body: LogoutRequest): Response<ResponseBody>
 
     @POST("api/auth/forgot-password")
-    suspend fun forgotPassword(@Body body: ForgotPasswordRequest): Response<String>
+    suspend fun forgotPassword(@Body body: ForgotPasswordRequest): Response<ResponseBody>
 
     @POST("api/auth/verify-otp")
     suspend fun verifyOtp(@Body body: VerifyOtpRequest): Response<OtpResponse>
 
     @POST("api/auth/reset-password")
-    suspend fun resetPassword(@Body body: ResetPasswordRequest): Response<String>
+    suspend fun resetPassword(@Body body: ResetPasswordRequest): Response<ResponseBody>
 
     @GET("api/auth/me")
     suspend fun getMe(): Response<LoginResponse>
 
     // 2. User Preferences
     @PUT("api/users/me/language")
-    suspend fun updateLanguage(@Body body: UpdateLanguageRequest): Response<String>
+    suspend fun updateLanguage(@Body body: UpdateLanguageRequest): Response<ResponseBody>
 
     // 3. Projects Endpoints
     @POST("api/projects")

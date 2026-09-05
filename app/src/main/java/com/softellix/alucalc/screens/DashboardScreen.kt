@@ -19,22 +19,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softellix.alucalc.components.AluBottomNavigation
+import com.softellix.alucalc.data.remote.TokenStore
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.BorderGray
 import com.softellix.alucalc.ui.theme.PrimaryDark
+import com.softellix.alucalc.viewmodels.ProjectViewModel
 
 @Composable
 fun DashboardScreen(
+    viewModel: ProjectViewModel,
     onNewProjectClick: () -> Unit,
     onRecentProjectsClick: () -> Unit = {},
     onReportHistoryClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
     onTabSelected: (Int) -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val tokenStore = remember { TokenStore(context) }
+    var userName by remember { mutableStateOf("User") }
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchRecentProjects()
+        val name = tokenStore.getUserName()
+        if (!name.isNullOrBlank()) {
+            userName = name
+        }
+    }
+
     Scaffold(
         bottomBar = {
             AluBottomNavigation(
@@ -58,7 +74,7 @@ fun DashboardScreen(
             ) {
                 Column {
                     Text("Welcome back,", color = Color.Gray, fontSize = 14.sp)
-                    Text("John Doe", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text(userName, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 }
                 IconButton(
                     onClick = onProfileClick,
@@ -108,14 +124,14 @@ fun DashboardScreen(
             ) {
                 SummaryCard(
                     title = "Recent Projects",
-                    value = "12 Projects",
+                    value = if (viewModel.isLoading) "Loading..." else "${viewModel.recentProjectsList.size} Projects",
                     icon = Icons.Outlined.Folder,
                     onClick = onRecentProjectsClick,
                     modifier = Modifier.weight(1f)
                 )
                 SummaryCard(
                     title = "Report History",
-                    value = "8 Reports",
+                    value = if (viewModel.isLoading) "Loading..." else "${viewModel.recentProjectsList.size} Reports",
                     icon = Icons.Outlined.Description,
                     onClick = onReportHistoryClick,
                     modifier = Modifier.weight(1f)

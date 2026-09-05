@@ -94,6 +94,11 @@ fun SelectProfileScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        AluPrimaryButton(text = "Next", onClick = onNextClick)
+        AluPrimaryButton(
+            text = "Next",
+            onClick = {
+                viewModel.updateProfileOnBackend(viewModel.selectedProfile, onSuccess = onNextClick)
+            }
+        )
     }
 }

@@ -7,11 +7,12 @@ import okhttp3.OkHttpClient
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-    // Backend Deployment Base URL
-    var baseUrl: String = "https://dev.softellixtech.com/"
+    // Final Render Backend Deployment URL
+    var baseUrl: String = "https://aluminium-softellix-tech-backend.onrender.com/"
         set(value) {
             val formatted = if (!value.endsWith("/")) "$value/" else value
             field = formatted
@@ -32,6 +33,9 @@ object RetrofitClient {
     }
 
     private val okHttpClient = OkHttpClient.Builder()
+        .connectTimeout(60, TimeUnit.SECONDS) // Handles Render cold start
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
         .addInterceptor(authInterceptor)
         .addInterceptor(logging)
         .build()

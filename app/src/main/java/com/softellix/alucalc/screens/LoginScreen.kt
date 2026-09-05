@@ -17,13 +17,15 @@ import com.softellix.alucalc.components.AluOutlinedButton
 import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.ui.theme.BackgroundGray
+import com.softellix.alucalc.ui.theme.PrimaryFont
 import com.softellix.alucalc.viewmodels.AuthViewModel
 
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel,
     onLoginSuccess: () -> Unit,
-    onNavigateToRegister: () -> Unit
+    onNavigateToRegister: () -> Unit,
+    onNavigateToForgotPassword: () -> Unit = {}
 ) {
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -44,7 +46,7 @@ fun LoginScreen(
     ) {
         Spacer(modifier = Modifier.height(32.dp))
 
-        Text("Welcome Back", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        Text("Welcome Back", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Text("Login to continue your window estimations.", color = Color.Gray)
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -63,15 +65,30 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text("PHONE NUMBER", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text("PHONE NUMBER", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(8.dp))
         AluTextField(value = phone, onValueChange = { phone = it }, placeholder = "Enter 10-digit number")
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("PASSWORD", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text("PASSWORD", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(8.dp))
-        AluTextField(value = password, onValueChange = { password = it }, placeholder = "Enter password", isPassword = true)
+        AluTextField(value = password, onValueChange = { password = it }, placeholder = "must be 4 digit only", isPassword = true)
+
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Text(
+                text = "Forgot Password?",
+                color = PrimaryFont,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable { onNavigateToForgotPassword() }
+            )
+        }
 
         // Error Message & Bypass Link
         viewModel.errorMessage?.let { error ->
@@ -115,6 +132,7 @@ fun LoginScreen(
             Text(text = "Don't have an account? ", color = Color.Gray)
             Text(
                 text = "Register",
+                color = PrimaryFont,
                 fontWeight = FontWeight.Bold,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable { onNavigateToRegister() }

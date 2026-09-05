@@ -1,6 +1,5 @@
 package com.softellix.alucalc.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,6 +22,7 @@ import com.softellix.alucalc.components.AluBottomNavigation
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.BorderGray
 import com.softellix.alucalc.ui.theme.PrimaryDark
+import com.softellix.alucalc.viewmodels.ProjectViewModel
 
 data class ReportItemUI(
     val id: String,
@@ -31,22 +31,32 @@ data class ReportItemUI(
     val estimator: String,
     val date: String,
     val totalWindows: Int,
-    val aluminumMeters: Double,
-    val glassSqm: Double
+    val aluminumMeters: String,
+    val glassSqm: String
 )
 
 @Composable
 fun ReportsHistoryScreen(
+    viewModel: ProjectViewModel,
     onReportClick: (String) -> Unit,
     onTabSelected: (Int) -> Unit
 ) {
     val context = LocalContext.current
 
-    val reports = remember {
-        listOf(
-            ReportItemUI("1", "Marina Heights - A", "#AP-098", "John Doe", "Jan 26, 2025", 6, 36.4, 14.2),
-            ReportItemUI("2", "City Mall Phase 1", "#AP-102", "John Doe", "Feb 02, 2025", 12, 84.8, 32.6),
-            ReportItemUI("3", "Green Valley Tower", "#AP-105", "John Doe", "Feb 10, 2025", 8, 52.0, 20.4)
+    LaunchedEffect(Unit) {
+        viewModel.fetchRecentProjects()
+    }
+
+    val reports = viewModel.recentProjectsList.map { p ->
+        ReportItemUI(
+            id = p.id,
+            projectTitle = p.projectName,
+            reportCode = "#AP-${p.projectNumber ?: 100}",
+            estimator = "Current User",
+            date = "Active",
+            totalWindows = p.projectNumber ?: 1,
+            aluminumMeters = "Calculated",
+            glassSqm = "Calculated"
         )
     }
 
@@ -73,80 +83,96 @@ fun ReportsHistoryScreen(
             Text("GENERATED REPORTS (${reports.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(12.dp))
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth().weight(1f)
-            ) {
-                items(reports) { report ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onReportClick(report.id) },
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
-                        border = BorderStroke(1.dp, BorderGray),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Column {
-                                    Text(report.projectTitle, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                                    Text(report.reportCode, color = Color.Gray, fontSize = 12.sp)
-                                }
-                                Icon(
-                                    Icons.AutoMirrored.Filled.ArrowForward,
-                                    contentDescription = "View",
-                                    tint = Color.Gray,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Column {
-                                    Text("Aluminum", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-                                    Text("${report.aluminumMeters} m", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                                }
-                                Column {
-                                    Text("Glass Area", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-                                    Text("${report.glassSqm} m²", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                                }
-                                Column {
-                                    Text("Total Units", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-                                    Text("${report.totalWindows} Windows", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text("Created on ${report.date}", fontSize = 11.sp, color = Color.Gray)
-                                IconButton(
-                                    onClick = {
-                                        val sendIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
-                                            type = "text/plain"
-                                            putExtra(android.content.Intent.EXTRA_SUBJECT, "AluCalc Report - ${report.projectTitle}")
-                                            putExtra(
-                                                android.content.Intent.EXTRA_TEXT,
-                                                "Report ${report.reportCode} for ${report.projectTitle}\nAluminum: ${report.aluminumMeters}m | Glass: ${report.glassSqm}m²\nGenerated by AluCalc."
-                                            )
-                                        }
-                                        context.startActivity(android.content.Intent.createChooser(sendIntent, "Share Report"))
-                                    },
-                                    modifier = Modifier.size(28.dp)
+            if (viewModel.isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else if (reports.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("No estimation reports generated yet.", color = Color.Gray)
+                }
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth().weight(1f)
+                ) {
+                    items(reports) { report ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onReportClick(report.id) },
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            border = BorderStroke(1.dp, BorderGray),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(Icons.Default.Share, contentDescription = "Share", tint = PrimaryDark, modifier = Modifier.size(18.dp))
+                                    Column {
+                                        Text(report.projectTitle, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                        Text(report.reportCode, color = Color.Gray, fontSize = 12.sp)
+                                    }
+                                    Icon(
+                                        Icons.AutoMirrored.Filled.ArrowForward,
+                                        contentDescription = "View",
+                                        tint = Color.Gray,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Column {
+                                        Text("Aluminum", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
+                                        Text("${report.aluminumMeters} m", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                    }
+                                    Column {
+                                        Text("Glass Area", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
+                                        Text("${report.glassSqm} m²", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                    }
+                                    Column {
+                                        Text("Total Units", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
+                                        Text("${report.totalWindows} Windows", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text("Created on ${report.date}", fontSize = 11.sp, color = Color.Gray)
+                                    IconButton(
+                                        onClick = {
+                                            val sendIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                                                type = "text/plain"
+                                                putExtra(android.content.Intent.EXTRA_SUBJECT, "AluCalc Report - ${report.projectTitle}")
+                                                putExtra(
+                                                    android.content.Intent.EXTRA_TEXT,
+                                                    "Report ${report.reportCode} for ${report.projectTitle}\nAluminum: ${report.aluminumMeters} | Glass: ${report.glassSqm}\nGenerated by AluCalc."
+                                                )
+                                            }
+                                            context.startActivity(android.content.Intent.createChooser(sendIntent, "Share Report"))
+                                        },
+                                        modifier = Modifier.size(28.dp)
+                                    ) {
+                                        Icon(Icons.Default.Share, contentDescription = "Share", tint = PrimaryDark, modifier = Modifier.size(18.dp))
+                                    }
                                 }
                             }
                         }

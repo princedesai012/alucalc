@@ -74,6 +74,11 @@ fun NewProjectScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        AluPrimaryButton(text = "Next", onClick = onNextClick)
+        AluPrimaryButton(
+            text = if (viewModel.isLoading) "Creating Project..." else "Next",
+            onClick = {
+                viewModel.createProjectOnBackend(onSuccess = onNextClick)
+            }
+        )
     }
 }

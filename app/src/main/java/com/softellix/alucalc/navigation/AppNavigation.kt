@@ -74,6 +74,21 @@ fun AppNavigation() {
                     navController.navigate("create_account") {
                         popUpTo("login") { inclusive = true }
                     }
+                },
+                onNavigateToForgotPassword = {
+                    navController.navigate("forgot_password")
+                }
+            )
+        }
+
+        // Route 2b: Forgot Password
+        composable("forgot_password") {
+            ForgotPasswordScreen(
+                viewModel = authViewModel,
+                onBackToLogin = {
+                    navController.navigate("login") {
+                        popUpTo("forgot_password") { inclusive = true }
+                    }
                 }
             )
         }
@@ -81,6 +96,7 @@ fun AppNavigation() {
         // Route 3: Dashboard / Home
         composable("dashboard") {
             DashboardScreen(
+                viewModel = sharedViewModel,
                 onNewProjectClick = {
                     navController.navigate("new_project_step_1")
                 },
@@ -107,7 +123,9 @@ fun AppNavigation() {
         // Route 4: Projects List
         composable("projects_list") {
             ProjectsListScreen(
-                onProjectClick = { _ ->
+                viewModel = sharedViewModel,
+                onProjectClick = { projectId ->
+                    sharedViewModel.loadProjectReport(projectId)
                     navController.navigate("report")
                 },
                 onNewProjectClick = {
@@ -127,7 +145,9 @@ fun AppNavigation() {
         // Route 5: Reports History
         composable("reports_history") {
             ReportsHistoryScreen(
-                onReportClick = { _ ->
+                viewModel = sharedViewModel,
+                onReportClick = { projectId ->
+                    sharedViewModel.loadProjectReport(projectId)
                     navController.navigate("report")
                 },
                 onTabSelected = { tab ->
@@ -144,6 +164,7 @@ fun AppNavigation() {
         // Route 6: Settings & Profile
         composable("settings") {
             SettingsScreen(
+                viewModel = sharedViewModel,
                 onLogoutClick = {
                     scope.launch {
                         tokenStore.clear()
@@ -199,6 +220,11 @@ fun AppNavigation() {
                 },
                 onBackClick = {
                     navController.popBackStack()
+                },
+                onHomeClick = {
+                    navController.navigate("dashboard") {
+                        popUpTo("dashboard") { inclusive = true }
+                    }
                 }
             )
         }

@@ -17,6 +17,7 @@ import com.softellix.alucalc.components.AluOutlinedButton
 import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.ui.theme.BackgroundGray
+import com.softellix.alucalc.ui.theme.PrimaryFont
 import com.softellix.alucalc.viewmodels.AuthViewModel
 
 @Composable
@@ -52,7 +53,7 @@ fun CreateAccountScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text("Create Account", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+                Text("Create Account", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
                 Text("Register AluCalc to start estimations.", color = Color.Gray)
             }
         }
@@ -75,7 +76,7 @@ fun CreateAccountScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("PERSONAL INFO", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text("PERSONAL INFO", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(8.dp))
 
         AluTextField(value = name, onValueChange = { name = it }, placeholder = "Enter full name")
@@ -87,7 +88,7 @@ fun CreateAccountScreen(
         AluTextField(value = phone, onValueChange = { phone = it }, placeholder = "Enter 10-digit number")
         Spacer(modifier = Modifier.height(12.dp))
 
-        AluTextField(value = password, onValueChange = { password = it }, placeholder = "Minimum 8 characters", isPassword = true)
+        AluTextField(value = password, onValueChange = { password = it }, placeholder = "must be 4 digit only", isPassword = true)
 
         // Error Message & Bypass Link
         viewModel.errorMessage?.let { error ->
@@ -114,6 +115,7 @@ fun CreateAccountScreen(
             Text(text = "Already have an account? ", color = Color.Gray)
             Text(
                 text = "Login",
+                color = PrimaryFont,
                 fontWeight = FontWeight.Bold,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable { onNavigateToLogin() }
