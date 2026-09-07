@@ -22,7 +22,11 @@ import com.softellix.alucalc.components.AluBottomNavigation
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.BorderGray
 import com.softellix.alucalc.ui.theme.PrimaryDark
+import com.softellix.alucalc.ui.theme.PrimaryFont
 import com.softellix.alucalc.viewmodels.ProjectViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 data class ReportItemUI(
     val id: String,
@@ -42,18 +46,20 @@ fun ReportsHistoryScreen(
     onTabSelected: (Int) -> Unit
 ) {
     val context = LocalContext.current
+    val todayDate = remember { SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date()) }
 
     LaunchedEffect(Unit) {
         viewModel.fetchRecentProjects()
     }
 
-    val reports = viewModel.recentProjectsList.map { p ->
+    val reports = viewModel.recentProjectsList.mapIndexed { idx, p ->
+        val codeNumber = 101 + idx
         ReportItemUI(
             id = p.id,
             projectTitle = p.projectName,
-            reportCode = "#AP-${p.projectNumber ?: 100}",
-            estimator = "Current User",
-            date = "Active",
+            reportCode = "#AP-$codeNumber",
+            estimator = viewModel.currentUser?.name ?: "User",
+            date = todayDate,
             totalWindows = p.projectNumber ?: 1,
             aluminumMeters = "Calculated",
             glassSqm = "Calculated"
@@ -75,12 +81,12 @@ fun ReportsHistoryScreen(
                 .padding(paddingValues)
                 .padding(24.dp)
         ) {
-            Text("Report History", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            Text("Report History", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Text("Access and share all previously generated calculation reports", color = Color.Gray, fontSize = 13.sp)
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text("GENERATED REPORTS (${reports.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Text("GENERATED REPORTS (${reports.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(12.dp))
 
             if (viewModel.isLoading) {
@@ -118,7 +124,7 @@ fun ReportsHistoryScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Column {
-                                        Text(report.projectTitle, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                        Text(report.projectTitle, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = PrimaryFont)
                                         Text(report.reportCode, color = Color.Gray, fontSize = 12.sp)
                                     }
                                     Icon(
@@ -137,15 +143,15 @@ fun ReportsHistoryScreen(
                                 ) {
                                     Column {
                                         Text("Aluminum", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-                                        Text("${report.aluminumMeters} m", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                        Text("${report.aluminumMeters} m", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = PrimaryFont)
                                     }
                                     Column {
                                         Text("Glass Area", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-                                        Text("${report.glassSqm} m²", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                        Text("${report.glassSqm} m²", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = PrimaryFont)
                                     }
                                     Column {
                                         Text("Total Units", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-                                        Text("${report.totalWindows} Windows", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                        Text("${report.totalWindows} Windows", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = PrimaryFont)
                                     }
                                 }
 
@@ -164,7 +170,7 @@ fun ReportsHistoryScreen(
                                                 putExtra(android.content.Intent.EXTRA_SUBJECT, "AluCalc Report - ${report.projectTitle}")
                                                 putExtra(
                                                     android.content.Intent.EXTRA_TEXT,
-                                                    "Report ${report.reportCode} for ${report.projectTitle}\nAluminum: ${report.aluminumMeters} | Glass: ${report.glassSqm}\nGenerated by AluCalc."
+                                                    "Report ${report.reportCode} for ${report.projectTitle}\nAluminum: ${report.aluminumMeters} | Glass: ${report.glassSqm}\nGenerated via AluCalc."
                                                 )
                                             }
                                             context.startActivity(android.content.Intent.createChooser(sendIntent, "Share Report"))

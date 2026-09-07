@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.softellix.alucalc.ui.theme.PrimaryDark
+import com.softellix.alucalc.utils.LanguageManager
 
 @Composable
 fun AluBottomNavigation(
@@ -24,8 +25,8 @@ fun AluBottomNavigation(
         contentColor = Color.Gray
     ) {
         NavigationBarItem(
-            icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
-            label = { Text("Home") },
+            icon = { Icon(Icons.Default.Home, contentDescription = LanguageManager.tr("home")) },
+            label = { Text(LanguageManager.tr("home")) },
             selected = selectedTab == 0,
             onClick = { onTabSelected(0) },
             colors = NavigationBarItemDefaults.colors(
@@ -35,8 +36,8 @@ fun AluBottomNavigation(
             )
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Outlined.Folder, contentDescription = "Projects") },
-            label = { Text("Projects") },
+            icon = { Icon(Icons.Outlined.Folder, contentDescription = LanguageManager.tr("all_projects")) },
+            label = { Text(LanguageManager.tr("all_projects")) },
             selected = selectedTab == 1,
             onClick = { onTabSelected(1) },
             colors = NavigationBarItemDefaults.colors(
@@ -46,8 +47,8 @@ fun AluBottomNavigation(
             )
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Outlined.Description, contentDescription = "Reports") },
-            label = { Text("Reports") },
+            icon = { Icon(Icons.Outlined.Description, contentDescription = LanguageManager.tr("reports")) },
+            label = { Text(LanguageManager.tr("reports")) },
             selected = selectedTab == 2,
             onClick = { onTabSelected(2) },
             colors = NavigationBarItemDefaults.colors(
@@ -57,8 +58,8 @@ fun AluBottomNavigation(
             )
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
-            label = { Text("Settings") },
+            icon = { Icon(Icons.Default.Settings, contentDescription = LanguageManager.tr("settings")) },
+            label = { Text(LanguageManager.tr("settings")) },
             selected = selectedTab == 3,
             onClick = { onTabSelected(3) },
             colors = NavigationBarItemDefaults.colors(

@@ -25,6 +25,7 @@ import com.softellix.alucalc.data.remote.TokenStore
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.BorderGray
 import com.softellix.alucalc.ui.theme.PrimaryFont
+import com.softellix.alucalc.utils.LanguageManager
 import com.softellix.alucalc.viewmodels.ProjectViewModel
 
 @Composable
@@ -39,7 +40,7 @@ fun SettingsScreen(
     var userName by remember { mutableStateOf("User") }
     var userPhone by remember { mutableStateOf("") }
     var userBusiness by remember { mutableStateOf("Fabricator") }
-    var selectedLanguage by remember { mutableStateOf(viewModel.currentLanguage) }
+    var selectedLanguage by remember { mutableStateOf(LanguageManager.currentLanguage) }
 
     LaunchedEffect(Unit) {
         viewModel.fetchCurrentUser()
@@ -71,7 +72,7 @@ fun SettingsScreen(
                 .padding(paddingValues)
                 .padding(24.dp)
         ) {
-            Text("Settings & Profile", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text(LanguageManager.tr("settings"), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Text("Manage user preferences and account settings", color = Color.Gray, fontSize = 13.sp)
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -123,7 +124,7 @@ fun SettingsScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Language, contentDescription = "Lang", tint = Color.Gray)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Application Language", fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = PrimaryFont)
+                        Text(LanguageManager.tr("app_language"), fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = PrimaryFont)
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(
@@ -135,6 +136,7 @@ fun SettingsScreen(
                                 selected = selectedLanguage == lang,
                                 onClick = {
                                     selectedLanguage = lang
+                                    LanguageManager.setLanguage(lang)
                                     viewModel.updateLanguage(lang) {
                                         Toast.makeText(context, "App language updated to $lang", Toast.LENGTH_SHORT).show()
                                     }
@@ -150,7 +152,7 @@ fun SettingsScreen(
 
             // Logout Button
             AluOutlinedButton(
-                text = "Logout",
+                text = LanguageManager.tr("logout"),
                 onClick = {
                     Toast.makeText(context, "Logged out successfully", Toast.LENGTH_SHORT).show()
                     onLogoutClick()

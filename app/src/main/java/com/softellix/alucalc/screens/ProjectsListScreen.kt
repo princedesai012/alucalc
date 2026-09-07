@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softellix.alucalc.components.AluBottomNavigation
@@ -22,7 +23,11 @@ import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.BorderGray
 import com.softellix.alucalc.ui.theme.PrimaryDark
+import com.softellix.alucalc.ui.theme.PrimaryFont
 import com.softellix.alucalc.viewmodels.ProjectViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 data class ProjectItemUI(
     val id: String,
@@ -33,6 +38,16 @@ data class ProjectItemUI(
     val date: String
 )
 
+fun formatProfileLabel(profileType: String?): String {
+    if (profileType.isNullOrBlank()) return "Regular 40mm"
+    val t = profileType.uppercase()
+    return when {
+        t.contains("65") || t.contains("SLIM") -> "Slim 65mm"
+        t.contains("60") -> "Regular 60mm"
+        else -> "Regular 40mm"
+    }
+}
+
 @Composable
 fun ProjectsListScreen(
     viewModel: ProjectViewModel,
@@ -41,6 +56,7 @@ fun ProjectsListScreen(
     onTabSelected: (Int) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
+    val todayDate = remember { SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date()) }
 
     LaunchedEffect(Unit) {
         viewModel.fetchProjectsList()
@@ -51,9 +67,9 @@ fun ProjectsListScreen(
             id = p.id,
             name = p.projectName,
             address = p.projectAddress ?: "Surat, Gujarat",
-            profile = p.profileType ?: "MM40",
+            profile = formatProfileLabel(p.profileType),
             totalWindows = p.projectNumber ?: 1,
-            date = "Active"
+            date = todayDate
         )
     }
 
@@ -85,7 +101,7 @@ fun ProjectsListScreen(
                 .padding(paddingValues)
                 .padding(24.dp)
         ) {
-            Text("Projects", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            Text("Projects", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Text("Manage and view all your estimation projects", color = Color.Gray, fontSize = 13.sp)
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -99,7 +115,7 @@ fun ProjectsListScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text("ALL PROJECTS (${filteredProjects.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Text("ALL PROJECTS (${filteredProjects.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(12.dp))
 
             if (viewModel.isLoading) {
@@ -140,7 +156,7 @@ fun ProjectsListScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(project.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                    Text(project.name, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = PrimaryFont)
                                     Icon(
                                         Icons.AutoMirrored.Filled.ArrowForward,
                                         contentDescription = "View",
@@ -155,10 +171,25 @@ fun ProjectsListScreen(
 
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text("Profile: ${project.profile}", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                                    Text("${project.totalWindows} Windows • ${project.date}", fontSize = 12.sp, color = Color.Gray)
+                                    Text(
+                                        "Profile: ${project.profile}",
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = PrimaryFont,
+                                        modifier = Modifier.weight(1f, fill = false),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        "${project.totalWindows} Windows • ${project.date}",
+                                        fontSize = 12.sp,
+                                        color = Color.Gray,
+                                        maxLines = 1
+                                    )
                                 }
                             }
                         }

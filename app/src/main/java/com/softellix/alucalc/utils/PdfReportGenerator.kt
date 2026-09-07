@@ -2,14 +2,18 @@ package com.softellix.alucalc.utils
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.RectF
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.os.Environment
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.softellix.alucalc.data.model.ProjectReportResponse
+import com.softellix.alucalc.screens.ReportWindowModel
+import com.softellix.alucalc.screens.extractReportWindowModels
 import com.softellix.alucalc.viewmodels.WindowItem
 import java.io.File
 import java.io.FileOutputStream
@@ -30,106 +34,176 @@ object PdfReportGenerator {
             val page = pdfDocument.startPage(pageInfo)
             val canvas = page.canvas
 
+            // Paint definitions matching Image 1
+            val pageBgPaint = Paint().apply { color = Color.parseColor("#F1F5F9") }
+            val navyBannerPaint = Paint().apply { color = Color.parseColor("#0F172A") }
+            val accentBluePaint = Paint().apply { color = Color.parseColor("#2563EB") }
+            val cardBgPaint = Paint().apply { color = Color.WHITE }
+            val cardBorderPaint = Paint().apply {
+                color = Color.parseColor("#CBD5E1")
+                style = Paint.Style.STROKE
+                strokeWidth = 1f
+            }
+
             val titlePaint = Paint().apply {
-                color = Color.BLACK
+                color = Color.WHITE
                 textSize = 18f
                 isFakeBoldText = true
             }
 
             val subtitlePaint = Paint().apply {
-                color = Color.DKGRAY
-                textSize = 12f
+                color = Color.parseColor("#94A3B8")
+                textSize = 11f
             }
 
-            val headerPaint = Paint().apply {
-                color = Color.BLACK
+            val sectionTitlePaint = Paint().apply {
+                color = Color.parseColor("#0F172A")
                 textSize = 13f
                 isFakeBoldText = true
             }
 
-            val textPaint = Paint().apply {
-                color = Color.DKGRAY
-                textSize = 11f
-            }
-
-            val boldPaint = Paint().apply {
-                color = Color.BLACK
+            val windowTitlePaint = Paint().apply {
+                color = Color.parseColor("#334155")
                 textSize = 11f
                 isFakeBoldText = true
             }
 
-            var y = 40f
-
-            // Title Header
-            canvas.drawText("ALUCALC ESTIMATION REPORT", 40f, y, titlePaint)
-            y += 22f
-            canvas.drawText("Project: $projectName", 40f, y, subtitlePaint)
-            y += 16f
-            canvas.drawText("Profile: $profileName | Total Windows: $totalUnits", 40f, y, subtitlePaint)
-            y += 20f
-
-            canvas.drawLine(40f, y, 555f, y, Paint().apply { color = Color.LTGRAY; strokeWidth = 1f })
-            y += 20f
-
-            canvas.drawText("DETAILED WINDOW CALCULATION BREAKDOWN", 40f, y, headerPaint)
-            y += 20f
-
-            val windows = reportData?.windows
-            if (!windows.isNullOrEmpty()) {
-                windows.forEachIndexed { i, win ->
-                    if (y > 780f) return@forEachIndexed
-                    canvas.drawText("Window #${i + 1}: ${win.width}\" x ${win.height}\" (${formatTrackName(win.trackType)}, Qty: ${win.quantity})", 40f, y, boldPaint)
-                    y += 16f
-
-                    win.calculation?.let { calc ->
-                        calc.handleHeight?.let {
-                            canvas.drawText("   • Handle Height: ${it.value}\" (${it.totalPieces} pcs)", 50f, y, textPaint)
-                            y += 14f
-                        }
-                        calc.interlockHeight?.let {
-                            canvas.drawText("   • Interlock Height: ${it.value}\" (${it.totalPieces} pcs)", 50f, y, textPaint)
-                            y += 14f
-                        }
-                        calc.topAndSide?.let {
-                            canvas.drawText("   • Top & Side: ${it.value}\" (${it.totalPieces} pcs)", 50f, y, textPaint)
-                            y += 14f
-                        }
-                        calc.parts.forEach { part ->
-                            canvas.drawText("   • ${part.name}: ${part.value}\" (${part.totalPieces} pcs)", 50f, y, textPaint)
-                            y += 14f
-                        }
-                    }
-                    y += 12f
-                }
-            } else {
-                addedWindows.forEachIndexed { i, win ->
-                    if (y > 780f) return@forEachIndexed
-                    canvas.drawText("Window #${i + 1}: ${win.widthDisplay} x ${win.heightDisplay} (${formatTrackName(win.track)}, Qty: ${win.qty})", 40f, y, boldPaint)
-                    y += 16f
-                    win.calculation?.let { calc ->
-                        calc.handleHeight?.let {
-                            canvas.drawText("   • Handle Height: ${it.value}\" (${it.totalPieces} pcs)", 50f, y, textPaint)
-                            y += 14f
-                        }
-                        calc.interlockHeight?.let {
-                            canvas.drawText("   • Interlock Height: ${it.value}\" (${it.totalPieces} pcs)", 50f, y, textPaint)
-                            y += 14f
-                        }
-                        calc.topAndSide?.let {
-                            canvas.drawText("   • Top & Side: ${it.value}\" (${it.totalPieces} pcs)", 50f, y, textPaint)
-                            y += 14f
-                        }
-                        calc.parts.forEach { part ->
-                            canvas.drawText("   • ${part.name}: ${part.value}\" (${part.totalPieces} pcs)", 50f, y, textPaint)
-                            y += 14f
-                        }
-                    }
-                    y += 12f
-                }
+            val badgeBgPaint = Paint().apply { color = Color.parseColor("#F1F5F9") }
+            val badgePaint = Paint().apply {
+                color = Color.parseColor("#64748B")
+                textSize = 9.5f
             }
 
-            canvas.drawLine(40f, 800f, 555f, 800f, Paint().apply { color = Color.LTGRAY; strokeWidth = 1f })
-            canvas.drawText("Generated via AluCalc - Aluminium Window Calculator", 40f, 818f, subtitlePaint)
+            val greenValPaint = Paint().apply {
+                color = Color.parseColor("#16A34A")
+                textSize = 11.5f
+                isFakeBoldText = true
+            }
+
+            val blueValPaint = Paint().apply {
+                color = Color.parseColor("#2563EB")
+                textSize = 11f
+                isFakeBoldText = true
+            }
+
+            val pcsPaint = Paint().apply {
+                color = Color.parseColor("#64748B")
+                textSize = 10f
+            }
+
+            val dividerPaint = Paint().apply {
+                color = Color.parseColor("#F1F5F9")
+                strokeWidth = 1f
+            }
+
+            // Fill page background
+            canvas.drawRect(0f, 0f, 595f, 842f, pageBgPaint)
+
+            // Top Navy Banner
+            canvas.drawRect(0f, 0f, 595f, 75f, navyBannerPaint)
+            canvas.drawRect(0f, 75f, 595f, 78f, accentBluePaint)
+
+            canvas.drawText("ALUCALC ESTIMATION REPORT", 25f, 36f, titlePaint)
+            canvas.drawText("Project: $projectName   |   Profile: $profileName   |   Total Windows: $totalUnits", 25f, 58f, subtitlePaint)
+
+            val cardLeft = 25f
+            val cardRight = 570f
+            var startY = 95f
+
+            val windowModels = extractReportWindowModels(reportData, addedWindows)
+
+            // Helper function to draw card / div
+            fun drawCardSection(
+                title: String,
+                isGlass: Boolean = false,
+                getValAndPcs: (ReportWindowModel) -> Pair<String, String> = { Pair("", "") }
+            ) {
+                val rowHeight = if (isGlass) 42f else 32f
+                val cardHeight = 36f + (windowModels.size * rowHeight)
+                val cardTop = startY
+                val cardBottom = cardTop + cardHeight
+
+                // Draw Card Div
+                val cardRect = RectF(cardLeft, cardTop, cardRight, cardBottom)
+                canvas.drawRoundRect(cardRect, 10f, 10f, cardBgPaint)
+                canvas.drawRoundRect(cardRect, 10f, 10f, cardBorderPaint)
+
+                // Left Blue Accent Bar
+                canvas.drawRoundRect(RectF(cardLeft + 12f, cardTop + 12f, cardLeft + 16f, cardTop + 28f), 2f, 2f, accentBluePaint)
+
+                // Section Title
+                canvas.drawText(title, cardLeft + 24f, cardTop + 25f, sectionTitlePaint)
+
+                var rowY = cardTop + 45f
+
+                windowModels.forEachIndexed { i, win ->
+                    // Window Title
+                    canvas.drawText(win.title, cardLeft + 16f, rowY, windowTitlePaint)
+
+                    // Track Badge
+                    val badgeText = win.trackQty
+                    val badgeTextWidth = badgePaint.measureText(badgeText)
+                    val badgeLeft = cardLeft + 16f + windowTitlePaint.measureText(win.title) + 8f
+                    canvas.drawRoundRect(RectF(badgeLeft, rowY - 11f, badgeLeft + badgeTextWidth + 12f, rowY + 3f), 4f, 4f, badgeBgPaint)
+                    canvas.drawText(badgeText, badgeLeft + 6f, rowY - 1f, badgePaint)
+
+                    if (!isGlass) {
+                        val (valStr, pcsStr) = getValAndPcs(win)
+                        val pcsWidth = pcsPaint.measureText(pcsStr)
+                        val valWidth = greenValPaint.measureText(valStr)
+
+                        canvas.drawText(pcsStr, cardRight - 16f - pcsWidth, rowY, pcsPaint)
+                        canvas.drawText(valStr, cardRight - 16f - pcsWidth - 5f - valWidth, rowY, greenValPaint)
+                    } else {
+                        // Glass Dimensions Stacked Blue Values
+                        val wText = "W: ${win.glassWidthVal}\""
+                        val wPcs = "(${win.glassWidthPcs} pcs)"
+                        val hText = "H: ${win.glassHeightVal}\""
+                        val hPcs = "(${win.glassHeightPcs} pcs)"
+
+                        val wPcsWidth = pcsPaint.measureText(wPcs)
+                        val wTextWidth = blueValPaint.measureText(wText)
+                        canvas.drawText(wPcs, cardRight - 16f - wPcsWidth, rowY - 5f, pcsPaint)
+                        canvas.drawText(wText, cardRight - 16f - wPcsWidth - 4f - wTextWidth, rowY - 5f, blueValPaint)
+
+                        val hPcsWidth = pcsPaint.measureText(hPcs)
+                        val hTextWidth = blueValPaint.measureText(hText)
+                        canvas.drawText(hPcs, cardRight - 16f - hPcsWidth, rowY + 11f, pcsPaint)
+                        canvas.drawText(hText, cardRight - 16f - hPcsWidth - 4f - hTextWidth, rowY + 11f, blueValPaint)
+                    }
+
+                    if (i < windowModels.size - 1) {
+                        val lineY = rowY + (if (isGlass) 18f else 14f)
+                        canvas.drawLine(cardLeft + 16f, lineY, cardRight - 16f, lineY, dividerPaint)
+                    }
+
+                    rowY += rowHeight
+                }
+
+                startY = cardBottom + 14f
+            }
+
+            // 1. Interlock & Handle Card
+            drawCardSection("1. Interlock & Handle") { win ->
+                Pair("${win.interlockHandleVal}\"", "(${win.interlockHandlePcs} pcs)")
+            }
+
+            // 2. Top & Side Card
+            drawCardSection("2. Top & Side") { win ->
+                Pair("${win.topSideVal}\"", "(${win.topSidePcs} pcs)")
+            }
+
+            // 3. Top & Bottom Card
+            drawCardSection("3. Top & Bottom") { win ->
+                Pair("${win.topBottomVal}\"", "(${win.topBottomPcs} pcs)")
+            }
+
+            // 4. Glass Dimensions Card
+            drawCardSection("4. Glass Dimensions (Width & Height)", isGlass = true)
+
+            // Footer
+            canvas.drawLine(25f, 808f, 570f, 808f, dividerPaint)
+            canvas.drawText("Generated via AluCalc - Aluminium Window Calculator", 25f, 824f, subtitlePaint.apply { color = Color.GRAY })
 
             pdfDocument.finishPage(page)
 

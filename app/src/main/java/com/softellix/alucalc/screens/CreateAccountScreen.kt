@@ -18,6 +18,7 @@ import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.PrimaryFont
+import com.softellix.alucalc.utils.LanguageManager
 import com.softellix.alucalc.viewmodels.AuthViewModel
 
 @Composable
@@ -53,7 +54,7 @@ fun CreateAccountScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text("Create Account", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+                Text(LanguageManager.tr("create_account"), fontSize = 28.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
                 Text("Register AluCalc to start estimations.", color = Color.Gray)
             }
         }
@@ -85,10 +86,21 @@ fun CreateAccountScreen(
         AluTextField(value = businessName, onValueChange = { businessName = it }, placeholder = "Enter business name")
         Spacer(modifier = Modifier.height(12.dp))
 
-        AluTextField(value = phone, onValueChange = { phone = it }, placeholder = "Enter 10-digit number")
+        AluTextField(
+            value = phone,
+            onValueChange = { phone = it },
+            placeholder = "Enter 10-digit number",
+            isNumeric = true
+        )
         Spacer(modifier = Modifier.height(12.dp))
 
-        AluTextField(value = password, onValueChange = { password = it }, placeholder = "must be 4 digit only", isPassword = true)
+        AluTextField(
+            value = password,
+            onValueChange = { password = it },
+            placeholder = "must be 4 digit only",
+            isPassword = true,
+            isNumeric = true
+        )
 
         // Error Message & Bypass Link
         viewModel.errorMessage?.let { error ->
@@ -101,7 +113,10 @@ fun CreateAccountScreen(
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
                 textDecoration = TextDecoration.Underline,
-                modifier = Modifier.clickable { onRegisterSuccess() }
+                modifier = Modifier.clickable {
+                    viewModel.saveGuestSession()
+                    onRegisterSuccess()
+                }
             )
         }
 
@@ -114,7 +129,7 @@ fun CreateAccountScreen(
         ) {
             Text(text = "Already have an account? ", color = Color.Gray)
             Text(
-                text = "Login",
+                text = LanguageManager.tr("login"),
                 color = PrimaryFont,
                 fontWeight = FontWeight.Bold,
                 textDecoration = TextDecoration.Underline,
@@ -130,13 +145,16 @@ fun CreateAccountScreen(
             }
         } else {
             AluPrimaryButton(
-                text = "Register",
+                text = LanguageManager.tr("register"),
                 onClick = { viewModel.register(name, businessName, phone, password) }
             )
             Spacer(modifier = Modifier.height(8.dp))
             AluOutlinedButton(
                 text = "Bypass Login (Guest Demo)",
-                onClick = { onRegisterSuccess() }
+                onClick = {
+                    viewModel.saveGuestSession()
+                    onRegisterSuccess()
+                }
             )
         }
     }

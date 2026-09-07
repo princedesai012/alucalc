@@ -20,6 +20,7 @@ import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.PrimaryFont
+import com.softellix.alucalc.utils.LanguageManager
 import com.softellix.alucalc.viewmodels.AuthViewModel
 
 @Composable
@@ -66,9 +67,9 @@ fun ForgotPasswordScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text("PHONE NUMBER", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text(LanguageManager.tr("phone_number"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(8.dp))
-            AluTextField(value = phone, onValueChange = { phone = it }, placeholder = "Enter 10-digit number")
+            AluTextField(value = phone, onValueChange = { phone = it }, placeholder = "Enter 10-digit number", isNumeric = true)
 
             viewModel.errorMessage?.let { err ->
                 Spacer(modifier = Modifier.height(12.dp))
@@ -96,7 +97,7 @@ fun ForgotPasswordScreen(
 
             Text("OTP CODE", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(8.dp))
-            AluTextField(value = otp, onValueChange = { otp = it }, placeholder = "e.g. 123456")
+            AluTextField(value = otp, onValueChange = { otp = it }, placeholder = "e.g. 123456", isNumeric = true)
 
             viewModel.errorMessage?.let { err ->
                 Spacer(modifier = Modifier.height(12.dp))
@@ -124,13 +125,13 @@ fun ForgotPasswordScreen(
 
             Text("NEW PASSWORD", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(8.dp))
-            AluTextField(value = newPassword, onValueChange = { newPassword = it }, placeholder = "must be 4 digit only", isPassword = true)
+            AluTextField(value = newPassword, onValueChange = { newPassword = it }, placeholder = "must be 4 digit only", isPassword = true, isNumeric = true)
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text("CONFIRM PASSWORD", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(8.dp))
-            AluTextField(value = confirmPassword, onValueChange = { confirmPassword = it }, placeholder = "must be 4 digit only", isPassword = true)
+            AluTextField(value = confirmPassword, onValueChange = { confirmPassword = it }, placeholder = "must be 4 digit only", isPassword = true, isNumeric = true)
 
             viewModel.errorMessage?.let { err ->
                 Spacer(modifier = Modifier.height(12.dp))

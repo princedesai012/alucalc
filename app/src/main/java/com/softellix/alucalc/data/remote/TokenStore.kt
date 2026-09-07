@@ -2,6 +2,7 @@ package com.softellix.alucalc.data.remote
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
@@ -11,6 +12,7 @@ private val TOKEN_KEY = stringPreferencesKey("auth_token")
 private val NAME_KEY = stringPreferencesKey("user_name")
 private val PHONE_KEY = stringPreferencesKey("user_phone")
 private val BUSINESS_KEY = stringPreferencesKey("user_business")
+private val LOGIN_TIME_KEY = longPreferencesKey("login_timestamp")
 
 class TokenStore(private val context: Context) {
 
@@ -25,8 +27,27 @@ class TokenStore(private val context: Context) {
             prefs[NAME_KEY] = userName
             if (!userPhone.isNullOrBlank()) prefs[PHONE_KEY] = userPhone
             if (!userBusiness.isNullOrBlank()) prefs[BUSINESS_KEY] = userBusiness
+            prefs[LOGIN_TIME_KEY] = System.currentTimeMillis()
         }
         RetrofitClient.authToken = token
+    }
+
+    suspend fun isSessionValid(): Boolean {
+        val prefs = context.dataStore.data.first()
+        val token = prefs[TOKEN_KEY]
+        if (token.isNullOrBlank()) return false
+
+        val timestamp = prefs[LOGIN_TIME_KEY] ?: 0L
+        val sixtyDaysMs = 60L * 24 * 60 * 60 * 1000 // 60 days in milliseconds
+        val age = System.currentTimeMillis() - timestamp
+
+        if (timestamp > 0L && age > sixtyDaysMs) {
+            clear()
+            return false
+        }
+
+        RetrofitClient.authToken = token
+        return true
     }
 
     suspend fun getToken(): String? = context.dataStore.data.first()[TOKEN_KEY]

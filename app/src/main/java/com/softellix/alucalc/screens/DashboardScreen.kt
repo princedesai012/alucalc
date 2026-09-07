@@ -28,6 +28,8 @@ import com.softellix.alucalc.data.remote.TokenStore
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.BorderGray
 import com.softellix.alucalc.ui.theme.PrimaryDark
+import com.softellix.alucalc.ui.theme.PrimaryFont
+import com.softellix.alucalc.utils.LanguageManager
 import com.softellix.alucalc.viewmodels.ProjectViewModel
 
 @Composable
@@ -73,8 +75,8 @@ fun DashboardScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text("Welcome back,", color = Color.Gray, fontSize = 14.sp)
-                    Text(userName, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text(LanguageManager.tr("welcome_back") + ",", color = Color.Gray, fontSize = 14.sp)
+                    Text(userName, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
                 }
                 IconButton(
                     onClick = onProfileClick,
@@ -110,8 +112,8 @@ fun DashboardScreen(
                             .padding(8.dp)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text("New Estimation Project", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                    Text("Calculate dimensions, profiles, and tracks", color = Color.LightGray, fontSize = 12.sp)
+                    Text(LanguageManager.tr("new_project"), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text(LanguageManager.tr("calculate_sub"), color = Color.LightGray, fontSize = 12.sp)
                 }
             }
 
@@ -123,15 +125,15 @@ fun DashboardScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 SummaryCard(
-                    title = "Recent Projects",
-                    value = if (viewModel.isLoading) "Loading..." else "${viewModel.recentProjectsList.size} Projects",
+                    title = LanguageManager.tr("recent_projects"),
+                    value = if (viewModel.isLoading) "..." else "${viewModel.recentProjectsList.size} ${LanguageManager.tr("all_projects")}",
                     icon = Icons.Outlined.Folder,
                     onClick = onRecentProjectsClick,
                     modifier = Modifier.weight(1f)
                 )
                 SummaryCard(
-                    title = "Report History",
-                    value = if (viewModel.isLoading) "Loading..." else "${viewModel.recentProjectsList.size} Reports",
+                    title = LanguageManager.tr("report_history"),
+                    value = if (viewModel.isLoading) "..." else "${viewModel.recentProjectsList.size} ${LanguageManager.tr("reports")}",
                     icon = Icons.Outlined.Description,
                     onClick = onReportHistoryClick,
                     modifier = Modifier.weight(1f)
@@ -172,7 +174,7 @@ fun SummaryCard(
             }
             Column {
                 Text(title, color = Color.Gray, fontSize = 12.sp)
-                Text(value, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text(value, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = PrimaryFont)
             }
         }
     }

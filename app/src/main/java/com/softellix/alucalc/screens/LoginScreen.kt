@@ -18,6 +18,7 @@ import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.PrimaryFont
+import com.softellix.alucalc.utils.LanguageManager
 import com.softellix.alucalc.viewmodels.AuthViewModel
 
 @Composable
@@ -46,7 +47,7 @@ fun LoginScreen(
     ) {
         Spacer(modifier = Modifier.height(32.dp))
 
-        Text("Welcome Back", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+        Text(LanguageManager.tr("welcome_back"), fontSize = 28.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Text("Login to continue your window estimations.", color = Color.Gray)
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -65,15 +66,26 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text("PHONE NUMBER", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+        Text(LanguageManager.tr("phone_number"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(8.dp))
-        AluTextField(value = phone, onValueChange = { phone = it }, placeholder = "Enter 10-digit number")
+        AluTextField(
+            value = phone,
+            onValueChange = { phone = it },
+            placeholder = "Enter 10-digit number",
+            isNumeric = true
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("PASSWORD", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+        Text(LanguageManager.tr("password"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(8.dp))
-        AluTextField(value = password, onValueChange = { password = it }, placeholder = "must be 4 digit only", isPassword = true)
+        AluTextField(
+            value = password,
+            onValueChange = { password = it },
+            placeholder = "must be 4 digit only",
+            isPassword = true,
+            isNumeric = true
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
         Row(
@@ -101,7 +113,10 @@ fun LoginScreen(
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
                 textDecoration = TextDecoration.Underline,
-                modifier = Modifier.clickable { onLoginSuccess() }
+                modifier = Modifier.clickable {
+                    viewModel.saveGuestSession()
+                    onLoginSuccess()
+                }
             )
         }
 
@@ -113,13 +128,16 @@ fun LoginScreen(
             }
         } else {
             AluPrimaryButton(
-                text = "Login",
+                text = LanguageManager.tr("login"),
                 onClick = { viewModel.login(phone, password) }
             )
             Spacer(modifier = Modifier.height(8.dp))
             AluOutlinedButton(
                 text = "Bypass Login (Guest Demo)",
-                onClick = { onLoginSuccess() }
+                onClick = {
+                    viewModel.saveGuestSession()
+                    onLoginSuccess()
+                }
             )
         }
 
@@ -131,7 +149,7 @@ fun LoginScreen(
         ) {
             Text(text = "Don't have an account? ", color = Color.Gray)
             Text(
-                text = "Register",
+                text = LanguageManager.tr("register"),
                 color = PrimaryFont,
                 fontWeight = FontWeight.Bold,
                 textDecoration = TextDecoration.Underline,
