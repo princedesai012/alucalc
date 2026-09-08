@@ -13,6 +13,8 @@ import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.components.WizardHeader
 import com.softellix.alucalc.ui.theme.BackgroundGray
+import com.softellix.alucalc.ui.theme.PrimaryFont
+import com.softellix.alucalc.utils.LanguageManager
 import com.softellix.alucalc.viewmodels.ProjectViewModel
 
 @Composable
@@ -26,11 +28,11 @@ fun NewProjectScreen(
             .fillMaxSize()
             .background(BackgroundGray)
             .padding(24.dp)
-            .padding(top = 16.dp) // Extra padding for status bar area
+            .padding(top = 16.dp)
     ) {
         WizardHeader(
-            title = "New Project",
-            stepText = "STEP 1 OF 3",
+            title = LanguageManager.tr("new_project"),
+            stepText = LanguageManager.tr("step_1_sub"),
             percentageText = "33% Complete",
             progress = 0.33f,
             onBackClick = onBackClick
@@ -38,44 +40,43 @@ fun NewProjectScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Text("PROJECT DETAILS", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text(LanguageManager.tr("project_details"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text("Project Name", fontSize = 14.sp, color = Color.DarkGray)
+        Text(LanguageManager.tr("project_name"), fontSize = 14.sp, color = Color.DarkGray)
         Spacer(modifier = Modifier.height(4.dp))
         AluTextField(
             value = viewModel.projectName,
             onValueChange = { viewModel.projectName = it },
-            placeholder = "e.g. Marina heights apartment"
+            placeholder = LanguageManager.tr("enter_name")
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("Contact Information", fontSize = 14.sp, color = Color.DarkGray)
+        Text(LanguageManager.tr("contact_info"), fontSize = 14.sp, color = Color.DarkGray)
         Spacer(modifier = Modifier.height(4.dp))
         AluTextField(
             value = viewModel.contactInfo,
             onValueChange = { viewModel.contactInfo = it },
-            placeholder = "Owner / Site head phone number"
+            placeholder = LanguageManager.tr("enter_phone"),
+            isNumeric = true
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Text("PROJECT SITE ADDRESS", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text(LanguageManager.tr("street_address"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text("Street Address", fontSize = 14.sp, color = Color.DarkGray)
-        Spacer(modifier = Modifier.height(4.dp))
         AluTextField(
             value = viewModel.streetAddress,
             onValueChange = { viewModel.streetAddress = it },
-            placeholder = "Street line 1"
+            placeholder = LanguageManager.tr("street_address")
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
         AluPrimaryButton(
-            text = if (viewModel.isLoading) "Creating Project..." else "Next",
+            text = if (viewModel.isLoading) "..." else LanguageManager.tr("next"),
             onClick = {
                 viewModel.createProjectOnBackend(onSuccess = onNextClick)
             }

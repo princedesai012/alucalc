@@ -13,7 +13,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.softellix.alucalc.components.AluOutlinedButton
 import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.ui.theme.BackgroundGray
@@ -48,13 +47,13 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(LanguageManager.tr("welcome_back"), fontSize = 28.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
-        Text("Login to continue your window estimations.", color = Color.Gray)
+        Text(LanguageManager.tr("login_sub"), color = Color.Gray)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // Quick Fill Demo Credentials Link
         Text(
-            text = "⚡ Tap to Fill Test Credentials",
+            text = LanguageManager.tr("demo_fill"),
             color = Color(0xFF1565C0),
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
@@ -71,7 +70,7 @@ fun LoginScreen(
         AluTextField(
             value = phone,
             onValueChange = { phone = it },
-            placeholder = "Enter 10-digit number",
+            placeholder = LanguageManager.tr("enter_phone"),
             isNumeric = true
         )
 
@@ -82,7 +81,7 @@ fun LoginScreen(
         AluTextField(
             value = password,
             onValueChange = { password = it },
-            placeholder = "must be 4 digit only",
+            placeholder = LanguageManager.tr("pin_placeholder"),
             isPassword = true,
             isNumeric = true
         )
@@ -93,7 +92,7 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.End
         ) {
             Text(
-                text = "Forgot Password?",
+                text = LanguageManager.tr("forgot_password"),
                 color = PrimaryFont,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
@@ -102,22 +101,10 @@ fun LoginScreen(
             )
         }
 
-        // Error Message & Bypass Link
+        // Error Message
         viewModel.errorMessage?.let { error ->
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = error, color = Color.Red, fontSize = 13.sp)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "👉 Tap here to bypass & open Dashboard directly",
-                color = Color(0xFF1E88E5),
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Bold,
-                textDecoration = TextDecoration.Underline,
-                modifier = Modifier.clickable {
-                    viewModel.saveGuestSession()
-                    onLoginSuccess()
-                }
-            )
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -131,14 +118,6 @@ fun LoginScreen(
                 text = LanguageManager.tr("login"),
                 onClick = { viewModel.login(phone, password) }
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            AluOutlinedButton(
-                text = "Bypass Login (Guest Demo)",
-                onClick = {
-                    viewModel.saveGuestSession()
-                    onLoginSuccess()
-                }
-            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -147,7 +126,7 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = "Don't have an account? ", color = Color.Gray)
+            Text(text = LanguageManager.tr("no_account") + " ", color = Color.Gray)
             Text(
                 text = LanguageManager.tr("register"),
                 color = PrimaryFont,

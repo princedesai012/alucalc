@@ -13,7 +13,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.softellix.alucalc.components.AluOutlinedButton
 import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.ui.theme.BackgroundGray
@@ -55,7 +54,7 @@ fun CreateAccountScreen(
         ) {
             Column {
                 Text(LanguageManager.tr("create_account"), fontSize = 28.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
-                Text("Register AluCalc to start estimations.", color = Color.Gray)
+                Text(LanguageManager.tr("reg_sub"), color = Color.Gray)
             }
         }
 
@@ -63,7 +62,7 @@ fun CreateAccountScreen(
 
         // Quick Fill Demo Credentials Link
         Text(
-            text = "⚡ Tap to Fill Demo Data",
+            text = LanguageManager.tr("demo_fill"),
             color = Color(0xFF1565C0),
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
@@ -77,19 +76,19 @@ fun CreateAccountScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("PERSONAL INFO", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+        Text(LanguageManager.tr("personal_info"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(8.dp))
 
-        AluTextField(value = name, onValueChange = { name = it }, placeholder = "Enter full name")
+        AluTextField(value = name, onValueChange = { name = it }, placeholder = LanguageManager.tr("enter_name"))
         Spacer(modifier = Modifier.height(12.dp))
 
-        AluTextField(value = businessName, onValueChange = { businessName = it }, placeholder = "Enter business name")
+        AluTextField(value = businessName, onValueChange = { businessName = it }, placeholder = LanguageManager.tr("enter_biz"))
         Spacer(modifier = Modifier.height(12.dp))
 
         AluTextField(
             value = phone,
             onValueChange = { phone = it },
-            placeholder = "Enter 10-digit number",
+            placeholder = LanguageManager.tr("enter_phone"),
             isNumeric = true
         )
         Spacer(modifier = Modifier.height(12.dp))
@@ -97,27 +96,15 @@ fun CreateAccountScreen(
         AluTextField(
             value = password,
             onValueChange = { password = it },
-            placeholder = "must be 4 digit only",
+            placeholder = LanguageManager.tr("pin_placeholder"),
             isPassword = true,
             isNumeric = true
         )
 
-        // Error Message & Bypass Link
+        // Error Message
         viewModel.errorMessage?.let { error ->
             Spacer(modifier = Modifier.height(12.dp))
             Text(text = error, color = Color.Red, fontSize = 13.sp)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "👉 Tap here to bypass & open Dashboard directly",
-                color = Color(0xFF1E88E5),
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Bold,
-                textDecoration = TextDecoration.Underline,
-                modifier = Modifier.clickable {
-                    viewModel.saveGuestSession()
-                    onRegisterSuccess()
-                }
-            )
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -127,7 +114,7 @@ fun CreateAccountScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = "Already have an account? ", color = Color.Gray)
+            Text(text = LanguageManager.tr("have_account") + " ", color = Color.Gray)
             Text(
                 text = LanguageManager.tr("login"),
                 color = PrimaryFont,
@@ -147,14 +134,6 @@ fun CreateAccountScreen(
             AluPrimaryButton(
                 text = LanguageManager.tr("register"),
                 onClick = { viewModel.register(name, businessName, phone, password) }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            AluOutlinedButton(
-                text = "Bypass Login (Guest Demo)",
-                onClick = {
-                    viewModel.saveGuestSession()
-                    onRegisterSuccess()
-                }
             )
         }
     }

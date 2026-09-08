@@ -55,21 +55,21 @@ fun ForgotPasswordScreen(
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = PrimaryFont)
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Forgot Password", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text(LanguageManager.tr("forgot_password"), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
         if (!viewModel.otpSent) {
             // STEP 1: Enter Phone Number
-            Text("Reset Your Password", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
-            Text("Enter your registered phone number to receive OTP.", color = Color.Gray, fontSize = 13.sp)
+            Text(LanguageManager.tr("reset_password"), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text(LanguageManager.tr("reset_sub"), color = Color.Gray, fontSize = 13.sp)
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(LanguageManager.tr("phone_number"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(8.dp))
-            AluTextField(value = phone, onValueChange = { phone = it }, placeholder = "Enter 10-digit number", isNumeric = true)
+            AluTextField(value = phone, onValueChange = { phone = it }, placeholder = LanguageManager.tr("enter_phone"), isNumeric = true)
 
             viewModel.errorMessage?.let { err ->
                 Spacer(modifier = Modifier.height(12.dp))
@@ -84,20 +84,20 @@ fun ForgotPasswordScreen(
                 }
             } else {
                 AluPrimaryButton(
-                    text = "Send OTP",
+                    text = LanguageManager.tr("send_otp"),
                     onClick = { viewModel.forgotPassword(phone) }
                 )
             }
         } else if (!viewModel.otpVerified) {
             // STEP 2: Verify OTP
-            Text("Enter OTP", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
-            Text("Enter the 6-digit OTP sent to $phone", color = Color.Gray, fontSize = 13.sp)
+            Text(LanguageManager.tr("enter_otp"), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text("${LanguageManager.tr("enter_otp")} $phone", color = Color.Gray, fontSize = 13.sp)
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text("OTP CODE", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text("OTP", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(8.dp))
-            AluTextField(value = otp, onValueChange = { otp = it }, placeholder = "e.g. 123456", isNumeric = true)
+            AluTextField(value = otp, onValueChange = { otp = it }, placeholder = "123456", isNumeric = true)
 
             viewModel.errorMessage?.let { err ->
                 Spacer(modifier = Modifier.height(12.dp))
@@ -112,26 +112,26 @@ fun ForgotPasswordScreen(
                 }
             } else {
                 AluPrimaryButton(
-                    text = "Verify OTP",
+                    text = LanguageManager.tr("verify_otp"),
                     onClick = { viewModel.verifyOtp(phone, otp) }
                 )
             }
         } else {
             // STEP 3: Reset Password
-            Text("New Password", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
-            Text("Enter your new 4-digit PIN / password.", color = Color.Gray, fontSize = 13.sp)
+            Text(LanguageManager.tr("new_password"), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text(LanguageManager.tr("pin_placeholder"), color = Color.Gray, fontSize = 13.sp)
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text("NEW PASSWORD", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text(LanguageManager.tr("new_password"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(8.dp))
-            AluTextField(value = newPassword, onValueChange = { newPassword = it }, placeholder = "must be 4 digit only", isPassword = true, isNumeric = true)
+            AluTextField(value = newPassword, onValueChange = { newPassword = it }, placeholder = LanguageManager.tr("pin_placeholder"), isPassword = true, isNumeric = true)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text("CONFIRM PASSWORD", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text(LanguageManager.tr("confirm_password"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(8.dp))
-            AluTextField(value = confirmPassword, onValueChange = { confirmPassword = it }, placeholder = "must be 4 digit only", isPassword = true, isNumeric = true)
+            AluTextField(value = confirmPassword, onValueChange = { confirmPassword = it }, placeholder = LanguageManager.tr("pin_placeholder"), isPassword = true, isNumeric = true)
 
             viewModel.errorMessage?.let { err ->
                 Spacer(modifier = Modifier.height(12.dp))
@@ -146,7 +146,7 @@ fun ForgotPasswordScreen(
                 }
             } else {
                 AluPrimaryButton(
-                    text = "Reset Password",
+                    text = LanguageManager.tr("reset_password"),
                     onClick = { viewModel.resetPassword(newPassword, confirmPassword) }
                 )
             }
@@ -158,9 +158,9 @@ fun ForgotPasswordScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text("Remembered your password? ", color = Color.Gray, fontSize = 13.sp)
+            Text(LanguageManager.tr("remember_password") + " ", color = Color.Gray, fontSize = 13.sp)
             Text(
-                "Back to Login",
+                LanguageManager.tr("back_to_login"),
                 color = PrimaryFont,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,

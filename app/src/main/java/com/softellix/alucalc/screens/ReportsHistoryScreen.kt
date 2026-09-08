@@ -23,6 +23,7 @@ import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.BorderGray
 import com.softellix.alucalc.ui.theme.PrimaryDark
 import com.softellix.alucalc.ui.theme.PrimaryFont
+import com.softellix.alucalc.utils.LanguageManager
 import com.softellix.alucalc.viewmodels.ProjectViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -81,12 +82,12 @@ fun ReportsHistoryScreen(
                 .padding(paddingValues)
                 .padding(24.dp)
         ) {
-            Text("Report History", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
-            Text("Access and share all previously generated calculation reports", color = Color.Gray, fontSize = 13.sp)
+            Text(LanguageManager.tr("reports_title"), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text(LanguageManager.tr("manage_reports_sub"), color = Color.Gray, fontSize = 13.sp)
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text("GENERATED REPORTS (${reports.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text("${LanguageManager.tr("generated_reports_count")} (${reports.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(12.dp))
 
             if (viewModel.isLoading) {
@@ -101,7 +102,7 @@ fun ReportsHistoryScreen(
                     modifier = Modifier.fillMaxWidth().weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("No estimation reports generated yet.", color = Color.Gray)
+                    Text(LanguageManager.tr("no_reports_yet"), color = Color.Gray)
                 }
             } else {
                 LazyColumn(
@@ -142,15 +143,15 @@ fun ReportsHistoryScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Column {
-                                        Text("Aluminum", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
+                                        Text(LanguageManager.tr("aluminum"), fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
                                         Text("${report.aluminumMeters} m", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = PrimaryFont)
                                     }
                                     Column {
-                                        Text("Glass Area", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
+                                        Text(LanguageManager.tr("glass_area"), fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
                                         Text("${report.glassSqm} m²", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = PrimaryFont)
                                     }
                                     Column {
-                                        Text("Total Units", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
+                                        Text(LanguageManager.tr("total_windows"), fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
                                         Text("${report.totalWindows} Windows", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = PrimaryFont)
                                     }
                                 }
@@ -162,7 +163,7 @@ fun ReportsHistoryScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text("Created on ${report.date}", fontSize = 11.sp, color = Color.Gray)
+                                    Text("${LanguageManager.tr("created_on")} ${report.date}", fontSize = 11.sp, color = Color.Gray)
                                     IconButton(
                                         onClick = {
                                             val sendIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {

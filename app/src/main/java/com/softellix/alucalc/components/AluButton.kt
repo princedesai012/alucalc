@@ -24,7 +24,7 @@ fun AluPrimaryButton(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp), // Standard height matching your Figma design
+            .height(56.dp),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = PrimaryDark,
@@ -33,6 +33,7 @@ fun AluPrimaryButton(
     ) {
         Text(
             text = text,
+            color = Color.White, // Explicit Pure White font for maximum readability on dark background
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold
         )

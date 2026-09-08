@@ -1,10 +1,8 @@
 package com.softellix.alucalc.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -21,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softellix.alucalc.components.*
 import com.softellix.alucalc.ui.theme.BackgroundGray
-import com.softellix.alucalc.ui.theme.BorderGray
 import com.softellix.alucalc.ui.theme.PrimaryFont
+import com.softellix.alucalc.utils.LanguageManager
 import com.softellix.alucalc.viewmodels.ProjectViewModel
 
 @Composable
@@ -43,7 +41,7 @@ fun AddWindowsScreen(
     var quantity by remember { mutableStateOf("") }
     var selectedTrack by remember { mutableStateOf("2T") }
 
-    val headerTitle = if (viewModel.selectedProfile == "65mm") "Slim 65mm" else "Regular ${viewModel.selectedProfile}"
+    val headerTitle = LanguageManager.tr("add_windows")
 
     val onAddWindowClick = {
         if (heightInch.isNotBlank() && widthInch.isNotBlank()) {
@@ -92,14 +90,14 @@ fun AddWindowsScreen(
             Box(modifier = Modifier.weight(1f)) {
                 WizardHeader(
                     title = headerTitle,
-                    stepText = "STEP 3 OF 3",
-                    percentageText = "100% Complete",
+                    stepText = LanguageManager.tr("step_3_sub"),
+                    percentageText = LanguageManager.tr("pct_100"),
                     progress = 1.0f,
                     onBackClick = onBackClick
                 )
             }
             IconButton(onClick = onHomeClick) {
-                Icon(Icons.Default.Home, contentDescription = "Back to Home", tint = PrimaryFont)
+                Icon(Icons.Default.Home, contentDescription = LanguageManager.tr("home"), tint = PrimaryFont)
             }
         }
 
@@ -111,7 +109,7 @@ fun AddWindowsScreen(
             colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
         ) {
             Text(
-                "💡 Window Units: Inches & Doro (1 Inch = 8 Doro)",
+                LanguageManager.tr("units_info"),
                 fontSize = 11.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color(0xFF0D47A1),
@@ -121,69 +119,55 @@ fun AddWindowsScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Image Placeholder
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(110.dp)
-                .background(Color.White, RoundedCornerShape(8.dp))
-                .border(1.dp, BorderGray, RoundedCornerShape(8.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Scale: Auto Estimate Preview", color = Color.Gray, fontSize = 12.sp)
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
         // Height Inputs Row
-        Text("HEIGHT", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.DarkGray)
+        Text(LanguageManager.tr("height"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(6.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Column(modifier = Modifier.weight(1.5f)) {
-                Text("Inches", fontSize = 11.sp, color = Color.Gray)
+                Text(LanguageManager.tr("inches"), fontSize = 11.sp, color = Color.Gray)
                 Spacer(modifier = Modifier.height(2.dp))
-                AluTextField(value = heightInch, onValueChange = { heightInch = it }, placeholder = "e.g. 48")
+                AluTextField(value = heightInch, onValueChange = { heightInch = it }, placeholder = "e.g. 48", isNumeric = true)
             }
             Column(modifier = Modifier.weight(1f)) {
-                Text("Doro (0-7)", fontSize = 11.sp, color = Color.Gray)
+                Text(LanguageManager.tr("doro"), fontSize = 11.sp, color = Color.Gray)
                 Spacer(modifier = Modifier.height(2.dp))
-                AluTextField(value = heightDoro, onValueChange = { heightDoro = it }, placeholder = "0")
+                AluTextField(value = heightDoro, onValueChange = { heightDoro = it }, placeholder = "0", isNumeric = true)
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // Width Inputs Row
-        Text("WIDTH", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.DarkGray)
+        Text(LanguageManager.tr("width"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(6.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Column(modifier = Modifier.weight(1.5f)) {
-                Text("Inches", fontSize = 11.sp, color = Color.Gray)
+                Text(LanguageManager.tr("inches"), fontSize = 11.sp, color = Color.Gray)
                 Spacer(modifier = Modifier.height(2.dp))
-                AluTextField(value = widthInch, onValueChange = { widthInch = it }, placeholder = "e.g. 36")
+                AluTextField(value = widthInch, onValueChange = { widthInch = it }, placeholder = "e.g. 36", isNumeric = true)
             }
             Column(modifier = Modifier.weight(1f)) {
-                Text("Doro (0-7)", fontSize = 11.sp, color = Color.Gray)
+                Text(LanguageManager.tr("doro"), fontSize = 11.sp, color = Color.Gray)
                 Spacer(modifier = Modifier.height(2.dp))
-                AluTextField(value = widthDoro, onValueChange = { widthDoro = it }, placeholder = "4")
+                AluTextField(value = widthDoro, onValueChange = { widthDoro = it }, placeholder = "4", isNumeric = true)
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("Quantity", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.DarkGray)
+        Text(LanguageManager.tr("quantity"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(4.dp))
-        AluTextField(value = quantity, onValueChange = { quantity = it }, placeholder = "e.g. 4")
+        AluTextField(value = quantity, onValueChange = { quantity = it }, placeholder = "1", isNumeric = true)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("Track Type", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.DarkGray)
+        Text(LanguageManager.tr("track_type"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(4.dp))
         TrackTypeSelector(
             selectedTrack = selectedTrack,
@@ -192,12 +176,12 @@ fun AddWindowsScreen(
 
         Spacer(modifier = Modifier.height(28.dp))
 
-        Text("ADDED WINDOWS (${viewModel.addedWindows.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text("${LanguageManager.tr("added_windows")} (${viewModel.addedWindows.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(12.dp))
 
         // Dynamic window list from ProjectViewModel
         if (viewModel.addedWindows.isEmpty()) {
-            Text("No windows added yet. Enter Inches & Doro above and tap 'Add Another Window'.", fontSize = 12.sp, color = Color.Gray)
+            Text(LanguageManager.tr("no_windows_added"), fontSize = 12.sp, color = Color.Gray)
         } else {
             viewModel.addedWindows.forEachIndexed { index, window ->
                 AddedWindowCard(
@@ -214,12 +198,12 @@ fun AddWindowsScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        AluOutlinedButton(text = "Add Another Window", onClick = onAddWindowClick)
+        AluOutlinedButton(text = LanguageManager.tr("add_another_window"), onClick = onAddWindowClick)
 
         Spacer(modifier = Modifier.height(12.dp))
 
         AluPrimaryButton(
-            text = "Save & Calculate",
+            text = LanguageManager.tr("save_calculate"),
             onClick = {
                 if (heightInch.isNotBlank() && widthInch.isNotBlank()) {
                     onAddWindowClick()
@@ -231,7 +215,7 @@ fun AddWindowsScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         AluOutlinedButton(
-            text = "Back to Home",
+            text = LanguageManager.tr("back_to_home"),
             onClick = onHomeClick
         )
 

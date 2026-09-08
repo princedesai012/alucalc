@@ -24,6 +24,7 @@ import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.BorderGray
 import com.softellix.alucalc.ui.theme.PrimaryDark
 import com.softellix.alucalc.ui.theme.PrimaryFont
+import com.softellix.alucalc.utils.LanguageManager
 import com.softellix.alucalc.viewmodels.ProjectViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -39,12 +40,12 @@ data class ProjectItemUI(
 )
 
 fun formatProfileLabel(profileType: String?): String {
-    if (profileType.isNullOrBlank()) return "Regular 40mm"
+    if (profileType.isNullOrBlank()) return LanguageManager.tr("reg_40mm")
     val t = profileType.uppercase()
     return when {
-        t.contains("65") || t.contains("SLIM") -> "Slim 65mm"
-        t.contains("60") -> "Regular 60mm"
-        else -> "Regular 40mm"
+        t.contains("65") || t.contains("SLIM") -> LanguageManager.tr("slim_65mm")
+        t.contains("60") -> LanguageManager.tr("reg_60mm")
+        else -> LanguageManager.tr("reg_40mm")
     }
 }
 
@@ -101,8 +102,8 @@ fun ProjectsListScreen(
                 .padding(paddingValues)
                 .padding(24.dp)
         ) {
-            Text("Projects", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
-            Text("Manage and view all your estimation projects", color = Color.Gray, fontSize = 13.sp)
+            Text(LanguageManager.tr("projects_title"), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text(LanguageManager.tr("manage_projects_sub"), color = Color.Gray, fontSize = 13.sp)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -110,12 +111,12 @@ fun ProjectsListScreen(
             AluTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
-                placeholder = "Search projects by name or address..."
+                placeholder = LanguageManager.tr("search_placeholder")
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text("ALL PROJECTS (${filteredProjects.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text("${LanguageManager.tr("all_projects_count")} (${filteredProjects.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(12.dp))
 
             if (viewModel.isLoading) {
@@ -131,7 +132,7 @@ fun ProjectsListScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = if (searchQuery.isNotBlank()) "No projects matching search" else "No projects created yet. Tap '+' below to create your first project!",
+                        text = if (searchQuery.isNotBlank()) LanguageManager.tr("no_projects_match") else LanguageManager.tr("no_projects_yet"),
                         color = Color.Gray,
                         fontSize = 14.sp
                     )
@@ -175,7 +176,7 @@ fun ProjectsListScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        "Profile: ${project.profile}",
+                                        "${project.profile}",
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight.SemiBold,
                                         color = PrimaryFont,
