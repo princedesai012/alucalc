@@ -58,23 +58,7 @@ fun CreateAccountScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Quick Fill Demo Credentials Link
-        Text(
-            text = LanguageManager.tr("demo_fill"),
-            color = Color(0xFF1565C0),
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.clickable {
-                name = "John Doe"
-                businessName = "Doe Windows"
-                phone = "9999999999"
-                password = "Password@123"
-            }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Text(LanguageManager.tr("personal_info"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(8.dp))

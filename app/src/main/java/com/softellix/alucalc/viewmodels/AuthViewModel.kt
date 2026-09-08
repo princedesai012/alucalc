@@ -36,7 +36,7 @@ class AuthViewModel(
     var passwordResetSuccess by mutableStateOf(false)
         private set
 
-    fun login(phone: String, pass: String) {
+    fun login(phone: String, pass: String, fallbackName: String = "") {
         if (phone.isBlank() || pass.isBlank()) {
             errorMessage = "Please enter both phone and password."
             return
@@ -51,9 +51,9 @@ class AuthViewModel(
                     val authBody = response.body()!!
                     val token = authBody.accessToken ?: ""
                     val userObj = authBody.user
-                    val userName = userObj?.name ?: "User"
+                    val userName = userObj?.name?.ifBlank { null } ?: fallbackName.ifBlank { "User" }
                     val uPhone = userObj?.phone ?: phone
-                    val uBusiness = userObj?.businessName ?: "Doe Windows"
+                    val uBusiness = userObj?.businessName ?: "AluCalc Client"
 
                     tokenStore.saveSession(
                         token = token,
@@ -94,8 +94,8 @@ class AuthViewModel(
                 )
                 val response = apiService.register(request)
                 if (response.isSuccessful) {
-                    // Registration succeeded -> trigger login to fetch user object and save session
-                    login(phone, pass)
+                    // Registration succeeded -> login with registered name
+                    login(phone, pass, fallbackName = name)
                 } else {
                     val errDetail = response.errorBody()?.string() ?: response.message()
                     errorMessage = "Registration failed (${response.code()}): ${errDetail.ifBlank { "Invalid registration data" }}"

@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -58,7 +59,8 @@ fun ReportScreen(
 ) {
     val context = LocalContext.current
     val tokenStore = remember { TokenStore(context) }
-    var estimatorName by remember { mutableStateOf("User") }
+    var estimatorName by remember { mutableStateOf("Ram") }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.fetchReportOnBackend()
@@ -71,7 +73,7 @@ fun ReportScreen(
 
     val reportData = viewModel.reportResponse
     val projectName = reportData?.projectName ?: viewModel.projectName.ifBlank { "Marina Heights - A" }
-    val estimator = viewModel.currentUser?.name ?: estimatorName
+    val estimator = viewModel.currentUser?.name?.ifBlank { null } ?: estimatorName.ifBlank { "Ram" }
     val createdDateFormatted = remember(reportData) {
         reportData?.createdDate?.take(10) ?: SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date())
     }
@@ -91,6 +93,38 @@ fun ReportScreen(
         extractReportWindowModels(reportData, addedWindows)
     }
 
+    // Delete Confirmation Dialog
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text(LanguageManager.tr("delete_report_title"), fontWeight = FontWeight.Bold, color = PrimaryFont) },
+            text = { Text(LanguageManager.tr("delete_report_confirm"), color = Color.DarkGray) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = false
+                        val pId = viewModel.currentProjectId ?: reportData?.projectId
+                        if (pId != null) {
+                            viewModel.deleteProjectOnBackend(pId) {
+                                Toast.makeText(context, LanguageManager.tr("deleted_success"), Toast.LENGTH_SHORT).show()
+                                onBackClick()
+                            }
+                        } else {
+                            onBackClick()
+                        }
+                    }
+                ) {
+                    Text(LanguageManager.tr("delete"), color = Color.Red, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(LanguageManager.tr("cancel"), color = Color.Gray)
+                }
+            }
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -99,13 +133,23 @@ fun ReportScreen(
             .padding(top = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        // Top Header
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onBackClick) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = PrimaryFont)
+        // Top Header Row with Back and Delete Trash Icon Button
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onBackClick) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = PrimaryFont)
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(LanguageManager.tr("report"), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             }
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(LanguageManager.tr("report"), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+
+            IconButton(onClick = { showDeleteDialog = true }) {
+                Icon(Icons.Outlined.Delete, contentDescription = "Delete Report", tint = Color.Red)
+            }
         }
 
         Spacer(modifier = Modifier.height(20.dp))

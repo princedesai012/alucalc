@@ -43,15 +43,19 @@ fun DashboardScreen(
 ) {
     val context = LocalContext.current
     val tokenStore = remember { TokenStore(context) }
-    var userName by remember { mutableStateOf("User") }
+    var storedName by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         viewModel.fetchRecentProjects()
+        viewModel.fetchCurrentUser()
         val name = tokenStore.getUserName()
         if (!name.isNullOrBlank()) {
-            userName = name
+            storedName = name
         }
     }
+
+    val user = viewModel.currentUser
+    val displayName = user?.name?.ifBlank { null } ?: storedName.takeIf { it != "User" && it.isNotBlank() } ?: "User"
 
     Scaffold(
         bottomBar = {
@@ -76,7 +80,7 @@ fun DashboardScreen(
             ) {
                 Column {
                     Text(LanguageManager.tr("welcome_back") + ",", color = Color.Gray, fontSize = 14.sp)
-                    Text(userName, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+                    Text(displayName, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
                 }
                 IconButton(
                     onClick = onProfileClick,

@@ -43,25 +43,21 @@ fun SettingsScreen(
     val context = LocalContext.current
     val tokenStore = remember { TokenStore(context) }
 
-    var userName by remember { mutableStateOf("User") }
-    var userPhone by remember { mutableStateOf("") }
-    var userBusiness by remember { mutableStateOf("Fabricator") }
+    var storedName by remember { mutableStateOf("") }
+    var storedPhone by remember { mutableStateOf("") }
     var selectedLanguage by remember { mutableStateOf(LanguageManager.currentLanguage) }
 
     LaunchedEffect(Unit) {
         viewModel.fetchCurrentUser()
         val name = tokenStore.getUserName()
-        if (!name.isNullOrBlank()) userName = name
+        if (!name.isNullOrBlank()) storedName = name
         val phone = tokenStore.getUserPhone()
-        if (!phone.isNullOrBlank()) userPhone = phone
-        val biz = tokenStore.getUserBusiness()
-        if (!biz.isNullOrBlank()) userBusiness = biz
+        if (!phone.isNullOrBlank()) storedPhone = phone
     }
 
     val user = viewModel.currentUser
-    val displayName = user?.name ?: userName
-    val displayPhone = user?.phone ?: userPhone
-    val displayBusiness = user?.businessName ?: userBusiness
+    val displayName = user?.name?.ifBlank { null } ?: storedName.takeIf { it != "User" && it.isNotBlank() } ?: "User"
+    val displayPhone = user?.phone?.ifBlank { null } ?: storedPhone
 
     Scaffold(
         bottomBar = {
@@ -83,7 +79,7 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Profile Card
+            // Profile Card (Contains ONLY User Name and Mobile Number)
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -106,9 +102,9 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.width(16.dp))
                     Column {
                         Text(displayName, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = PrimaryFont)
-                        Text("$displayBusiness • Fabricator", color = Color.Gray, fontSize = 12.sp)
+                        Spacer(modifier = Modifier.height(2.dp))
                         if (displayPhone.isNotBlank()) {
-                            Text(displayPhone, color = Color.Gray, fontSize = 12.sp)
+                            Text(displayPhone, color = Color.Gray, fontSize = 13.sp)
                         }
                     }
                 }

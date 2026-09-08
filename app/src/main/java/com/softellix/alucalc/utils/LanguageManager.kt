@@ -120,6 +120,12 @@ object LanguageManager {
         "interlock_short" to "I",
         "disclaimer_text" to "Calculations generated using Aluminum Standard Multipliers. Track cuts and glass sizing reflect total pieces.",
 
+        "delete_report_title" to "Delete Report?",
+        "delete_report_confirm" to "Are you sure you want to delete this estimation report?",
+        "delete" to "Delete",
+        "cancel" to "Cancel",
+        "deleted_success" to "Report deleted successfully",
+
         "projects_title" to "Projects",
         "manage_projects_sub" to "Manage and view all your estimation projects",
         "search_placeholder" to "Search projects by name or address...",
@@ -244,6 +250,12 @@ object LanguageManager {
         "interlock_short" to "I",
         "disclaimer_text" to "एल्यूमीनियम मानक गुणकों का उपयोग करके गणना की गई है।",
 
+        "delete_report_title" to "रिपोर्ट डिलीट करें?",
+        "delete_report_confirm" to "क्या आप वाकई इस रिपोर्ट को डिलीट करना चाहते हैं?",
+        "delete" to "डिलीट करें",
+        "cancel" to "रद्द करें",
+        "deleted_success" to "रिपोर्ट सफलतापूर्वक डिलीट की गई",
+
         "projects_title" to "प्रोजेक्ट्स",
         "manage_projects_sub" to "अपने सभी अनुमानित प्रोजेक्ट देखें और प्रबंधित करें",
         "search_placeholder" to "नाम या पते से खोजें...",
@@ -367,6 +379,12 @@ object LanguageManager {
         "handle_short" to "હે",
         "interlock_short" to "ઈ",
         "disclaimer_text" to "એલ્યુમિનિયમ ગણતરી માપન સિદ્ધાંતો મુજબ કરેલ છે.",
+
+        "delete_report_title" to "રિપોર્ટ ડિલીટ કરો?",
+        "delete_report_confirm" to "શું તમે ખરેખર આ અંદાજ રિપોર્ટ ડિલીટ કરવા માંગો છો?",
+        "delete" to "ડિલીટ કરો",
+        "cancel" to "કેન્સલ",
+        "deleted_success" to "રિપોર્ટ સફળતાપૂર્વક ડિલીટ થયો",
 
         "projects_title" to "પ્રોજેક્ટ્સ",
         "manage_projects_sub" to "તમારા તમામ અંદાજિત પ્રોજેક્ટ્સ જુઓ અને સંચાલિત કરો",

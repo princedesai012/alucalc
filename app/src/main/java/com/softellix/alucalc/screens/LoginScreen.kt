@@ -49,20 +49,6 @@ fun LoginScreen(
         Text(LanguageManager.tr("welcome_back"), fontSize = 28.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Text(LanguageManager.tr("login_sub"), color = Color.Gray)
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Quick Fill Demo Credentials Link
-        Text(
-            text = LanguageManager.tr("demo_fill"),
-            color = Color(0xFF1565C0),
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.clickable {
-                phone = "9999999999"
-                password = "Password@123"
-            }
-        )
-
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(LanguageManager.tr("phone_number"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)

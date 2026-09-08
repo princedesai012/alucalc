@@ -139,6 +139,20 @@ class ProjectViewModel(
         onSuccess()
     }
 
+    fun deleteProjectOnBackend(projectId: String, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            isLoading = true
+            repository.deleteProject(projectId).onSuccess {
+                resetProject()
+                onSuccess()
+            }.onFailure {
+                resetProject()
+                onSuccess()
+            }
+            isLoading = false
+        }
+    }
+
     fun loadProjectReport(projectId: String) {
         currentProjectId = projectId
         viewModelScope.launch {
