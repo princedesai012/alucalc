@@ -39,7 +39,8 @@ data class ReportWindowModel(
     val title: String,
     val trackQty: String,
     val interlockHandleVal: Double,
-    val interlockHandlePcs: Int,
+    val handlePcs: Int,
+    val interlockPcs: Int,
     val topSideVal: Double,
     val topSidePcs: Int,
     val topBottomVal: Double,
@@ -80,7 +81,7 @@ fun ReportScreen(
     } else if (viewModel.addedWindows.isNotEmpty()) {
         "${viewModel.addedWindows.sumOf { it.qty.toIntOrNull() ?: 1 }} Units"
     } else {
-        "2 Units"
+        "3 Units"
     }
     val profileName = reportData?.selectedProfile ?: if (viewModel.selectedProfile == "65mm") "Slim 65mm" else "Reg ${viewModel.selectedProfile}"
 
@@ -140,14 +141,14 @@ fun ReportScreen(
         Text(LanguageManager.tr("calc_breakdown"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(12.dp))
 
-        // 1. Interlock & Handle Section
-        SectionCard(title = "1. Interlock & Handle") {
+        // 1. Interlock & Handle Section (Bifurcated Handle vs Interlock Pieces)
+        SectionCard(title = LanguageManager.tr("sec_interlock_handle")) {
             windowModels.forEach { win ->
                 SinglePieceRow(
                     title = win.title,
                     badgeText = win.trackQty,
                     valueText = "${win.interlockHandleVal}\"",
-                    pcsText = "(${win.interlockHandlePcs} pcs)",
+                    pcsText = "(${LanguageManager.tr("handle_short")}: ${win.handlePcs}, ${LanguageManager.tr("interlock_short")}: ${win.interlockPcs} ${LanguageManager.tr("pcs_unit")})",
                     accentColor = Color(0xFF2E7D32)
                 )
             }
@@ -156,13 +157,13 @@ fun ReportScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // 2. Top & Side Section
-        SectionCard(title = "2. Top & Side") {
+        SectionCard(title = LanguageManager.tr("sec_top_side")) {
             windowModels.forEach { win ->
                 SinglePieceRow(
                     title = win.title,
                     badgeText = win.trackQty,
                     valueText = "${win.topSideVal}\"",
-                    pcsText = "(${win.topSidePcs} pcs)",
+                    pcsText = "(${win.topSidePcs} ${LanguageManager.tr("pcs_unit")})",
                     accentColor = Color(0xFF2E7D32)
                 )
             }
@@ -171,13 +172,13 @@ fun ReportScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // 3. Top & Bottom Section
-        SectionCard(title = "3. Top & Bottom") {
+        SectionCard(title = LanguageManager.tr("sec_top_bottom")) {
             windowModels.forEach { win ->
                 SinglePieceRow(
                     title = win.title,
                     badgeText = win.trackQty,
                     valueText = "${win.topBottomVal}\"",
-                    pcsText = "(${win.topBottomPcs} pcs)",
+                    pcsText = "(${win.topBottomPcs} ${LanguageManager.tr("pcs_unit")})",
                     accentColor = Color(0xFF2E7D32)
                 )
             }
@@ -186,7 +187,7 @@ fun ReportScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // 4. Glass Dimensions (Width & Height) Section
-        SectionCard(title = "4. Glass Dimensions (Width & Height)") {
+        SectionCard(title = LanguageManager.tr("sec_glass_dimensions")) {
             windowModels.forEach { win ->
                 GlassDimensionRow(
                     title = win.title,
@@ -206,7 +207,7 @@ fun ReportScreen(
             Icon(Icons.Default.Check, contentDescription = "Check", tint = Color.Gray, modifier = Modifier.size(16.dp))
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                "Calculations generated using Aluminum Standard Multipliers. Track cuts and glass sizing reflect total pieces.",
+                LanguageManager.tr("disclaimer_text"),
                 fontSize = 11.sp,
                 color = Color.Gray,
                 lineHeight = 16.sp
@@ -273,30 +274,45 @@ fun extractReportWindowModels(
             val interlockH = calc?.interlockHeight
             val topSide = calc?.topAndSide
 
+            val qtyInt = win.quantity.coerceAtLeast(1)
+
             val ihVal = handle?.value ?: interlockH?.value ?: 0.0
-            val ihPcs = (handle?.totalPieces ?: 1) + (interlockH?.totalPieces ?: 1)
+
+            // Handle pieces are ALWAYS 2 per window unit (2 * quantity)
+            val hPcs = handle?.totalPieces ?: (2 * qtyInt)
+
+            // Interlock pieces vary by track type (2T = 2, 3T = 4, 4T = 6 per window unit)
+            val iPcs = interlockH?.totalPieces ?: run {
+                val perWinI = when {
+                    win.trackType.contains("THREE", ignoreCase = true) || win.trackType == "3T" -> 4
+                    win.trackType.contains("FOUR", ignoreCase = true) || win.trackType == "4T" -> 6
+                    else -> 2
+                }
+                perWinI * qtyInt
+            }
 
             val tsVal = topSide?.value ?: 0.0
-            val tsPcs = topSide?.totalPieces ?: 4
+            val tsPcs = topSide?.totalPieces ?: (4 * qtyInt)
 
             val tbPart = calc?.parts?.firstOrNull { it.name.equals("Top & Bottom", ignoreCase = true) }
             val tbVal = tbPart?.value ?: 0.0
-            val tbPcs = tbPart?.totalPieces ?: 4
+            val tbPcs = tbPart?.totalPieces ?: (4 * qtyInt)
 
             val gwPart = calc?.parts?.firstOrNull { it.name.equals("Glass Width", ignoreCase = true) }
             val gwVal = gwPart?.value ?: 0.0
-            val gwPcs = gwPart?.totalPieces ?: 1
+            val gwPcs = gwPart?.totalPieces ?: (1 * qtyInt)
 
             val ghPart = calc?.parts?.firstOrNull { it.name.equals("Glass Height", ignoreCase = true) }
             val ghVal = ghPart?.value ?: 0.0
-            val ghPcs = ghPart?.totalPieces ?: 1
+            val ghPcs = ghPart?.totalPieces ?: (1 * qtyInt)
 
             result.add(
                 ReportWindowModel(
-                    title = "Window #${index + 1}: ${win.width}\" x ${win.height}\"",
-                    trackQty = "${PdfReportGenerator.formatTrackName(win.trackType)}, Qty: ${win.quantity}",
+                    title = "${LanguageManager.tr("window_prefix")} #${index + 1}: ${win.width}\" x ${win.height}\"",
+                    trackQty = "${PdfReportGenerator.formatTrackName(win.trackType)}, ${LanguageManager.tr("qty_unit")}: ${win.quantity}",
                     interlockHandleVal = ihVal,
-                    interlockHandlePcs = ihPcs,
+                    handlePcs = hPcs,
+                    interlockPcs = iPcs,
                     topSideVal = tsVal,
                     topSidePcs = tsPcs,
                     topBottomVal = tbVal,
@@ -315,30 +331,42 @@ fun extractReportWindowModels(
             val interlockH = calc?.interlockHeight
             val topSide = calc?.topAndSide
 
+            val qtyInt = (item.qty.toIntOrNull() ?: 1).coerceAtLeast(1)
+
             val ihVal = handle?.value ?: interlockH?.value ?: 0.0
-            val ihPcs = (handle?.totalPieces ?: 1) + (interlockH?.totalPieces ?: 1)
+            val hPcs = handle?.totalPieces ?: (2 * qtyInt)
+
+            val iPcs = interlockH?.totalPieces ?: run {
+                val perWinI = when {
+                    item.track.contains("THREE", ignoreCase = true) || item.track == "3T" -> 4
+                    item.track.contains("FOUR", ignoreCase = true) || item.track == "4T" -> 6
+                    else -> 2
+                }
+                perWinI * qtyInt
+            }
 
             val tsVal = topSide?.value ?: 0.0
-            val tsPcs = topSide?.totalPieces ?: 4
+            val tsPcs = topSide?.totalPieces ?: (4 * qtyInt)
 
             val tbPart = calc?.parts?.firstOrNull { it.name.equals("Top & Bottom", ignoreCase = true) }
             val tbVal = tbPart?.value ?: 0.0
-            val tbPcs = tbPart?.totalPieces ?: 4
+            val tbPcs = tbPart?.totalPieces ?: (4 * qtyInt)
 
             val gwPart = calc?.parts?.firstOrNull { it.name.equals("Glass Width", ignoreCase = true) }
             val gwVal = gwPart?.value ?: 0.0
-            val gwPcs = gwPart?.totalPieces ?: 1
+            val gwPcs = gwPart?.totalPieces ?: (1 * qtyInt)
 
             val ghPart = calc?.parts?.firstOrNull { it.name.equals("Glass Height", ignoreCase = true) }
             val ghVal = ghPart?.value ?: 0.0
-            val ghPcs = ghPart?.totalPieces ?: 1
+            val ghPcs = ghPart?.totalPieces ?: (1 * qtyInt)
 
             result.add(
                 ReportWindowModel(
-                    title = "Window #${index + 1}: ${item.widthDisplay} x ${item.heightDisplay}",
-                    trackQty = "${PdfReportGenerator.formatTrackName(item.track)}, Qty: ${item.qty}",
+                    title = "${LanguageManager.tr("window_prefix")} #${index + 1}: ${item.widthDisplay} x ${item.heightDisplay}",
+                    trackQty = "${PdfReportGenerator.formatTrackName(item.track)}, ${LanguageManager.tr("qty_unit")}: ${item.qty}",
                     interlockHandleVal = ihVal,
-                    interlockHandlePcs = ihPcs,
+                    handlePcs = hPcs,
+                    interlockPcs = iPcs,
                     topSideVal = tsVal,
                     topSidePcs = tsPcs,
                     topBottomVal = tbVal,
@@ -351,36 +379,55 @@ fun extractReportWindowModels(
             )
         }
     } else {
-        // Fallback default demo windows matching Image 2
+        // Fallback demo windows: Handle is ALWAYS 2 pcs per window unit
         result.add(
             ReportWindowModel(
-                title = "Window #1: 10.375\" x 15.25\"",
-                trackQty = "2 Track, Qty: 1",
-                interlockHandleVal = 13.75,
-                interlockHandlePcs = 2,
-                topSideVal = 13.25,
+                title = "${LanguageManager.tr("window_prefix")} #1: 35.0\" x 45.875\"",
+                trackQty = "3 ${LanguageManager.tr("track_unit")}, ${LanguageManager.tr("qty_unit")}: 1",
+                interlockHandleVal = 44.375,
+                handlePcs = 2,
+                interlockPcs = 4,
+                topSideVal = 43.875,
                 topSidePcs = 4,
-                topBottomVal = 5.5,
-                topBottomPcs = 4,
-                glassWidthVal = 1.5,
+                topBottomVal = 13.292,
+                topBottomPcs = 6,
+                glassWidthVal = 13.917,
                 glassWidthPcs = 1,
-                glassHeightVal = 9.75,
+                glassHeightVal = 41.875,
                 glassHeightPcs = 1
             )
         )
         result.add(
             ReportWindowModel(
-                title = "Window #2: 18.5\" x 25.375\"",
-                trackQty = "3 Track, Qty: 1",
-                interlockHandleVal = 23.875,
-                interlockHandlePcs = 2,
-                topSideVal = 23.375,
+                title = "${LanguageManager.tr("window_prefix")} #2: 20.375\" x 15.0\"",
+                trackQty = "2 ${LanguageManager.tr("track_unit")}, ${LanguageManager.tr("qty_unit")}: 1",
+                interlockHandleVal = 13.5,
+                handlePcs = 2,
+                interlockPcs = 2,
+                topSideVal = 13.0,
                 topSidePcs = 4,
-                topBottomVal = 6.958,
-                topBottomPcs = 6,
-                glassWidthVal = 2.958,
+                topBottomVal = 5.25,
+                topBottomPcs = 4,
+                glassWidthVal = 5.875,
                 glassWidthPcs = 1,
-                glassHeightVal = 19.875,
+                glassHeightVal = 11.0,
+                glassHeightPcs = 1
+            )
+        )
+        result.add(
+            ReportWindowModel(
+                title = "${LanguageManager.tr("window_prefix")} #3: 13.5\" x 12.625\"",
+                trackQty = "4 ${LanguageManager.tr("track_unit")}, ${LanguageManager.tr("qty_unit")}: 1",
+                interlockHandleVal = 11.125,
+                handlePcs = 2,
+                interlockPcs = 6,
+                topSideVal = 10.625,
+                topSidePcs = 4,
+                topBottomVal = 3.5,
+                topBottomPcs = 8,
+                glassWidthVal = 4.0,
+                glassWidthPcs = 1,
+                glassHeightVal = 8.625,
                 glassHeightPcs = 1
             )
         )
@@ -517,12 +564,12 @@ fun GlassDimensionRow(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("W: $wVal\"", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2563EB), maxLines = 1)
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("($wPcs pcs)", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
+                Text("($wPcs ${LanguageManager.tr("pcs_unit")})", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("H: $hVal\"", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2563EB), maxLines = 1)
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("($hPcs pcs)", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
+                Text("($hPcs ${LanguageManager.tr("pcs_unit")})", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
             }
         }
     }

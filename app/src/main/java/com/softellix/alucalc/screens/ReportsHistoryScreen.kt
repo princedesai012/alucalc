@@ -8,20 +8,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softellix.alucalc.components.AluBottomNavigation
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.BorderGray
-import com.softellix.alucalc.ui.theme.PrimaryDark
 import com.softellix.alucalc.ui.theme.PrimaryFont
 import com.softellix.alucalc.utils.LanguageManager
 import com.softellix.alucalc.viewmodels.ProjectViewModel
@@ -34,10 +31,7 @@ data class ReportItemUI(
     val projectTitle: String,
     val reportCode: String,
     val estimator: String,
-    val date: String,
-    val totalWindows: Int,
-    val aluminumMeters: String,
-    val glassSqm: String
+    val date: String
 )
 
 @Composable
@@ -46,7 +40,6 @@ fun ReportsHistoryScreen(
     onReportClick: (String) -> Unit,
     onTabSelected: (Int) -> Unit
 ) {
-    val context = LocalContext.current
     val todayDate = remember { SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date()) }
 
     LaunchedEffect(Unit) {
@@ -60,10 +53,7 @@ fun ReportsHistoryScreen(
             projectTitle = p.projectName,
             reportCode = "#AP-$codeNumber",
             estimator = viewModel.currentUser?.name ?: "User",
-            date = todayDate,
-            totalWindows = p.projectNumber ?: 1,
-            aluminumMeters = "Calculated",
-            glassSqm = "Calculated"
+            date = todayDate
         )
     }
 
@@ -140,46 +130,10 @@ fun ReportsHistoryScreen(
 
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Column {
-                                        Text(LanguageManager.tr("aluminum"), fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-                                        Text("${report.aluminumMeters} m", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = PrimaryFont)
-                                    }
-                                    Column {
-                                        Text(LanguageManager.tr("glass_area"), fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-                                        Text("${report.glassSqm} m²", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = PrimaryFont)
-                                    }
-                                    Column {
-                                        Text(LanguageManager.tr("total_windows"), fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-                                        Text("${report.totalWindows} Windows", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = PrimaryFont)
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.height(12.dp))
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text("${LanguageManager.tr("created_on")} ${report.date}", fontSize = 11.sp, color = Color.Gray)
-                                    IconButton(
-                                        onClick = {
-                                            val sendIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
-                                                type = "text/plain"
-                                                putExtra(android.content.Intent.EXTRA_SUBJECT, "AluCalc Report - ${report.projectTitle}")
-                                                putExtra(
-                                                    android.content.Intent.EXTRA_TEXT,
-                                                    "Report ${report.reportCode} for ${report.projectTitle}\nAluminum: ${report.aluminumMeters} | Glass: ${report.glassSqm}\nGenerated via AluCalc."
-                                                )
-                                            }
-                                            context.startActivity(android.content.Intent.createChooser(sendIntent, "Share Report"))
-                                        },
-                                        modifier = Modifier.size(28.dp)
-                                    ) {
-                                        Icon(Icons.Default.Share, contentDescription = "Share", tint = PrimaryDark, modifier = Modifier.size(18.dp))
-                                    }
                                 }
                             }
                         }

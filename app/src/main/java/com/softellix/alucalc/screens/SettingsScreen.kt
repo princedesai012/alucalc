@@ -1,15 +1,20 @@
 package com.softellix.alucalc.screens
 
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,6 +29,7 @@ import com.softellix.alucalc.components.AluOutlinedButton
 import com.softellix.alucalc.data.remote.TokenStore
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.BorderGray
+import com.softellix.alucalc.ui.theme.PrimaryDark
 import com.softellix.alucalc.ui.theme.PrimaryFont
 import com.softellix.alucalc.utils.LanguageManager
 import com.softellix.alucalc.viewmodels.ProjectViewModel
@@ -72,10 +78,10 @@ fun SettingsScreen(
                 .padding(paddingValues)
                 .padding(24.dp)
         ) {
-            Text(LanguageManager.tr("settings"), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
-            Text("Manage user preferences and account settings", color = Color.Gray, fontSize = 13.sp)
+            Text(LanguageManager.tr("settings_title"), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text(LanguageManager.tr("manage_settings_sub"), color = Color.Gray, fontSize = 13.sp)
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Profile Card
             Card(
@@ -108,9 +114,9 @@ fun SettingsScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            Text("PREFERENCES", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text(LanguageManager.tr("preferences"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(8.dp))
 
             // Language Selector Card
@@ -144,6 +150,76 @@ fun SettingsScreen(
                                 label = { Text(lang, fontSize = 12.sp) }
                             )
                         }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // HELP & SUPPORT Section
+            Text("HELP & SUPPORT", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                border = BorderStroke(1.dp, BorderGray),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    // Customer Care Contact
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                try {
+                                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:+917984620052"))
+                                    context.startActivity(intent)
+                                } catch (e: Exception) {
+                                    Toast.makeText(context, "Contact: +91 7984620052", Toast.LENGTH_LONG).show()
+                                }
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Phone, contentDescription = "Customer Care", tint = PrimaryDark)
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text("Customer Care", fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = PrimaryFont)
+                                Text("+91 7984620052", fontSize = 12.sp, color = Color.Gray)
+                            }
+                        }
+                        Text("Call", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2563EB))
+                    }
+
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = BorderGray)
+
+                    // WhatsApp Support
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                try {
+                                    val url = "https://api.whatsapp.com/send?phone=919714865744"
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                    context.startActivity(intent)
+                                } catch (e: Exception) {
+                                    Toast.makeText(context, "WhatsApp: +91 9714865744", Toast.LENGTH_LONG).show()
+                                }
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Message, contentDescription = "WhatsApp Support", tint = Color(0xFF25D366))
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text("WhatsApp Support", fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = PrimaryFont)
+                                Text("+91 9714865744", fontSize = 12.sp, color = Color.Gray)
+                            }
+                        }
+                        Text("Chat", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF25D366))
                     }
                 }
             }

@@ -2,7 +2,6 @@ package com.softellix.alucalc.utils
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
@@ -53,7 +52,7 @@ object PdfReportGenerator {
 
             val subtitlePaint = Paint().apply {
                 color = Color.parseColor("#94A3B8")
-                textSize = 11f
+                textSize = 10.5f
             }
 
             val sectionTitlePaint = Paint().apply {
@@ -103,8 +102,11 @@ object PdfReportGenerator {
             canvas.drawRect(0f, 0f, 595f, 75f, navyBannerPaint)
             canvas.drawRect(0f, 75f, 595f, 78f, accentBluePaint)
 
-            canvas.drawText("ALUCALC ESTIMATION REPORT", 25f, 36f, titlePaint)
-            canvas.drawText("Project: $projectName   |   Profile: $profileName   |   Total Windows: $totalUnits", 25f, 58f, subtitlePaint)
+            val reportTitle = "ALUCALC ${LanguageManager.tr("report").uppercase()} ESTIMATION"
+            val metaSubtitle = "${LanguageManager.tr("project_name")}: $projectName   |   ${LanguageManager.tr("select_profile")}: $profileName   |   ${LanguageManager.tr("total_windows")}: $totalUnits"
+
+            canvas.drawText(reportTitle, 25f, 36f, titlePaint)
+            canvas.drawText(metaSubtitle, 25f, 58f, subtitlePaint)
 
             val cardLeft = 25f
             val cardRight = 570f
@@ -157,9 +159,9 @@ object PdfReportGenerator {
                     } else {
                         // Glass Dimensions Stacked Blue Values
                         val wText = "W: ${win.glassWidthVal}\""
-                        val wPcs = "(${win.glassWidthPcs} pcs)"
+                        val wPcs = "(${win.glassWidthPcs} ${LanguageManager.tr("pcs_unit")})"
                         val hText = "H: ${win.glassHeightVal}\""
-                        val hPcs = "(${win.glassHeightPcs} pcs)"
+                        val hPcs = "(${win.glassHeightPcs} ${LanguageManager.tr("pcs_unit")})"
 
                         val wPcsWidth = pcsPaint.measureText(wPcs)
                         val wTextWidth = blueValPaint.measureText(wText)
@@ -183,23 +185,23 @@ object PdfReportGenerator {
                 startY = cardBottom + 14f
             }
 
-            // 1. Interlock & Handle Card
-            drawCardSection("1. Interlock & Handle") { win ->
-                Pair("${win.interlockHandleVal}\"", "(${win.interlockHandlePcs} pcs)")
+            // 1. Interlock & Handle Card with Bifurcated Handle vs Interlock Pieces
+            drawCardSection(LanguageManager.tr("sec_interlock_handle")) { win ->
+                Pair("${win.interlockHandleVal}\"", "(${LanguageManager.tr("handle_short")}: ${win.handlePcs}, ${LanguageManager.tr("interlock_short")}: ${win.interlockPcs} ${LanguageManager.tr("pcs_unit")})")
             }
 
             // 2. Top & Side Card
-            drawCardSection("2. Top & Side") { win ->
-                Pair("${win.topSideVal}\"", "(${win.topSidePcs} pcs)")
+            drawCardSection(LanguageManager.tr("sec_top_side")) { win ->
+                Pair("${win.topSideVal}\"", "(${win.topSidePcs} ${LanguageManager.tr("pcs_unit")})")
             }
 
             // 3. Top & Bottom Card
-            drawCardSection("3. Top & Bottom") { win ->
-                Pair("${win.topBottomVal}\"", "(${win.topBottomPcs} pcs)")
+            drawCardSection(LanguageManager.tr("sec_top_bottom")) { win ->
+                Pair("${win.topBottomVal}\"", "(${win.topBottomPcs} ${LanguageManager.tr("pcs_unit")})")
             }
 
             // 4. Glass Dimensions Card
-            drawCardSection("4. Glass Dimensions (Width & Height)", isGlass = true)
+            drawCardSection(LanguageManager.tr("sec_glass_dimensions"), isGlass = true)
 
             // Footer
             canvas.drawLine(25f, 808f, 570f, 808f, dividerPaint)
@@ -245,9 +247,9 @@ object PdfReportGenerator {
 
     fun formatTrackName(track: String): String {
         return when {
-            track.contains("THREE", ignoreCase = true) || track == "3T" -> "3 Track"
-            track.contains("FOUR", ignoreCase = true) || track == "4T" -> "4 Track"
-            else -> "2 Track"
+            track.contains("THREE", ignoreCase = true) || track == "3T" -> "3 " + LanguageManager.tr("track_unit")
+            track.contains("FOUR", ignoreCase = true) || track == "4T" -> "4 " + LanguageManager.tr("track_unit")
+            else -> "2 " + LanguageManager.tr("track_unit")
         }
     }
 }

@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softellix.alucalc.components.AluBottomNavigation
@@ -26,28 +25,12 @@ import com.softellix.alucalc.ui.theme.PrimaryDark
 import com.softellix.alucalc.ui.theme.PrimaryFont
 import com.softellix.alucalc.utils.LanguageManager
 import com.softellix.alucalc.viewmodels.ProjectViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 data class ProjectItemUI(
     val id: String,
     val name: String,
-    val address: String,
-    val profile: String,
-    val totalWindows: Int,
-    val date: String
+    val address: String
 )
-
-fun formatProfileLabel(profileType: String?): String {
-    if (profileType.isNullOrBlank()) return LanguageManager.tr("reg_40mm")
-    val t = profileType.uppercase()
-    return when {
-        t.contains("65") || t.contains("SLIM") -> LanguageManager.tr("slim_65mm")
-        t.contains("60") -> LanguageManager.tr("reg_60mm")
-        else -> LanguageManager.tr("reg_40mm")
-    }
-}
 
 @Composable
 fun ProjectsListScreen(
@@ -57,7 +40,6 @@ fun ProjectsListScreen(
     onTabSelected: (Int) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
-    val todayDate = remember { SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date()) }
 
     LaunchedEffect(Unit) {
         viewModel.fetchProjectsList()
@@ -67,10 +49,7 @@ fun ProjectsListScreen(
         ProjectItemUI(
             id = p.id,
             name = p.projectName,
-            address = p.projectAddress ?: "Surat, Gujarat",
-            profile = formatProfileLabel(p.profileType),
-            totalWindows = p.projectNumber ?: 1,
-            date = todayDate
+            address = p.projectAddress ?: "Surat, Gujarat"
         )
     }
 
@@ -167,31 +146,6 @@ fun ProjectsListScreen(
                                 }
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(project.address, color = Color.Gray, fontSize = 12.sp)
-
-                                Spacer(modifier = Modifier.height(12.dp))
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        "${project.profile}",
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = PrimaryFont,
-                                        modifier = Modifier.weight(1f, fill = false),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        "${project.totalWindows} Windows • ${project.date}",
-                                        fontSize = 12.sp,
-                                        color = Color.Gray,
-                                        maxLines = 1
-                                    )
-                                }
                             }
                         }
                     }
