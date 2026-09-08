@@ -30,13 +30,13 @@ fun AddWindowsScreen(
     onBackClick: () -> Unit,
     onHomeClick: () -> Unit = {}
 ) {
-    // Height Inputs (Inches and Doro, 1 inch = 8 doro)
-    var heightInch by remember { mutableStateOf("") }
-    var heightDoro by remember { mutableStateOf("0") }
-
     // Width Inputs (Inches and Doro)
     var widthInch by remember { mutableStateOf("") }
     var widthDoro by remember { mutableStateOf("0") }
+
+    // Height Inputs (Inches and Doro, 1 inch = 8 doro)
+    var heightInch by remember { mutableStateOf("") }
+    var heightDoro by remember { mutableStateOf("0") }
 
     var quantity by remember { mutableStateOf("") }
     var selectedTrack by remember { mutableStateOf("2T") }
@@ -44,17 +44,17 @@ fun AddWindowsScreen(
     val headerTitle = LanguageManager.tr("add_windows")
 
     val onAddWindowClick = {
-        if (heightInch.isNotBlank() && widthInch.isNotBlank()) {
-            val hInchVal = heightInch.toDoubleOrNull() ?: 0.0
-            val hDoroVal = heightDoro.toDoubleOrNull() ?: 0.0
+        if (widthInch.isNotBlank() && heightInch.isNotBlank()) {
             val wInchVal = widthInch.toDoubleOrNull() ?: 0.0
             val wDoroVal = widthDoro.toDoubleOrNull() ?: 0.0
+            val hInchVal = heightInch.toDoubleOrNull() ?: 0.0
+            val hDoroVal = heightDoro.toDoubleOrNull() ?: 0.0
 
-            val decimalHeight = hInchVal + (hDoroVal / 8.0)
             val decimalWidth = wInchVal + (wDoroVal / 8.0)
+            val decimalHeight = hInchVal + (hDoroVal / 8.0)
 
-            val hDisplay = if (hDoroVal > 0) "${heightInch}\" ${heightDoro.toInt()}d" else "${heightInch}\""
             val wDisplay = if (wDoroVal > 0) "${widthInch}\" ${widthDoro.toInt()}d" else "${widthInch}\""
+            val hDisplay = if (hDoroVal > 0) "${heightInch}\" ${heightDoro.toInt()}d" else "${heightInch}\""
 
             viewModel.addWindow(
                 heightDisplay = hDisplay,
@@ -65,10 +65,10 @@ fun AddWindowsScreen(
                 qty = quantity.ifBlank { "1" }
             )
 
-            heightInch = ""
-            heightDoro = "0"
             widthInch = ""
             widthDoro = "0"
+            heightInch = ""
+            heightDoro = "0"
             quantity = ""
         }
     }
@@ -119,7 +119,28 @@ fun AddWindowsScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Height Inputs Row
+        // 1st: Width Inputs Row
+        Text(LanguageManager.tr("width"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+        Spacer(modifier = Modifier.height(6.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Column(modifier = Modifier.weight(1.5f)) {
+                Text(LanguageManager.tr("inches"), fontSize = 11.sp, color = Color.Gray)
+                Spacer(modifier = Modifier.height(2.dp))
+                AluTextField(value = widthInch, onValueChange = { widthInch = it }, placeholder = "e.g. 36", isNumeric = true)
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(LanguageManager.tr("doro"), fontSize = 11.sp, color = Color.Gray)
+                Spacer(modifier = Modifier.height(2.dp))
+                AluTextField(value = widthDoro, onValueChange = { widthDoro = it }, placeholder = "0", isNumeric = true)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // 2nd: Height Inputs Row
         Text(LanguageManager.tr("height"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(6.dp))
         Row(
@@ -135,27 +156,6 @@ fun AddWindowsScreen(
                 Text(LanguageManager.tr("doro"), fontSize = 11.sp, color = Color.Gray)
                 Spacer(modifier = Modifier.height(2.dp))
                 AluTextField(value = heightDoro, onValueChange = { heightDoro = it }, placeholder = "0", isNumeric = true)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Width Inputs Row
-        Text(LanguageManager.tr("width"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
-        Spacer(modifier = Modifier.height(6.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Column(modifier = Modifier.weight(1.5f)) {
-                Text(LanguageManager.tr("inches"), fontSize = 11.sp, color = Color.Gray)
-                Spacer(modifier = Modifier.height(2.dp))
-                AluTextField(value = widthInch, onValueChange = { widthInch = it }, placeholder = "e.g. 36", isNumeric = true)
-            }
-            Column(modifier = Modifier.weight(1f)) {
-                Text(LanguageManager.tr("doro"), fontSize = 11.sp, color = Color.Gray)
-                Spacer(modifier = Modifier.height(2.dp))
-                AluTextField(value = widthDoro, onValueChange = { widthDoro = it }, placeholder = "4", isNumeric = true)
             }
         }
 
@@ -205,7 +205,7 @@ fun AddWindowsScreen(
         AluPrimaryButton(
             text = LanguageManager.tr("save_calculate"),
             onClick = {
-                if (heightInch.isNotBlank() && widthInch.isNotBlank()) {
+                if (widthInch.isNotBlank() && heightInch.isNotBlank()) {
                     onAddWindowClick()
                 }
                 onCalculateClick()
