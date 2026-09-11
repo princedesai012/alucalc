@@ -60,6 +60,7 @@ fun ReportScreen(
     val context = LocalContext.current
     val tokenStore = remember { TokenStore(context) }
     var estimatorName by remember { mutableStateOf("Ram") }
+    var storedBusiness by remember { mutableStateOf("બારીમાપ") }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -69,11 +70,17 @@ fun ReportScreen(
         if (!name.isNullOrBlank()) {
             estimatorName = name
         }
+        val biz = tokenStore.getUserBusiness()
+        if (!biz.isNullOrBlank()) {
+            storedBusiness = biz
+        }
     }
 
     val reportData = viewModel.reportResponse
     val projectName = reportData?.projectName ?: viewModel.projectName.ifBlank { "Marina Heights - A" }
     val estimator = viewModel.currentUser?.name?.ifBlank { null } ?: estimatorName.ifBlank { "Ram" }
+    val businessName = viewModel.currentUser?.businessName?.ifBlank { null } ?: storedBusiness.ifBlank { "બારીમાપ" }
+
     val createdDateFormatted = remember(reportData) {
         reportData?.createdDate?.take(10) ?: SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date())
     }
@@ -268,6 +275,7 @@ fun ReportScreen(
                     projectName = projectName,
                     profileName = profileName,
                     totalUnits = totalUnits,
+                    businessName = businessName,
                     reportData = reportData,
                     addedWindows = addedWindows
                 )
@@ -288,6 +296,7 @@ fun ReportScreen(
                     projectName = projectName,
                     profileName = profileName,
                     totalUnits = totalUnits,
+                    businessName = businessName,
                     reportData = reportData,
                     addedWindows = addedWindows
                 )

@@ -152,8 +152,8 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // HELP & SUPPORT Section
-            Text("HELP & SUPPORT", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            // HELP & SUPPORT Section (Fully Localized)
+            Text(LanguageManager.tr("help_support_title"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(8.dp))
 
             Card(
@@ -179,14 +179,14 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.Phone, contentDescription = "Customer Care", tint = PrimaryDark)
+                            Icon(Icons.Default.Phone, contentDescription = LanguageManager.tr("customer_care"), tint = PrimaryDark)
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
-                                Text("Customer Care", fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = PrimaryFont)
+                                Text(LanguageManager.tr("customer_care"), fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = PrimaryFont)
                                 Text("+91 7984620052", fontSize = 12.sp, color = Color.Gray)
                             }
                         }
-                        Text("Call", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2563EB))
+                        Text(LanguageManager.tr("call_action"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2563EB))
                     }
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = BorderGray)
@@ -208,14 +208,14 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.Message, contentDescription = "WhatsApp Support", tint = Color(0xFF25D366))
+                            Icon(Icons.Default.Message, contentDescription = LanguageManager.tr("whatsapp_support"), tint = Color(0xFF25D366))
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
-                                Text("WhatsApp Support", fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = PrimaryFont)
+                                Text(LanguageManager.tr("whatsapp_support"), fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = PrimaryFont)
                                 Text("+91 9714865744", fontSize = 12.sp, color = Color.Gray)
                             }
                         }
-                        Text("Chat", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF25D366))
+                        Text(LanguageManager.tr("chat_action"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF25D366))
                     }
                 }
             }

@@ -126,6 +126,12 @@ object LanguageManager {
         "cancel" to "Cancel",
         "deleted_success" to "Report deleted successfully",
 
+        "help_support_title" to "HELP & SUPPORT",
+        "customer_care" to "Customer Care",
+        "call_action" to "Call",
+        "whatsapp_support" to "WhatsApp Support",
+        "chat_action" to "Chat",
+
         "projects_title" to "Projects",
         "manage_projects_sub" to "Manage and view all your estimation projects",
         "search_placeholder" to "Search projects by name or address...",
@@ -256,6 +262,12 @@ object LanguageManager {
         "cancel" to "रद्द करें",
         "deleted_success" to "रिपोर्ट सफलतापूर्वक डिलीट की गई",
 
+        "help_support_title" to "मदद और सहायता",
+        "customer_care" to "कस्टमर केयर",
+        "call_action" to "कॉल करें",
+        "whatsapp_support" to "व्हाट्सएप सपोर्ट",
+        "chat_action" to "चैट करें",
+
         "projects_title" to "प्रोजेक्ट्स",
         "manage_projects_sub" to "अपने सभी अनुमानित प्रोजेक्ट देखें और प्रबंधित करें",
         "search_placeholder" to "नाम या पते से खोजें...",
@@ -385,6 +397,12 @@ object LanguageManager {
         "delete" to "ડિલીટ કરો",
         "cancel" to "કેન્સલ",
         "deleted_success" to "રિપોર્ટ સફળતાપૂર્વક ડિલીટ થયો",
+
+        "help_support_title" to "મદદ અને સપોર્ટ",
+        "customer_care" to "કસ્ટમર કેર",
+        "call_action" to "કોલ કરો",
+        "whatsapp_support" to "વોટ્સએપ સપોર્ટ",
+        "chat_action" to "ચેટ કરો",
 
         "projects_title" to "પ્રોજેક્ટ્સ",
         "manage_projects_sub" to "તમારા તમામ અંદાજિત પ્રોજેક્ટ્સ જુઓ અને સંચાલિત કરો",

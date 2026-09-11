@@ -24,6 +24,7 @@ object PdfReportGenerator {
         projectName: String,
         profileName: String,
         totalUnits: String,
+        businessName: String = "બારીમાપ",
         reportData: ProjectReportResponse?,
         addedWindows: List<WindowItem>
     ): File? {
@@ -102,7 +103,17 @@ object PdfReportGenerator {
             canvas.drawRect(0f, 0f, 595f, 75f, navyBannerPaint)
             canvas.drawRect(0f, 75f, 595f, 78f, accentBluePaint)
 
-            val reportTitle = "ALUCALC ${LanguageManager.tr("report").uppercase()} ESTIMATION"
+            val displayHeader = when {
+                businessName.isBlank() || businessName.contains("AluCalc", ignoreCase = true) || businessName.contains("Doe Windows", ignoreCase = true) -> "બારીમાપ"
+                else -> businessName
+            }
+
+            val reportTitle = when (LanguageManager.currentLanguage) {
+                "GUJARATI" -> "$displayHeader અંદાજ રિપોર્ટ"
+                "HINDI" -> "$displayHeader अनुमान रिपोर्ट"
+                else -> "${displayHeader.uppercase()} ESTIMATION REPORT"
+            }
+
             val metaSubtitle = "${LanguageManager.tr("project_name")}: $projectName   |   ${LanguageManager.tr("select_profile")}: $profileName   |   ${LanguageManager.tr("total_windows")}: $totalUnits"
 
             canvas.drawText(reportTitle, 25f, 36f, titlePaint)
@@ -205,11 +216,12 @@ object PdfReportGenerator {
 
             // Footer
             canvas.drawLine(25f, 808f, 570f, 808f, dividerPaint)
-            canvas.drawText("Generated via AluCalc - Aluminium Window Calculator", 25f, 824f, subtitlePaint.apply { color = Color.GRAY })
+            val footerText = if (LanguageManager.currentLanguage == "GUJARATI") "બારીમાપ વિન્ડો કેલ્ક્યુલેટર દ્વારા બનાવેલ" else "Generated via $displayHeader - Window Calculator"
+            canvas.drawText(footerText, 25f, 824f, subtitlePaint.apply { color = Color.GRAY })
 
             pdfDocument.finishPage(page)
 
-            val fileName = "AluCalc_${projectName.replace(" ", "_")}_Report.pdf"
+            val fileName = "BariMaap_${projectName.replace(" ", "_")}_Report.pdf"
             val downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) ?: context.filesDir
             val pdfFile = File(downloadsDir, fileName)
 
@@ -232,7 +244,7 @@ object PdfReportGenerator {
                 if (isShare) {
                     type = "application/pdf"
                     putExtra(Intent.EXTRA_STREAM, uri)
-                    putExtra(Intent.EXTRA_SUBJECT, "AluCalc PDF Report - ${file.name}")
+                    putExtra(Intent.EXTRA_SUBJECT, "બારીમાપ PDF Report - ${file.name}")
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 } else {
                     setDataAndType(uri, "application/pdf")
