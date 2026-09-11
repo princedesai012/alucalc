@@ -45,11 +45,12 @@ fun ProjectsListScreen(
         viewModel.fetchProjectsList()
     }
 
-    val liveProjects = viewModel.projectsList.map { p ->
+    // Newest / Latest projects on top
+    val liveProjects = viewModel.projectsList.reversed().map { p ->
         ProjectItemUI(
             id = p.id,
             name = p.projectName,
-            address = p.projectAddress ?: "Surat, Gujarat"
+            address = p.projectAddress ?: ""
         )
     }
 
@@ -144,8 +145,10 @@ fun ProjectsListScreen(
                                         modifier = Modifier.size(18.dp)
                                     )
                                 }
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(project.address, color = Color.Gray, fontSize = 12.sp)
+                                if (project.address.isNotBlank()) {
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(project.address, color = Color.Gray, fontSize = 12.sp)
+                                }
                             }
                         }
                     }

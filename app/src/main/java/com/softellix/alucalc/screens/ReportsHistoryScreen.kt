@@ -46,13 +46,15 @@ fun ReportsHistoryScreen(
         viewModel.fetchRecentProjects()
     }
 
-    val reports = viewModel.recentProjectsList.mapIndexed { idx, p ->
-        val codeNumber = 101 + idx
+    // Newest / Latest reports on top
+    val sortedProjects = viewModel.recentProjectsList.reversed()
+    val reports = sortedProjects.mapIndexed { idx, p ->
+        val codeNumber = 100 + (sortedProjects.size - idx)
         ReportItemUI(
             id = p.id,
             projectTitle = p.projectName,
             reportCode = "#AP-$codeNumber",
-            estimator = viewModel.currentUser?.name ?: "User",
+            estimator = viewModel.currentUser?.name ?: "Ram",
             date = todayDate
         )
     }
