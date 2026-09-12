@@ -27,6 +27,7 @@ import com.softellix.alucalc.data.model.ProjectReportResponse
 import com.softellix.alucalc.data.remote.TokenStore
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.BorderGray
+import com.softellix.alucalc.ui.theme.PrimaryDark
 import com.softellix.alucalc.ui.theme.PrimaryFont
 import com.softellix.alucalc.utils.LanguageManager
 import com.softellix.alucalc.utils.PdfReportGenerator
@@ -67,7 +68,7 @@ fun ReportScreen(
         viewModel.fetchReportOnBackend()
         viewModel.fetchCurrentUser()
         val name = tokenStore.getUserName()
-        if (!name.isNullOrBlank()) {
+        if (!name.isNullOrBlank() && name != "User") {
             estimatorName = name
         }
         val biz = tokenStore.getUserBusiness()
@@ -78,7 +79,9 @@ fun ReportScreen(
 
     val reportData = viewModel.reportResponse
     val projectName = reportData?.projectName ?: viewModel.projectName.ifBlank { "Marina Heights - A" }
-    val estimator = viewModel.currentUser?.name?.ifBlank { null } ?: estimatorName.ifBlank { "Ram" }
+    val estimator = viewModel.currentUser?.name?.takeIf { it != "User" && it.isNotBlank() }
+        ?: estimatorName.takeIf { it != "User" && it.isNotBlank() }
+        ?: "Ram"
     val businessName = viewModel.currentUser?.businessName?.ifBlank { null } ?: storedBusiness.ifBlank { "બારીમાપ" }
 
     val createdDateFormatted = remember(reportData) {
@@ -100,12 +103,13 @@ fun ReportScreen(
         extractReportWindowModels(reportData, addedWindows)
     }
 
-    // Delete Confirmation Dialog
+    // Delete Confirmation Dialog (High-Contrast Clean White Background)
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text(LanguageManager.tr("delete_report_title"), fontWeight = FontWeight.Bold, color = PrimaryFont) },
-            text = { Text(LanguageManager.tr("delete_report_confirm"), color = Color.DarkGray) },
+            containerColor = Color.White,
+            title = { Text(LanguageManager.tr("delete_report_title"), fontWeight = FontWeight.Bold, color = PrimaryDark) },
+            text = { Text(LanguageManager.tr("delete_report_confirm"), color = Color(0xFF334155)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -126,7 +130,7 @@ fun ReportScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text(LanguageManager.tr("cancel"), color = Color.Gray)
+                    Text(LanguageManager.tr("cancel"), color = PrimaryFont, fontWeight = FontWeight.SemiBold)
                 }
             }
         )
