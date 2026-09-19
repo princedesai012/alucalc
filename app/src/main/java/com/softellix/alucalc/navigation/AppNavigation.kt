@@ -15,6 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.softellix.alucalc.data.model.RefreshTokenRequest
 import com.softellix.alucalc.data.remote.RetrofitClient
 import com.softellix.alucalc.data.remote.TokenStore
 import com.softellix.alucalc.screens.*
@@ -46,7 +47,30 @@ fun AppNavigation() {
     var hasValidSession by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        hasValidSession = tokenStore.isSessionValid()
+        RetrofitClient.initialize(context)
+        val isValid = tokenStore.isSessionValid()
+        if (isValid) {
+            val userId = tokenStore.getUserId()
+            if (!userId.isNullOrBlank() && userId != "guest_uuid") {
+                try {
+                    val res = RetrofitClient.apiService.refreshToken(RefreshTokenRequest(userId))
+                    if (res.isSuccessful && res.body()?.accessToken != null) {
+                        tokenStore.updateAccessToken(res.body()!!.accessToken!!)
+                        hasValidSession = true
+                    } else {
+                        tokenStore.clear()
+                        hasValidSession = false
+                    }
+                } catch (e: Exception) {
+                    // Fallback to existing token in case of network issue
+                    hasValidSession = true
+                }
+            } else {
+                hasValidSession = true
+            }
+        } else {
+            hasValidSession = false
+        }
         isCheckingSession = false
     }
 

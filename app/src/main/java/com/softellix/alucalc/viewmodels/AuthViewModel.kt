@@ -51,12 +51,14 @@ class AuthViewModel(
                     val authBody = response.body()!!
                     val token = authBody.accessToken ?: ""
                     val userObj = authBody.user
+                    val userId = userObj?.id
                     val userName = userObj?.name?.ifBlank { null } ?: fallbackName.ifBlank { "User" }
                     val uPhone = userObj?.phone ?: phone
                     val uBusiness = userObj?.businessName ?: "AluCalc Client"
 
                     tokenStore.saveSession(
                         token = token,
+                        userId = userId,
                         userName = userName,
                         userPhone = uPhone,
                         userBusiness = uBusiness
@@ -110,7 +112,13 @@ class AuthViewModel(
 
     fun saveGuestSession(name: String = "John Doe", phone: String = "+91 9999999999", business: String = "Doe Windows") {
         viewModelScope.launch {
-            tokenStore.saveSession("demo_guest_token", name, phone, business)
+            tokenStore.saveSession(
+                token = "demo_guest_token",
+                userId = "guest_uuid",
+                userName = name,
+                userPhone = phone,
+                userBusiness = business
+            )
             authSuccess = true
         }
     }
