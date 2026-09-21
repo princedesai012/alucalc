@@ -80,7 +80,7 @@ fun ProjectsListScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(24.dp)
+                .padding(16.dp)
         ) {
             Text(LanguageManager.tr("projects_title"), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Text(LanguageManager.tr("manage_projects_sub"), color = Color.Gray, fontSize = 13.sp)
@@ -137,7 +137,14 @@ fun ProjectsListScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(project.name, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = PrimaryFont)
+                                    Text(
+                                        project.name, 
+                                        fontWeight = FontWeight.Bold, 
+                                        fontSize = 16.sp, 
+                                        color = PrimaryFont,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
                                     Icon(
                                         Icons.AutoMirrored.Filled.ArrowForward,
                                         contentDescription = "View",

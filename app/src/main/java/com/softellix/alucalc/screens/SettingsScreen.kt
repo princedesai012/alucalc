@@ -72,7 +72,7 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(24.dp)
+                .padding(16.dp)
         ) {
             Text(LanguageManager.tr("settings_title"), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Text(LanguageManager.tr("manage_settings_sub"), color = Color.Gray, fontSize = 13.sp)
@@ -100,7 +100,7 @@ fun SettingsScreen(
                         Icon(Icons.Default.Person, contentDescription = "User", tint = Color.Gray, modifier = Modifier.size(28.dp))
                     }
                     Spacer(modifier = Modifier.width(16.dp))
-                    Column {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(displayName, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = PrimaryFont)
                         Spacer(modifier = Modifier.height(2.dp))
                         if (displayPhone.isNotBlank()) {
@@ -178,7 +178,7 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                             Icon(Icons.Default.Phone, contentDescription = LanguageManager.tr("customer_care"), tint = PrimaryDark)
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
@@ -207,7 +207,7 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                             Icon(Icons.Default.Message, contentDescription = LanguageManager.tr("whatsapp_support"), tint = Color(0xFF25D366))
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {

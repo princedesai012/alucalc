@@ -77,13 +77,12 @@ fun AddWindowsScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(BackgroundGray)
-            .padding(24.dp)
-            .padding(top = 16.dp)
+            .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
         // Top Header Row with Home Icon Button
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

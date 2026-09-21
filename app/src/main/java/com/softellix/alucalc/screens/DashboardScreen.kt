@@ -70,7 +70,7 @@ fun DashboardScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(24.dp)
+                .padding(16.dp)
         ) {
             // Top Header Row
             Row(
@@ -99,9 +99,10 @@ fun DashboardScreen(
                 onClick = onNewProjectClick,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp),
+                    .heightIn(min = 130.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = PrimaryDark)
+                colors = ButtonDefaults.buttonColors(containerColor = PrimaryDark),
+                contentPadding = PaddingValues(16.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -157,7 +158,6 @@ fun SummaryCard(
 ) {
     Card(
         modifier = modifier
-            .height(110.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -166,8 +166,8 @@ fun SummaryCard(
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Top
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -176,6 +176,7 @@ fun SummaryCard(
                 Icon(icon, contentDescription = title, tint = Color.Gray)
                 Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Go", tint = Color.LightGray, modifier = Modifier.size(16.dp))
             }
+            Spacer(modifier = Modifier.height(24.dp))
             Column {
                 Text(title, color = Color.Gray, fontSize = 12.sp)
                 Text(value, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = PrimaryFont)
