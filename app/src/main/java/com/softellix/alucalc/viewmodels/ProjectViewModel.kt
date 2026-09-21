@@ -197,6 +197,11 @@ class ProjectViewModel(
         val pId = currentProjectId ?: return
         viewModelScope.launch {
             isLoading = true
+            
+            // First trigger a manual calculation call to ensure backend has processed all windows
+            repository.calculateProject(pId)
+
+            // Then fetch the final generated report
             repository.getProjectReport(pId).onSuccess { report ->
                 reportResponse = report
                 if (report.windows.isNotEmpty()) {
