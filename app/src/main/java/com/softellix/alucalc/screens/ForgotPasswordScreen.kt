@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
+import com.softellix.alucalc.components.OtpInputBoxes
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.PrimaryFont
 import com.softellix.alucalc.utils.LanguageManager
@@ -96,18 +97,20 @@ fun ForgotPasswordScreen(
             Text(LanguageManager.tr("enter_otp"), fontSize = 24.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Text("${LanguageManager.tr("enter_otp")} $phone", color = Color.Gray, fontSize = 13.sp)
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            Text("OTP", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
-            Spacer(modifier = Modifier.height(8.dp))
-            AluTextField(value = otp, onValueChange = { otp = it }, placeholder = "123456", isNumeric = true)
+            OtpInputBoxes(
+                otpValue = otp,
+                onOtpChange = { otp = it },
+                otpLength = 6
+            )
 
             viewModel.errorMessage?.let { err ->
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(err, color = Color.Red, fontSize = 13.sp)
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(42.dp))
 
             if (viewModel.isLoading) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {

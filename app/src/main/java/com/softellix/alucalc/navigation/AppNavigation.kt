@@ -89,7 +89,7 @@ fun AppNavigation() {
             CircularProgressIndicator()
         }
     } else {
-        val startDest = if (hasValidSession) "dashboard" else "create_account"
+        val startDest = if (hasValidSession) "dashboard" else "login"
 
         NavHost(navController = navController, startDestination = startDest) {
 
