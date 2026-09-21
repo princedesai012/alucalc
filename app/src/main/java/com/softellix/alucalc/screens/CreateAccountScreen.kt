@@ -3,6 +3,8 @@ package com.softellix.alucalc.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -44,6 +46,7 @@ fun CreateAccountScreen(
             .fillMaxSize()
             .background(BackgroundGray)
             .padding(24.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -91,8 +94,7 @@ fun CreateAccountScreen(
             Text(text = error, color = Color.Red, fontSize = 13.sp)
         }
 
-        Spacer(modifier = Modifier.weight(1f))
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -108,7 +110,7 @@ fun CreateAccountScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         if (viewModel.isLoading) {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -120,5 +122,7 @@ fun CreateAccountScreen(
                 onClick = { viewModel.register(name, businessName, phone, password) }
             )
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }

@@ -103,9 +103,10 @@ object PdfReportGenerator {
             canvas.drawRect(0f, 0f, 595f, 75f, navyBannerPaint)
             canvas.drawRect(0f, 75f, 595f, 78f, accentBluePaint)
 
-            val displayHeader = when {
-                businessName.isBlank() || businessName.contains("AluCalc", ignoreCase = true) || businessName.contains("Doe Windows", ignoreCase = true) -> "બારીમાપ"
-                else -> businessName
+            val displayHeader = if (businessName.isNotBlank() && !businessName.contains("AluCalc", ignoreCase = true) && !businessName.contains("Doe Windows", ignoreCase = true)) {
+                businessName
+            } else {
+                "બારીમાપ"
             }
 
             val reportTitle = when (LanguageManager.currentLanguage) {

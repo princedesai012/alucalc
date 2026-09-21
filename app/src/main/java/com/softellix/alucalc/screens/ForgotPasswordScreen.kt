@@ -4,6 +4,8 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -49,6 +51,7 @@ fun ForgotPasswordScreen(
             .background(BackgroundGray)
             .padding(24.dp)
             .padding(top = 16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onBackToLogin) {
@@ -76,7 +79,7 @@ fun ForgotPasswordScreen(
                 Text(err, color = Color.Red, fontSize = 13.sp)
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(32.dp))
 
             if (viewModel.isLoading) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -104,7 +107,7 @@ fun ForgotPasswordScreen(
                 Text(err, color = Color.Red, fontSize = 13.sp)
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(32.dp))
 
             if (viewModel.isLoading) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -138,7 +141,7 @@ fun ForgotPasswordScreen(
                 Text(err, color = Color.Red, fontSize = 13.sp)
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(32.dp))
 
             if (viewModel.isLoading) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -168,5 +171,7 @@ fun ForgotPasswordScreen(
                 modifier = Modifier.clickable { onBackToLogin() }
             )
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
