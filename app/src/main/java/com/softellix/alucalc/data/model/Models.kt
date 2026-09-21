@@ -1,5 +1,6 @@
 package com.softellix.alucalc.data.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -96,8 +97,16 @@ data class ProjectResponse(
     val projectAddress: String? = null,
     val contactInformation: String? = null,
     val profileType: String? = null,
-    val windowType: String? = null
-)
+    val windowType: String? = null,
+    @SerialName("createdAt") val createdAtCamel: String? = null,
+    @SerialName("created_at") val createdAtSnake: String? = null,
+    @SerialName("createdDate") val createdDateCamel: String? = null,
+    @SerialName("created_date") val createdDateSnake: String? = null,
+    @SerialName("date") val dateField: String? = null
+) {
+    val rawDate: String?
+        get() = createdAtCamel ?: createdAtSnake ?: createdDateCamel ?: createdDateSnake ?: dateField
+}
 
 @Serializable
 data class UpdateProjectProfileRequest(
@@ -145,7 +154,13 @@ data class ProjectReportResponse(
     val projectName: String,
     val projectAddress: String? = null,
     val contactInformation: String? = null,
-    val createdDate: String? = null,
+    @SerialName("createdDate") val createdDateCamel: String? = null,
+    @SerialName("created_date") val createdDateSnake: String? = null,
+    @SerialName("createdAt") val createdAtCamel: String? = null,
+    @SerialName("created_at") val createdAtSnake: String? = null,
     val selectedProfile: String? = null,
     val windows: List<WindowCalculationResponse> = emptyList()
-)
+) {
+    val createdDate: String?
+        get() = createdDateCamel ?: createdDateSnake ?: createdAtCamel ?: createdAtSnake
+}

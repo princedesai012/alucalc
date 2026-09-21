@@ -34,28 +34,57 @@ data class ReportItemUI(
     val date: String
 )
 
+fun formatReportDate(rawDate: String?): String {
+    if (rawDate.isNullOrBlank()) {
+        return SimpleDateFormat("MMM dd, yyyy", Locale.US).format(Date())
+    }
+    return try {
+        if (rawDate.length >= 10) {
+            val datePart = rawDate.substring(0, 10)
+            val parts = datePart.split("-")
+            if (parts.size == 3) {
+                val year = parts[0].toIntOrNull() ?: 2026
+                val month = parts[1].toIntOrNull() ?: 1
+                val day = parts[2].toIntOrNull() ?: 1
+                val cal = java.util.Calendar.getInstance().apply {
+                    set(year, month - 1, day)
+                }
+                SimpleDateFormat("MMM dd, yyyy", Locale.US).format(cal.time)
+            } else {
+                datePart
+            }
+        } else {
+            rawDate
+        }
+    } catch (e: Exception) {
+        rawDate.take(10)
+    }
+}
+
 @Composable
 fun ReportsHistoryScreen(
     viewModel: ProjectViewModel,
     onReportClick: (String) -> Unit,
     onTabSelected: (Int) -> Unit
 ) {
-    val todayDate = remember { SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date()) }
-
     LaunchedEffect(Unit) {
         viewModel.fetchRecentProjects()
     }
 
-    // Newest / Latest reports on top
-    val sortedProjects = viewModel.recentProjectsList.reversed()
+    // Sort by p.rawDate newest first
+    val sortedProjects = viewModel.recentProjectsList.sortedByDescending { p ->
+        p.rawDate ?: ""
+    }
+
     val reports = sortedProjects.mapIndexed { idx, p ->
         val codeNumber = 100 + (sortedProjects.size - idx)
+        val formattedDate = formatReportDate(p.rawDate)
         ReportItemUI(
             id = p.id,
             projectTitle = p.projectName,
             reportCode = "#AP-$codeNumber",
             estimator = viewModel.currentUser?.name ?: "Ram",
-            date = todayDate
+            date = formattedDate
         )
     }
 
@@ -135,7 +164,7 @@ fun ReportsHistoryScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text("${LanguageManager.tr("created_on")} ${report.date}", fontSize = 11.sp, color = Color.Gray)
+//                                    Text("${LanguageManager.tr("created_on")} ${report.date}", fontSize = 11.sp, color = Color.Gray)
                                 }
                             }
                         }

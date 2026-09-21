@@ -78,7 +78,22 @@ fun ReportScreen(
     }
 
     val reportData = viewModel.reportResponse
-    val projectName = reportData?.projectName ?: viewModel.projectName.ifBlank { "Marina Heights - A" }
+    val addedWindows = viewModel.addedWindows
+
+    // Show loading state while fetching report data to prevent flashing old/mock data
+    if (viewModel.isLoading || (reportData == null && addedWindows.isEmpty())) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BackgroundGray),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    val projectName = reportData?.projectName ?: viewModel.projectName.ifBlank { "Project Estimation" }
     val estimator = viewModel.currentUser?.name?.takeIf { it != "User" && it.isNotBlank() }
         ?: estimatorName.takeIf { it != "User" && it.isNotBlank() }
         ?: "Ram"
@@ -90,14 +105,12 @@ fun ReportScreen(
 
     val totalUnits = if (reportData != null && reportData.windows.isNotEmpty()) {
         "${reportData.windows.sumOf { it.quantity }} Units"
-    } else if (viewModel.addedWindows.isNotEmpty()) {
-        "${viewModel.addedWindows.sumOf { it.qty.toIntOrNull() ?: 1 }} Units"
+    } else if (addedWindows.isNotEmpty()) {
+        "${addedWindows.sumOf { it.qty.toIntOrNull() ?: 1 }} Units"
     } else {
-        "3 Units"
+        "0 Units"
     }
     val profileName = reportData?.selectedProfile ?: if (viewModel.selectedProfile == "65mm") "Slim 65mm" else "Reg ${viewModel.selectedProfile}"
-
-    val addedWindows = viewModel.addedWindows
 
     val windowModels = remember(reportData, addedWindows) {
         extractReportWindowModels(reportData, addedWindows)
@@ -435,59 +448,6 @@ fun extractReportWindowModels(
                 )
             )
         }
-    } else {
-        // Fallback demo windows: Handle is ALWAYS 2 pcs per window unit
-        result.add(
-            ReportWindowModel(
-                title = "${LanguageManager.tr("window_prefix")} #1: 35.0\" x 45.875\"",
-                trackQty = "3 ${LanguageManager.tr("track_unit")}, ${LanguageManager.tr("qty_unit")}: 1",
-                interlockHandleVal = 44.375,
-                handlePcs = 2,
-                interlockPcs = 4,
-                topSideVal = 43.875,
-                topSidePcs = 4,
-                topBottomVal = 13.292,
-                topBottomPcs = 6,
-                glassWidthVal = 13.917,
-                glassWidthPcs = 1,
-                glassHeightVal = 41.875,
-                glassHeightPcs = 1
-            )
-        )
-        result.add(
-            ReportWindowModel(
-                title = "${LanguageManager.tr("window_prefix")} #2: 20.375\" x 15.0\"",
-                trackQty = "2 ${LanguageManager.tr("track_unit")}, ${LanguageManager.tr("qty_unit")}: 1",
-                interlockHandleVal = 13.5,
-                handlePcs = 2,
-                interlockPcs = 2,
-                topSideVal = 13.0,
-                topSidePcs = 4,
-                topBottomVal = 5.25,
-                topBottomPcs = 4,
-                glassWidthVal = 5.875,
-                glassWidthPcs = 1,
-                glassHeightVal = 11.0,
-                glassHeightPcs = 1
-            )
-        )
-        result.add(
-            ReportWindowModel(
-                title = "${LanguageManager.tr("window_prefix")} #3: 13.5\" x 12.625\"",
-                trackQty = "4 ${LanguageManager.tr("track_unit")}, ${LanguageManager.tr("qty_unit")}: 1",
-                interlockHandleVal = 11.125,
-                handlePcs = 2,
-                interlockPcs = 6,
-                topSideVal = 10.625,
-                topSidePcs = 4,
-                topBottomVal = 3.5,
-                topBottomPcs = 8,
-                glassWidthVal = 4.0,
-                glassWidthPcs = 1,
-                glassHeightVal = 8.625,
-                glassHeightPcs = 1
-            )
-        )
     }
 
     return result

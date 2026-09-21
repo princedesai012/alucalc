@@ -155,6 +155,8 @@ class ProjectViewModel(
 
     fun loadProjectReport(projectId: String) {
         currentProjectId = projectId
+        reportResponse = null
+        _addedWindows.clear()
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
