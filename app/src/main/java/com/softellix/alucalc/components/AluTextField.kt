@@ -23,13 +23,22 @@ fun AluTextField(
     modifier: Modifier = Modifier,
     isPassword: Boolean = false,
     isNumeric: Boolean = false,
+    maxLength: Int? = null,
     keyboardType: KeyboardType = if (isPassword) KeyboardType.NumberPassword
         else if (isNumeric) KeyboardType.Number
         else KeyboardType.Text
 ) {
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = { newValue ->
+            if (maxLength != null) {
+                if (newValue.length <= maxLength) {
+                    onValueChange(newValue)
+                }
+            } else {
+                onValueChange(newValue)
+            }
+        },
         placeholder = { Text(text = placeholder, color = Color.Gray) },
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),

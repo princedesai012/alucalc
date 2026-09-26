@@ -44,7 +44,9 @@ fun AddWindowsScreen(
     val headerTitle = LanguageManager.tr("add_windows")
 
     val onAddWindowClick = {
-        if (widthInch.isNotBlank() && heightInch.isNotBlank()) {
+        if (widthInch.isBlank() || heightInch.isBlank()) {
+            viewModel.showErrorMessage("Width and Height inches are required.")
+        } else {
             val wInchVal = widthInch.toDoubleOrNull() ?: 0.0
             val wDoroVal = widthDoro.toDoubleOrNull() ?: 0.0
             val hInchVal = heightInch.toDoubleOrNull() ?: 0.0
@@ -56,13 +58,15 @@ fun AddWindowsScreen(
             val wDisplay = if (wDoroVal > 0) "${widthInch}\" ${widthDoro.toInt()}d" else "${widthInch}\""
             val hDisplay = if (hDoroVal > 0) "${heightInch}\" ${heightDoro.toInt()}d" else "${heightInch}\""
 
+            val finalQty = if (quantity.isBlank() || quantity == "0") "1" else quantity
+
             viewModel.addWindow(
                 heightDisplay = hDisplay,
                 widthDisplay = wDisplay,
                 decimalHeight = decimalHeight,
                 decimalWidth = decimalWidth,
                 track = selectedTrack,
-                qty = quantity.ifBlank { "1" }
+                qty = finalQty
             )
 
             widthInch = ""
@@ -195,6 +199,15 @@ fun AddWindowsScreen(
             }
         }
 
+        viewModel.errorMessage?.let { error ->
+            LaunchedEffect(error) {
+                kotlinx.coroutines.delay(5000)
+                viewModel.clearErrorMessage()
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            ErrorSnackbar(message = error)
+        }
+
         Spacer(modifier = Modifier.height(24.dp))
 
         AluOutlinedButton(text = LanguageManager.tr("add_another_window"), onClick = onAddWindowClick)
@@ -206,8 +219,12 @@ fun AddWindowsScreen(
             onClick = {
                 if (widthInch.isNotBlank() && heightInch.isNotBlank()) {
                     onAddWindowClick()
+                    onCalculateClick()
+                } else if (viewModel.addedWindows.isNotEmpty()) {
+                    onCalculateClick()
+                } else {
+                    viewModel.showErrorMessage("Please add at least one window before calculating.")
                 }
-                onCalculateClick()
             }
         )
 

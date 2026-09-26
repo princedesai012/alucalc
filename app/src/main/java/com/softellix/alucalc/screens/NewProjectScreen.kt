@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
+import com.softellix.alucalc.components.ErrorSnackbar
 import com.softellix.alucalc.components.WizardHeader
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.PrimaryFont
@@ -72,6 +73,15 @@ fun NewProjectScreen(
             onValueChange = { viewModel.streetAddress = it },
             placeholder = LanguageManager.tr("street_address")
         )
+
+        viewModel.errorMessage?.let { error ->
+            LaunchedEffect(error) {
+                kotlinx.coroutines.delay(5000)
+                viewModel.clearErrorMessage()
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            ErrorSnackbar(message = error)
+        }
 
         Spacer(modifier = Modifier.weight(1f))
 

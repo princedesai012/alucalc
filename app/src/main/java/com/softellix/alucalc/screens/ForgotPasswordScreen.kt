@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
+import com.softellix.alucalc.components.ErrorSnackbar
 import com.softellix.alucalc.components.OtpInputBoxes
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.PrimaryFont
@@ -73,11 +74,15 @@ fun ForgotPasswordScreen(
 
             Text(LanguageManager.tr("phone_number"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(8.dp))
-            AluTextField(value = phone, onValueChange = { phone = it }, placeholder = LanguageManager.tr("enter_phone"), isNumeric = true)
+            AluTextField(value = phone, onValueChange = { phone = it }, placeholder = LanguageManager.tr("enter_phone"), isNumeric = true, maxLength = 10)
 
             viewModel.errorMessage?.let { err ->
+                LaunchedEffect(err) {
+                    kotlinx.coroutines.delay(5000)
+                    viewModel.clearErrorMessage()
+                }
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(err, color = Color.Red, fontSize = 13.sp)
+                ErrorSnackbar(message = err)
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -106,8 +111,12 @@ fun ForgotPasswordScreen(
             )
 
             viewModel.errorMessage?.let { err ->
+                LaunchedEffect(err) {
+                    kotlinx.coroutines.delay(5000)
+                    viewModel.clearErrorMessage()
+                }
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(err, color = Color.Red, fontSize = 13.sp)
+                ErrorSnackbar(message = err)
             }
 
             Spacer(modifier = Modifier.height(42.dp))
@@ -131,17 +140,21 @@ fun ForgotPasswordScreen(
 
             Text(LanguageManager.tr("new_password"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(8.dp))
-            AluTextField(value = newPassword, onValueChange = { newPassword = it }, placeholder = LanguageManager.tr("pin_placeholder"), isPassword = true, isNumeric = true)
+            AluTextField(value = newPassword, onValueChange = { newPassword = it }, placeholder = LanguageManager.tr("pin_placeholder"), isPassword = true, isNumeric = true, maxLength = 4)
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(LanguageManager.tr("confirm_password"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(8.dp))
-            AluTextField(value = confirmPassword, onValueChange = { confirmPassword = it }, placeholder = LanguageManager.tr("pin_placeholder"), isPassword = true, isNumeric = true)
+            AluTextField(value = confirmPassword, onValueChange = { confirmPassword = it }, placeholder = LanguageManager.tr("pin_placeholder"), isPassword = true, isNumeric = true, maxLength = 4)
 
             viewModel.errorMessage?.let { err ->
+                LaunchedEffect(err) {
+                    kotlinx.coroutines.delay(5000)
+                    viewModel.clearErrorMessage()
+                }
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(err, color = Color.Red, fontSize = 13.sp)
+                ErrorSnackbar(message = err)
             }
 
             Spacer(modifier = Modifier.height(32.dp))

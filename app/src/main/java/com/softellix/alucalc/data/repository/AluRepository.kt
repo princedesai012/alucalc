@@ -2,6 +2,7 @@ package com.softellix.alucalc.data.repository
 
 import com.softellix.alucalc.data.model.*
 import com.softellix.alucalc.data.remote.RetrofitClient
+import org.json.JSONObject
 import retrofit2.Response
 
 class AluRepository {
@@ -15,10 +16,22 @@ class AluRepository {
                 response.body()?.let { Result.success(it) }
                     ?: Result.failure(Exception("Empty response from server"))
             } else {
-                Result.failure(Exception("Error ${response.code()}: ${response.errorBody()?.string() ?: "request failed"}"))
+                val errorBodyStr = response.errorBody()?.string()
+                val parsedErrorMsg = extractErrorMessage(errorBodyStr) ?: "Request failed"
+                Result.failure(Exception(parsedErrorMsg))
             }
         } catch (e: Exception) {
             Result.failure(Exception("Network error: ${e.message ?: "could not reach server"}"))
+        }
+    }
+
+    private fun extractErrorMessage(errorBodyStr: String?): String? {
+        if (errorBodyStr.isNullOrBlank()) return null
+        return try {
+            val jsonObject = JSONObject(errorBodyStr)
+            jsonObject.optString("message").takeIf { it.isNotBlank() }
+        } catch (e: Exception) {
+            null // Fallback if it's not a JSON response
         }
     }
 

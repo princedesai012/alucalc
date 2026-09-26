@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
+import com.softellix.alucalc.components.ErrorSnackbar
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.PrimaryFont
 import com.softellix.alucalc.utils.LanguageManager
@@ -76,7 +77,8 @@ fun CreateAccountScreen(
             value = phone,
             onValueChange = { phone = it },
             placeholder = LanguageManager.tr("enter_phone"),
-            isNumeric = true
+            isNumeric = true,
+            maxLength = 10
         )
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -85,13 +87,18 @@ fun CreateAccountScreen(
             onValueChange = { password = it },
             placeholder = LanguageManager.tr("pin_placeholder"),
             isPassword = true,
-            isNumeric = true
+            isNumeric = true,
+            maxLength = 4
         )
 
-        // Error Message
+        // Error Message Banner
         viewModel.errorMessage?.let { error ->
+            LaunchedEffect(error) {
+                kotlinx.coroutines.delay(5000)
+                viewModel.clearErrorMessage()
+            }
             Spacer(modifier = Modifier.height(12.dp))
-            Text(text = error, color = Color.Red, fontSize = 13.sp)
+            ErrorSnackbar(message = error)
         }
 
         Spacer(modifier = Modifier.height(32.dp))

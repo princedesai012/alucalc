@@ -59,6 +59,14 @@ class ProjectViewModel(
 
     // --- Helper functions ---
 
+    fun showErrorMessage(msg: String?) {
+        errorMessage = msg
+    }
+
+    fun clearErrorMessage() {
+        errorMessage = null
+    }
+
     fun addWindow(
         heightDisplay: String,
         widthDisplay: String,
@@ -103,7 +111,12 @@ class ProjectViewModel(
 
     fun createProjectOnBackend(onSuccess: () -> Unit = {}) {
         if (projectName.isBlank()) {
-            onSuccess()
+            errorMessage = "Project Name is required"
+            return
+        }
+        
+        if (contactInfo.isBlank()) {
+            errorMessage = "Contact Information is required"
             return
         }
 
@@ -113,7 +126,7 @@ class ProjectViewModel(
             val req = CreateProjectRequest(
                 projectName = projectName,
                 projectAddress = streetAddress.ifBlank { "Surat, Gujarat" },
-                contactInformation = contactInfo.ifBlank { "+91 9999999999" },
+                contactInformation = contactInfo,
                 profileType = mapProfileType(selectedProfile),
                 windowType = "REGULAR"
             )
