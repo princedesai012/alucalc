@@ -22,6 +22,7 @@ import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.components.ErrorSnackbar
 import com.softellix.alucalc.components.OtpInputBoxes
+import com.softellix.alucalc.components.TopRightLanguageSelector
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.PrimaryFont
 import com.softellix.alucalc.utils.LanguageManager
@@ -54,17 +55,18 @@ fun CreateAccountScreen(
             .padding(24.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(LanguageManager.tr("create_account"), fontSize = 28.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
                 Text(LanguageManager.tr("reg_sub"), color = Color.Gray)
             }
+            TopRightLanguageSelector()
         }
 
         Spacer(modifier = Modifier.height(24.dp))

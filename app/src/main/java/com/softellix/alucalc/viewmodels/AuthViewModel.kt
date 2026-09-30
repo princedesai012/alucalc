@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.softellix.alucalc.data.model.*
 import com.softellix.alucalc.data.remote.ApiService
 import com.softellix.alucalc.data.remote.TokenStore
+import com.softellix.alucalc.utils.LanguageManager
 import org.json.JSONObject
 import kotlinx.coroutines.launch
 
@@ -48,12 +49,12 @@ class AuthViewModel(
     }
 
     private fun extractErrorMessage(errorBodyStr: String?): String {
-        if (errorBodyStr.isNullOrBlank()) return "Action failed. Please try again."
+        if (errorBodyStr.isNullOrBlank()) return LanguageManager.tr("err_action_failed")
         return try {
             val jsonObject = JSONObject(errorBodyStr)
-            jsonObject.optString("message").takeIf { it.isNotBlank() } ?: "Action failed."
+            jsonObject.optString("message").takeIf { it.isNotBlank() } ?: LanguageManager.tr("err_action_failed")
         } catch (e: Exception) {
-            "Action failed."
+            LanguageManager.tr("err_action_failed")
         }
     }
     
@@ -63,7 +64,7 @@ class AuthViewModel(
 
     fun login(phone: String, pass: String, fallbackName: String = "") {
         if (phone.isBlank() || pass.isBlank()) {
-            errorMessage = "Please enter both phone and password."
+            errorMessage = LanguageManager.tr("err_phone_pass_empty")
             return
         }
 
@@ -93,7 +94,7 @@ class AuthViewModel(
                     errorMessage = extractErrorMessage(response.errorBody()?.string())
                 }
             } catch (e: Exception) {
-                errorMessage = "Network error: ${e.localizedMessage}"
+                errorMessage = "${LanguageManager.tr("err_network")}${e.localizedMessage}"
             } finally {
                 isLoading = false
             }
@@ -102,22 +103,22 @@ class AuthViewModel(
 
     fun register(name: String, businessName: String, phone: String, pass: String) {
         if (name.isBlank() || phone.isBlank() || pass.isBlank()) {
-            errorMessage = "Please fill in all required fields."
+            errorMessage = LanguageManager.tr("err_fill_required")
             return
         }
         
         if (phone.length < 10) {
-            errorMessage = "Please enter a valid 10-digit phone number."
+            errorMessage = LanguageManager.tr("err_invalid_phone")
             return
         }
         
         if (pass.length != 4) {
-            errorMessage = "Password/PIN must be exactly 4 digits."
+            errorMessage = LanguageManager.tr("err_invalid_pin")
             return
         }
         
         if (!isRegPhoneVerified) {
-            errorMessage = "Please verify your mobile number first."
+            errorMessage = LanguageManager.tr("err_verify_mobile_first")
             return
         }
 
@@ -135,13 +136,12 @@ class AuthViewModel(
                 )
                 val response = apiService.register(request)
                 if (response.isSuccessful) {
-                    // Registration succeeded -> login with registered name
                     login(phone, pass, fallbackName = name)
                 } else {
                     errorMessage = extractErrorMessage(response.errorBody()?.string())
                 }
             } catch (e: Exception) {
-                errorMessage = "Network error: ${e.localizedMessage}"
+                errorMessage = "${LanguageManager.tr("err_network")}${e.localizedMessage}"
             } finally {
                 isLoading = false
             }
@@ -152,7 +152,7 @@ class AuthViewModel(
     
     fun sendRegistrationOtp(phone: String) {
         if (phone.length < 10) {
-            errorMessage = "Please enter a valid 10-digit phone number."
+            errorMessage = LanguageManager.tr("err_invalid_phone")
             return
         }
         viewModelScope.launch {
@@ -166,7 +166,7 @@ class AuthViewModel(
                     errorMessage = extractErrorMessage(res.errorBody()?.string())
                 }
             } catch (e: Exception) {
-                errorMessage = "Network error: ${e.localizedMessage}"
+                errorMessage = "${LanguageManager.tr("err_network")}${e.localizedMessage}"
             } finally {
                 isLoading = false
             }
@@ -175,7 +175,7 @@ class AuthViewModel(
     
     fun resendRegistrationOtp(phone: String) {
         if (phone.length < 10) {
-            errorMessage = "Please enter a valid 10-digit phone number."
+            errorMessage = LanguageManager.tr("err_invalid_phone")
             return
         }
         viewModelScope.launch {
@@ -184,12 +184,12 @@ class AuthViewModel(
             try {
                 val res = apiService.resendRegistrationOtp(ForgotPasswordRequest(phone))
                 if (res.isSuccessful) {
-                    errorMessage = "OTP resent successfully."
+                    errorMessage = LanguageManager.tr("msg_otp_resent")
                 } else {
                     errorMessage = extractErrorMessage(res.errorBody()?.string())
                 }
             } catch (e: Exception) {
-                errorMessage = "Network error: ${e.localizedMessage}"
+                errorMessage = "${LanguageManager.tr("err_network")}${e.localizedMessage}"
             } finally {
                 isLoading = false
             }
@@ -198,7 +198,7 @@ class AuthViewModel(
     
     fun verifyRegistrationOtp(phone: String, otp: String) {
         if (otp.length < 6) {
-            errorMessage = "Please enter the full 6-digit OTP."
+            errorMessage = LanguageManager.tr("err_enter_full_otp")
             return
         }
         viewModelScope.launch {
@@ -213,7 +213,7 @@ class AuthViewModel(
                     errorMessage = res.body()?.message ?: extractErrorMessage(res.errorBody()?.string())
                 }
             } catch (e: Exception) {
-                errorMessage = "Network error: ${e.localizedMessage}"
+                errorMessage = "${LanguageManager.tr("err_network")}${e.localizedMessage}"
             } finally {
                 isLoading = false
             }
@@ -237,12 +237,12 @@ class AuthViewModel(
 
     fun forgotPassword(phone: String) {
         if (phone.isBlank()) {
-            errorMessage = "Please enter your phone number."
+            errorMessage = LanguageManager.tr("err_phone_pass_empty")
             return
         }
         
         if (phone.length < 10) {
-            errorMessage = "Please enter a valid 10-digit phone number."
+            errorMessage = LanguageManager.tr("err_invalid_phone")
             return
         }
         
@@ -257,7 +257,7 @@ class AuthViewModel(
                     errorMessage = extractErrorMessage(res.errorBody()?.string())
                 }
             } catch (e: Exception) {
-                errorMessage = "Network error: ${e.localizedMessage}"
+                errorMessage = "${LanguageManager.tr("err_network")}${e.localizedMessage}"
             } finally {
                 isLoading = false
             }
@@ -266,12 +266,12 @@ class AuthViewModel(
 
     fun verifyOtp(phone: String, otp: String) {
         if (otp.isBlank()) {
-            errorMessage = "Please enter the OTP."
+            errorMessage = LanguageManager.tr("err_enter_full_otp")
             return
         }
         
         if (otp.length < 6) {
-            errorMessage = "Please enter the full 6-digit OTP."
+            errorMessage = LanguageManager.tr("err_enter_full_otp")
             return
         }
         
@@ -287,7 +287,7 @@ class AuthViewModel(
                     errorMessage = extractErrorMessage(res.errorBody()?.string())
                 }
             } catch (e: Exception) {
-                errorMessage = "Network error: ${e.localizedMessage}"
+                errorMessage = "${LanguageManager.tr("err_network")}${e.localizedMessage}"
             } finally {
                 isLoading = false
             }
@@ -297,19 +297,19 @@ class AuthViewModel(
     fun resetPassword(newPass: String, confirmPass: String) {
         val token = resetToken
         if (token.isNullOrBlank()) {
-            errorMessage = "Missing reset token. Please verify OTP again."
+            errorMessage = LanguageManager.tr("err_missing_reset_token")
             return
         }
         if (newPass.isBlank() || confirmPass.isBlank()) {
-            errorMessage = "Please fill in both password fields."
+            errorMessage = LanguageManager.tr("err_fill_both_pass")
             return
         }
         if (newPass.length != 4) {
-            errorMessage = "New Password must be exactly 4 digits."
+            errorMessage = LanguageManager.tr("err_new_pass_4_digits")
             return
         }
         if (newPass != confirmPass) {
-            errorMessage = "Passwords do not match."
+            errorMessage = LanguageManager.tr("err_pass_mismatch")
             return
         }
         
@@ -325,7 +325,7 @@ class AuthViewModel(
                     errorMessage = extractErrorMessage(res.errorBody()?.string())
                 }
             } catch (e: Exception) {
-                errorMessage = "Network error: ${e.localizedMessage}"
+                errorMessage = "${LanguageManager.tr("err_network")}${e.localizedMessage}"
             } finally {
                 isLoading = false
             }

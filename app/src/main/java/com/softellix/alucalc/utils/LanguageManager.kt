@@ -152,7 +152,38 @@ object LanguageManager {
         "preferences" to "PREFERENCES",
         "app_language" to "Application Language",
         "logout" to "Logout",
-        "logged_out" to "Logged out successfully"
+        "logged_out" to "Logged out successfully",
+
+        // New Errors and Notifications
+        "err_phone_pass_empty" to "Please enter both phone and password.",
+        "err_fill_required" to "Please fill in all required fields.",
+        "err_invalid_phone" to "Please enter a valid 10-digit phone number.",
+        "err_invalid_pin" to "Password/PIN must be exactly 4 digits.",
+        "err_verify_mobile_first" to "Please verify your mobile number first.",
+        "err_action_failed" to "Action failed. Please try again.",
+        "err_network" to "Network error: ",
+        "msg_otp_resent" to "OTP resent successfully.",
+        "err_enter_full_otp" to "Please enter the full 6-digit OTP.",
+        "err_missing_reset_token" to "Missing reset token. Please verify OTP again.",
+        "err_fill_both_pass" to "Please fill in both password fields.",
+        "err_new_pass_4_digits" to "New Password must be exactly 4 digits.",
+        "err_pass_mismatch" to "Passwords do not match.",
+        "err_project_name_req" to "Project Name is required",
+        "err_contact_req" to "Contact Information is required",
+        "err_width_height_req" to "Width and Height inches are required.",
+        "err_add_one_window" to "Please add at least one window before calculating.",
+        "msg_lang_updated" to "App language updated to",
+        "msg_pdf_success" to "PDF Report generated successfully!",
+        "msg_pdf_failed" to "Failed to generate PDF Report",
+        "msg_pdf_share_failed" to "Failed to generate PDF Report for sharing",
+        "msg_saved_pdf" to "Saved PDF to",
+        "verify_number" to "Verify Number",
+        "enter_otp_to_verify" to "Enter OTP to verify",
+        "resend_otp" to "Resend OTP",
+        "confirm_otp" to "Confirm OTP",
+        "generated_via" to "Generated via",
+        "window_calc" to "Window Calculator",
+        "password_updated" to "Password updated successfully!"
     )
 
     private val hindiStrings = mapOf(
@@ -288,7 +319,38 @@ object LanguageManager {
         "preferences" to "प्राथमिकताएं",
         "app_language" to "एप्लिकेशन भाषा",
         "logout" to "लॉग आउट करें",
-        "logged_out" to "सफलतापूर्वक लॉग आउट हुए"
+        "logged_out" to "सफलतापूर्वक लॉग आउट हुए",
+
+        // New Errors and Notifications
+        "err_phone_pass_empty" to "कृपया फोन और पासवर्ड दोनों दर्ज करें।",
+        "err_fill_required" to "कृपया सभी आवश्यक फ़ील्ड भरें।",
+        "err_invalid_phone" to "कृपया 10 अंकों का वैध फोन नंबर दर्ज करें।",
+        "err_invalid_pin" to "पासवर्ड/पिन ठीक 4 अंकों का होना चाहिए।",
+        "err_verify_mobile_first" to "कृपया पहले अपना मोबाइल नंबर सत्यापित करें।",
+        "err_action_failed" to "कार्रवाई विफल रही। कृपया पुनः प्रयास करें।",
+        "err_network" to "नेटवर्क त्रुटि: ",
+        "msg_otp_resent" to "ओटीपी सफलतापूर्वक फिर से भेजा गया।",
+        "err_enter_full_otp" to "कृपया पूरा 6 अंकों का ओटीपी दर्ज करें।",
+        "err_missing_reset_token" to "रीसेट टोकन गायब है। कृपया ओटीपी फिर से सत्यापित करें।",
+        "err_fill_both_pass" to "कृपया दोनों पासवर्ड फ़ील्ड भरें।",
+        "err_new_pass_4_digits" to "नया पासवर्ड ठीक 4 अंकों का होना चाहिए।",
+        "err_pass_mismatch" to "पासवर्ड मेल नहीं खाते।",
+        "err_project_name_req" to "प्रोजेक्ट का नाम आवश्यक है",
+        "err_contact_req" to "संपर्क जानकारी आवश्यक है",
+        "err_width_height_req" to "चौड़ाई और ऊंचाई इंच में आवश्यक है।",
+        "err_add_one_window" to "गणना करने से पहले कृपया कम से कम एक खिड़की जोड़ें।",
+        "msg_lang_updated" to "एप्लिकेशन की भाषा अपडेट की गई:",
+        "msg_pdf_success" to "पीडीएफ रिपोर्ट सफलतापूर्वक जनरेट की गई!",
+        "msg_pdf_failed" to "पीडीएफ रिपोर्ट जनरेट करने में विफल",
+        "msg_pdf_share_failed" to "साझा करने के लिए पीडीएफ जनरेट करने में विफल",
+        "msg_saved_pdf" to "पीडीएफ सहेजा गया:",
+        "verify_number" to "नंबर सत्यापित करें",
+        "enter_otp_to_verify" to "सत्यापित करने के लिए ओटीपी दर्ज करें",
+        "resend_otp" to "ओटीपी फिर से भेजें",
+        "confirm_otp" to "ओटीपी की पुष्टि करें",
+        "generated_via" to "द्वारा जनरेट किया गया",
+        "window_calc" to "विंडो कैलकुलेटर",
+        "password_updated" to "पासवर्ड सफलतापूर्वक अपडेट किया गया!"
     )
 
     private val gujaratiStrings = mapOf(
@@ -424,6 +486,37 @@ object LanguageManager {
         "preferences" to "પસંદગીઓ",
         "app_language" to "એપ્લિકેશન ભાષા",
         "logout" to "લોગ આઉટ કરો",
-        "logged_out" to "સફળતાપૂર્વક લોગ આઉટ થયા"
+        "logged_out" to "સફળતાપૂર્વક લોગ આઉટ થયા",
+
+        // New Errors and Notifications
+        "err_phone_pass_empty" to "કૃપા કરીને ફોન અને પાસવર્ડ બંને દાખલ કરો.",
+        "err_fill_required" to "કૃપા કરીને બધી જરૂરી વિગતો ભરો.",
+        "err_invalid_phone" to "કૃપા કરીને ૧૦-અંકનો સાચો ફોન નંબર લખો.",
+        "err_invalid_pin" to "પાસવર્ડ/પીન માત્ર ૪ અંકનો હોવો જોઈએ.",
+        "err_verify_mobile_first" to "કૃપા કરીને પહેલા તમારો મોબાઈલ નંબર વેરીફાઈ કરો.",
+        "err_action_failed" to "પ્રક્રિયા નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો.",
+        "err_network" to "નેટવર્ક એરર: ",
+        "msg_otp_resent" to "ઓટીપી સફળતાપૂર્વક ફરીથી મોકલાયો.",
+        "err_enter_full_otp" to "કૃપા કરીને પૂરો ૬-અંકનો ઓટીપી લખો.",
+        "err_missing_reset_token" to "રીસેટ ટોકન મળતું નથી. કૃપા કરીને ફરી ઓટીપી ચકાસો.",
+        "err_fill_both_pass" to "કૃપા કરીને બંને પાસવર્ડ ખાના ભરો.",
+        "err_new_pass_4_digits" to "નવો પાસવર્ડ માત્ર ૪ અંકનો હોવો જોઈએ.",
+        "err_pass_mismatch" to "પાસવર્ડ મેચ થતો નથી.",
+        "err_project_name_req" to "પ્રોજેક્ટનું નામ જરૂરી છે",
+        "err_contact_req" to "સંપર્ક માહિતી જરૂરી છે",
+        "err_width_height_req" to "પહોળાઈ અને ઊંચાઈ (ઈંચ) જરૂરી છે.",
+        "err_add_one_window" to "ગણતરી કરતા પહેલા કૃપા કરીને ઓછામાં ઓછી એક બારી ઉમેરો.",
+        "msg_lang_updated" to "એપ્લિકેશન ભાષા બદલવામાં આવી:",
+        "msg_pdf_success" to "પીડીએફ રિપોર્ટ સફળતાપૂર્વક તૈયાર થયો!",
+        "msg_pdf_failed" to "પીડીએફ રિપોર્ટ બનાવવામાં નિષ્ફળ",
+        "msg_pdf_share_failed" to "શેર કરવા માટે પીડીએફ રિપોર્ટ બનાવવામાં નિષ્ફળ",
+        "msg_saved_pdf" to "પીડીએફ સેવ થઈ:",
+        "verify_number" to "નંબર વેરીફાઈ કરો",
+        "enter_otp_to_verify" to "વેરીફાઈ કરવા ઓટીપી લખો",
+        "resend_otp" to "ઓટીપી ફરી મોકલો",
+        "confirm_otp" to "ઓટીપી કન્ફર્મ કરો",
+        "generated_via" to "દ્વારા બનાવેલ",
+        "window_calc" to "વિન્ડો કેલ્ક્યુલેટર",
+        "password_updated" to "પાસવર્ડ સફળતાપૂર્વક અપડેટ થયો!"
     )
 }
