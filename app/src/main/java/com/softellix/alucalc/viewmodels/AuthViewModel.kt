@@ -30,6 +30,12 @@ class AuthViewModel(
 
     var otpVerified by mutableStateOf(false)
         private set
+        
+    var isRegOtpSent by mutableStateOf(false)
+        private set
+        
+    var isRegPhoneVerified by mutableStateOf(false)
+        private set
 
     var resetToken by mutableStateOf<String?>(null)
         private set
@@ -49,6 +55,10 @@ class AuthViewModel(
         } catch (e: Exception) {
             "Action failed."
         }
+    }
+    
+    fun setCustomError(msg: String) {
+        errorMessage = msg
     }
 
     fun login(phone: String, pass: String, fallbackName: String = "") {
@@ -105,6 +115,11 @@ class AuthViewModel(
             errorMessage = "Password/PIN must be exactly 4 digits."
             return
         }
+        
+        if (!isRegPhoneVerified) {
+            errorMessage = "Please verify your mobile number first."
+            return
+        }
 
         viewModelScope.launch {
             isLoading = true
@@ -132,6 +147,80 @@ class AuthViewModel(
             }
         }
     }
+
+    // --- REGISTRATION OTP FLOW ---
+    
+    fun sendRegistrationOtp(phone: String) {
+        if (phone.length < 10) {
+            errorMessage = "Please enter a valid 10-digit phone number."
+            return
+        }
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            try {
+                val res = apiService.sendRegistrationOtp(ForgotPasswordRequest(phone))
+                if (res.isSuccessful) {
+                    isRegOtpSent = true
+                } else {
+                    errorMessage = extractErrorMessage(res.errorBody()?.string())
+                }
+            } catch (e: Exception) {
+                errorMessage = "Network error: ${e.localizedMessage}"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+    
+    fun resendRegistrationOtp(phone: String) {
+        if (phone.length < 10) {
+            errorMessage = "Please enter a valid 10-digit phone number."
+            return
+        }
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            try {
+                val res = apiService.resendRegistrationOtp(ForgotPasswordRequest(phone))
+                if (res.isSuccessful) {
+                    errorMessage = "OTP resent successfully."
+                } else {
+                    errorMessage = extractErrorMessage(res.errorBody()?.string())
+                }
+            } catch (e: Exception) {
+                errorMessage = "Network error: ${e.localizedMessage}"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+    
+    fun verifyRegistrationOtp(phone: String, otp: String) {
+        if (otp.length < 6) {
+            errorMessage = "Please enter the full 6-digit OTP."
+            return
+        }
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            try {
+                val res = apiService.verifyRegistrationOtp(VerifyOtpRequest(phone, otp))
+                if (res.isSuccessful && res.body()?.verified == true) {
+                    isRegPhoneVerified = true
+                    isRegOtpSent = false
+                } else {
+                    errorMessage = res.body()?.message ?: extractErrorMessage(res.errorBody()?.string())
+                }
+            } catch (e: Exception) {
+                errorMessage = "Network error: ${e.localizedMessage}"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    // ----------------------------
 
     fun saveGuestSession(name: String = "John Doe", phone: String = "+91 9999999999", business: String = "Doe Windows") {
         viewModelScope.launch {
@@ -247,6 +336,8 @@ class AuthViewModel(
         authSuccess = false
         otpSent = false
         otpVerified = false
+        isRegOtpSent = false
+        isRegPhoneVerified = false
         resetToken = null
         passwordResetSuccess = false
         errorMessage = null

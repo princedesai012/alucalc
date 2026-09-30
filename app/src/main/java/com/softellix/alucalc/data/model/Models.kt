@@ -69,6 +69,12 @@ data class OtpResponse(
 )
 
 @Serializable
+data class RegistrationOtpResponse(
+    val verified: Boolean? = null,
+    val message: String? = null
+)
+
+@Serializable
 data class ResetPasswordRequest(
     val resetToken: String,
     val newPassword: String,

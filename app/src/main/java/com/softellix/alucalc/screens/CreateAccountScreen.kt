@@ -5,7 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.softellix.alucalc.components.AluPrimaryButton
 import com.softellix.alucalc.components.AluTextField
 import com.softellix.alucalc.components.ErrorSnackbar
+import com.softellix.alucalc.components.OtpInputBoxes
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.ui.theme.PrimaryFont
 import com.softellix.alucalc.utils.LanguageManager
@@ -33,6 +37,7 @@ fun CreateAccountScreen(
     var businessName by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var otp by remember { mutableStateOf("") }
 
     // Trigger navigation only when authentication is successful
     LaunchedEffect(viewModel.authSuccess) {
@@ -73,15 +78,81 @@ fun CreateAccountScreen(
         AluTextField(value = businessName, onValueChange = { businessName = it }, placeholder = LanguageManager.tr("enter_biz"))
         Spacer(modifier = Modifier.height(12.dp))
 
-        AluTextField(
-            value = phone,
-            onValueChange = { phone = it },
-            placeholder = LanguageManager.tr("enter_phone"),
-            isNumeric = true,
-            maxLength = 10
-        )
+        Text(LanguageManager.tr("phone_number"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AluTextField(
+                value = phone,
+                onValueChange = { if (!viewModel.isRegPhoneVerified) phone = it },
+                placeholder = LanguageManager.tr("enter_phone"),
+                isNumeric = true,
+                maxLength = 10,
+                modifier = Modifier.weight(1f),
+                enabled = !viewModel.isRegPhoneVerified
+            )
+
+            if (viewModel.isRegPhoneVerified) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "Verified",
+                    tint = Color(0xFF16A34A),
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+        }
+
+        // Verification UI Block
+        if (!viewModel.isRegPhoneVerified && phone.length == 10) {
+            Spacer(modifier = Modifier.height(8.dp))
+            if (!viewModel.isRegOtpSent) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    Text(
+                        text = "Verify Number",
+                        color = Color(0xFF2563EB),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 13.sp,
+                        modifier = Modifier.clickable { viewModel.sendRegistrationOtp(phone) }
+                    )
+                }
+            } else {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Enter OTP to verify", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                OtpInputBoxes(
+                    otpValue = otp,
+                    onOtpChange = { otp = it },
+                    otpLength = 6
+                )
+                
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(
+                        text = "Resend OTP",
+                        color = Color.Gray,
+                        fontSize = 12.sp,
+                        modifier = Modifier.clickable { viewModel.resendRegistrationOtp(phone) }
+                    )
+                    Text(
+                        text = "Confirm OTP",
+                        color = Color(0xFF2563EB),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 13.sp,
+                        modifier = Modifier.clickable { viewModel.verifyRegistrationOtp(phone, otp) }
+                    )
+                }
+            }
+        }
+
         Spacer(modifier = Modifier.height(12.dp))
 
+        Text(LanguageManager.tr("password"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+        Spacer(modifier = Modifier.height(4.dp))
         AluTextField(
             value = password,
             onValueChange = { password = it },
@@ -126,7 +197,13 @@ fun CreateAccountScreen(
         } else {
             AluPrimaryButton(
                 text = LanguageManager.tr("register"),
-                onClick = { viewModel.register(name, businessName, phone, password) }
+                onClick = { 
+                    if (!viewModel.isRegPhoneVerified) {
+                        viewModel.setCustomError("Please verify your mobile number first.")
+                    } else {
+                        viewModel.register(name, businessName, phone, password)
+                    }
+                }
             )
         }
 

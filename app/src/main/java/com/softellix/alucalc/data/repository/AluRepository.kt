@@ -45,6 +45,11 @@ class AluRepository {
     suspend fun resetPassword(req: ResetPasswordRequest) = safeCall { api.resetPassword(req) }
     suspend fun getMe() = safeCall { api.getMe() }
 
+    // 1.1 Registration OTP
+    suspend fun sendRegistrationOtp(req: ForgotPasswordRequest) = safeCall { api.sendRegistrationOtp(req) }
+    suspend fun resendRegistrationOtp(req: ForgotPasswordRequest) = safeCall { api.resendRegistrationOtp(req) }
+    suspend fun verifyRegistrationOtp(req: VerifyOtpRequest) = safeCall { api.verifyRegistrationOtp(req) }
+
     // 2. User Preferences
     suspend fun updateLanguage(req: UpdateLanguageRequest) = safeCall { api.updateLanguage(req) }
 

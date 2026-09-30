@@ -24,6 +24,7 @@ fun AluTextField(
     isPassword: Boolean = false,
     isNumeric: Boolean = false,
     maxLength: Int? = null,
+    enabled: Boolean = true,
     keyboardType: KeyboardType = if (isPassword) KeyboardType.NumberPassword
         else if (isNumeric) KeyboardType.Number
         else KeyboardType.Text
@@ -45,11 +46,15 @@ fun AluTextField(
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         singleLine = true,
+        enabled = enabled,
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = BorderGray,
             focusedBorderColor = Color.Black,
-            unfocusedContainerColor = Color.White,
-            focusedContainerColor = Color.White
+            unfocusedContainerColor = if (enabled) Color.White else Color(0xFFF1F5F9),
+            focusedContainerColor = Color.White,
+            disabledContainerColor = Color(0xFFF1F5F9),
+            disabledTextColor = Color.Gray,
+            disabledBorderColor = BorderGray
         )
     )
 }

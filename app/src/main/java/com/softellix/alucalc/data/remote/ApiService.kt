@@ -32,6 +32,17 @@ interface ApiService {
     @GET("api/auth/me")
     suspend fun getMe(): Response<LoginResponse>
 
+    // 1.1 Registration OTP Endpoints
+    @POST("api/auth/send-registration-otp")
+    suspend fun sendRegistrationOtp(@Body body: ForgotPasswordRequest): Response<ResponseBody>
+
+    @POST("api/auth/resend-registration-otp")
+    suspend fun resendRegistrationOtp(@Body body: ForgotPasswordRequest): Response<ResponseBody>
+
+    @POST("api/auth/verify-registration-otp")
+    suspend fun verifyRegistrationOtp(@Body body: VerifyOtpRequest): Response<RegistrationOtpResponse>
+
+
     // 2. User Preferences
     @PUT("api/users/me/language")
     suspend fun updateLanguage(@Body body: UpdateLanguageRequest): Response<ResponseBody>
