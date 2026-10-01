@@ -94,6 +94,9 @@ fun ReportScreen(
     }
 
     val projectName = reportData?.projectName ?: viewModel.projectName.ifBlank { "Project Estimation" }
+    val projectAddress = viewModel.streetAddress.takeIf { it.isNotBlank() } ?: reportData?.projectAddress ?: ""
+    val contactInfo = viewModel.contactInfo.takeIf { it.isNotBlank() } ?: reportData?.contactInformation ?: ""
+
     val estimator = viewModel.currentUser?.name?.takeIf { it != "User" && it.isNotBlank() }
         ?: estimatorName.takeIf { it != "User" && it.isNotBlank() }
         ?: "Ram"
@@ -292,15 +295,17 @@ fun ReportScreen(
                     projectName = projectName,
                     profileName = profileName,
                     totalUnits = totalUnits,
+                    projectAddress = projectAddress,
+                    contactInfo = contactInfo,
                     businessName = businessName,
                     reportData = reportData,
                     addedWindows = addedWindows
                 )
                 if (file != null) {
-                    Toast.makeText(context, "PDF Report generated successfully!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, LanguageManager.tr("msg_pdf_success"), Toast.LENGTH_SHORT).show()
                     PdfReportGenerator.openOrSharePdf(context, file, isShare = false)
                 } else {
-                    Toast.makeText(context, "Failed to generate PDF Report", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, LanguageManager.tr("msg_pdf_failed"), Toast.LENGTH_SHORT).show()
                 }
             }
         )
@@ -313,6 +318,8 @@ fun ReportScreen(
                     projectName = projectName,
                     profileName = profileName,
                     totalUnits = totalUnits,
+                    projectAddress = projectAddress,
+                    contactInfo = contactInfo,
                     businessName = businessName,
                     reportData = reportData,
                     addedWindows = addedWindows
@@ -320,7 +327,7 @@ fun ReportScreen(
                 if (file != null) {
                     PdfReportGenerator.openOrSharePdf(context, file, isShare = true)
                 } else {
-                    Toast.makeText(context, "Failed to generate PDF Report for sharing", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, LanguageManager.tr("msg_pdf_share_failed"), Toast.LENGTH_SHORT).show()
                 }
             }
         )
@@ -564,7 +571,7 @@ fun GlassDimensionRow(
             Spacer(modifier = Modifier.height(2.dp))
             Surface(
                 color = Color(0xFFF1F5F9),
-                shape = RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(10.dp)
             ) {
                 Text(
                     badgeText,

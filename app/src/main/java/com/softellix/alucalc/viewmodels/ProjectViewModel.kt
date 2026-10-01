@@ -125,8 +125,8 @@ class ProjectViewModel(
             errorMessage = null
             val req = CreateProjectRequest(
                 projectName = projectName,
-                projectAddress = streetAddress.ifBlank { "Surat, Gujarat" },
-                contactInformation = contactInfo,
+                projectAddress = streetAddress.ifBlank { null },
+                contactInformation = contactInfo.ifBlank { null },
                 profileType = mapProfileType(selectedProfile),
                 windowType = "REGULAR"
             )

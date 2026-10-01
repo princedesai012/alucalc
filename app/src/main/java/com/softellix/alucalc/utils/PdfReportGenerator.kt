@@ -24,6 +24,8 @@ object PdfReportGenerator {
         projectName: String,
         profileName: String,
         totalUnits: String,
+        projectAddress: String = "",
+        contactInfo: String = "",
         businessName: String = "બારીમાપ",
         reportData: ProjectReportResponse?,
         addedWindows: List<WindowItem>
@@ -45,15 +47,15 @@ object PdfReportGenerator {
                 strokeWidth = 1f
             }
 
-            val titlePaint = Paint().apply {
+            val bannerTextPaint = Paint().apply {
                 color = Color.WHITE
-                textSize = 18f
+                textSize = 12f
                 isFakeBoldText = true
             }
 
-            val subtitlePaint = Paint().apply {
-                color = Color.parseColor("#94A3B8")
-                textSize = 10.5f
+            val bannerSubPaint = Paint().apply {
+                color = Color.parseColor("#E2E8F0")
+                textSize = 11f
             }
 
             val sectionTitlePaint = Paint().apply {
@@ -99,30 +101,22 @@ object PdfReportGenerator {
             // Fill page background
             canvas.drawRect(0f, 0f, 595f, 842f, pageBgPaint)
 
-            // Top Navy Banner
-            canvas.drawRect(0f, 0f, 595f, 75f, navyBannerPaint)
-            canvas.drawRect(0f, 75f, 595f, 78f, accentBluePaint)
+            // Top Navy Banner (Increased height to 85f to fit 2 metadata lines cleanly)
+            canvas.drawRect(0f, 0f, 595f, 85f, navyBannerPaint)
+            canvas.drawRect(0f, 85f, 595f, 88f, accentBluePaint)
 
-            val displayHeader = if (businessName.isNotBlank() && !businessName.contains("AluCalc", ignoreCase = true) && !businessName.contains("Doe Windows", ignoreCase = true)) {
-                businessName
-            } else {
-                "બારીમાપ"
-            }
+            val displayAddress = if (projectAddress.isNotBlank()) projectAddress else "Surat, Gujarat"
+            val displayContact = if (contactInfo.isNotBlank()) contactInfo else "+91 9999999999"
 
-            val reportTitle = when (LanguageManager.currentLanguage) {
-                "GUJARATI" -> "$displayHeader અંદાજ રિપોર્ટ"
-                "HINDI" -> "$displayHeader अनुमान रिपोर्ट"
-                else -> "${displayHeader.uppercase()} ESTIMATION REPORT"
-            }
+            val line1 = "${LanguageManager.tr("project_name")}: $projectName   |   ${LanguageManager.tr("street_address")}: $displayAddress   |   ${LanguageManager.tr("phone_number")}: $displayContact"
+            val line2 = "${LanguageManager.tr("select_profile")}: $profileName   |   ${LanguageManager.tr("total_windows")}: $totalUnits"
 
-            val metaSubtitle = "${LanguageManager.tr("project_name")}: $projectName   |   ${LanguageManager.tr("select_profile")}: $profileName   |   ${LanguageManager.tr("total_windows")}: $totalUnits"
-
-            canvas.drawText(reportTitle, 25f, 36f, titlePaint)
-            canvas.drawText(metaSubtitle, 25f, 58f, subtitlePaint)
+            canvas.drawText(line1, 25f, 35f, bannerTextPaint)
+            canvas.drawText(line2, 25f, 60f, bannerSubPaint)
 
             val cardLeft = 25f
             val cardRight = 570f
-            var startY = 95f
+            var startY = 105f
 
             val windowModels = extractReportWindowModels(reportData, addedWindows)
 
@@ -217,8 +211,13 @@ object PdfReportGenerator {
 
             // Footer
             canvas.drawLine(25f, 808f, 570f, 808f, dividerPaint)
-            val footerText = if (LanguageManager.currentLanguage == "GUJARATI") "બારીમાપ વિન્ડો કેલ્ક્યુલેટર દ્વારા બનાવેલ" else "Generated via $displayHeader - Window Calculator"
-            canvas.drawText(footerText, 25f, 824f, subtitlePaint.apply { color = Color.GRAY })
+            val displayHeader = if (businessName.isNotBlank() && !businessName.contains("AluCalc", ignoreCase = true) && !businessName.contains("Doe Windows", ignoreCase = true)) {
+                businessName
+            } else {
+                "બારીમાપ"
+            }
+            val footerText = if (LanguageManager.currentLanguage == "GUJARATI") "$displayHeader વિન્ડો કેલ્ક્યુલેટર દ્વારા બનાવેલ" else "Generated via $displayHeader - Window Calculator"
+            canvas.drawText(footerText, 25f, 824f, bannerSubPaint.apply { color = Color.GRAY })
 
             pdfDocument.finishPage(page)
 

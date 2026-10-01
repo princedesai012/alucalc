@@ -49,7 +49,7 @@ fun NewProjectScreen(
         AluTextField(
             value = viewModel.projectName,
             onValueChange = { viewModel.projectName = it },
-            placeholder = LanguageManager.tr("enter_name")
+            placeholder = LanguageManager.tr("project_name")
         )
 
         Spacer(modifier = Modifier.height(16.dp))
