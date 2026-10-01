@@ -163,7 +163,8 @@ fun AppNavigation() {
                             0 -> { /* Already on Dashboard */ }
                             1 -> navController.navigate("projects_list") { popUpTo("dashboard") }
                             2 -> navController.navigate("reports_history") { popUpTo("dashboard") }
-                            3 -> navController.navigate("settings") { popUpTo("dashboard") }
+                            3 -> navController.navigate("invoices_list") { popUpTo("dashboard") }
+                            4 -> navController.navigate("settings") { popUpTo("dashboard") }
                         }
                     }
                 )
@@ -185,7 +186,8 @@ fun AppNavigation() {
                             0 -> navController.navigate("dashboard") { popUpTo("dashboard") }
                             1 -> { /* Already on Projects List */ }
                             2 -> navController.navigate("reports_history") { popUpTo("dashboard") }
-                            3 -> navController.navigate("settings") { popUpTo("dashboard") }
+                            3 -> navController.navigate("invoices_list") { popUpTo("dashboard") }
+                            4 -> navController.navigate("settings") { popUpTo("dashboard") }
                         }
                     }
                 )
@@ -204,8 +206,55 @@ fun AppNavigation() {
                             0 -> navController.navigate("dashboard") { popUpTo("dashboard") }
                             1 -> navController.navigate("projects_list") { popUpTo("dashboard") }
                             2 -> { /* Already on Reports History */ }
-                            3 -> navController.navigate("settings") { popUpTo("dashboard") }
+                            3 -> navController.navigate("invoices_list") { popUpTo("dashboard") }
+                            4 -> navController.navigate("settings") { popUpTo("dashboard") }
                         }
+                    }
+                )
+            }
+
+            // Route 5b: Invoices List
+            composable("invoices_list") {
+                InvoicesListScreen(
+                    onCreateInvoiceClick = {
+                        navController.navigate("create_invoice")
+                    },
+                    onInvoiceClick = { invoiceId ->
+                        navController.navigate("invoice_detail/$invoiceId")
+                    },
+                    onTabSelected = { tab ->
+                        when (tab) {
+                            0 -> navController.navigate("dashboard") { popUpTo("dashboard") }
+                            1 -> navController.navigate("projects_list") { popUpTo("dashboard") }
+                            2 -> navController.navigate("reports_history") { popUpTo("dashboard") }
+                            3 -> { /* Already on Invoices List */ }
+                            4 -> navController.navigate("settings") { popUpTo("dashboard") }
+                        }
+                    }
+                )
+            }
+
+            // Route 5c: Create Invoice
+            composable("create_invoice") {
+                CreateInvoiceScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onGenerateInvoiceClick = {
+                        navController.navigate("invoice_detail/new") {
+                            popUpTo("invoices_list")
+                        }
+                    }
+                )
+            }
+
+            // Route 5d: Invoice Detail Preview
+            composable("invoice_detail/{invoiceId}") { backStackEntry ->
+                val invoiceId = backStackEntry.arguments?.getString("invoiceId") ?: "1"
+                InvoiceDetailScreen(
+                    invoiceId = invoiceId,
+                    onBackClick = {
+                        navController.popBackStack()
                     }
                 )
             }
@@ -227,7 +276,8 @@ fun AppNavigation() {
                             0 -> navController.navigate("dashboard") { popUpTo("dashboard") }
                             1 -> navController.navigate("projects_list") { popUpTo("dashboard") }
                             2 -> navController.navigate("reports_history") { popUpTo("dashboard") }
-                            3 -> { /* Already on Settings */ }
+                            3 -> navController.navigate("invoices_list") { popUpTo("dashboard") }
+                            4 -> { /* Already on Settings */ }
                         }
                     }
                 )

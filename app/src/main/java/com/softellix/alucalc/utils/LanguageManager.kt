@@ -23,6 +23,7 @@ object LanguageManager {
         "home" to "Home",
         "projects" to "Projects",
         "reports" to "Reports",
+        "invoices" to "Invoices",
         "settings" to "Settings",
         "all_projects" to "Projects",
 
@@ -154,6 +155,20 @@ object LanguageManager {
         "logout" to "Logout",
         "logged_out" to "Logged out successfully",
 
+        // Invoices Strings
+        "invoices_title" to "Invoices",
+        "manage_invoices_sub" to "Manage and create client bills and invoices",
+        "create_invoice" to "Create Invoice",
+        "party_name" to "Party Name",
+        "sq_feet" to "Total Sq. Feet",
+        "price_per_sqft" to "Price per Sq. Ft",
+        "add_other_item" to "+ Add Other Item",
+        "discount" to "Discount",
+        "total_amount" to "Total Amount",
+        "invoice_no" to "Invoice No.",
+        "notes" to "Notes / Terms",
+        "no_invoices_yet" to "No invoices created yet. Tap '+' below to create one!",
+
         // New Errors and Notifications
         "err_phone_pass_empty" to "Please enter both phone and password.",
         "err_fill_required" to "Please fill in all required fields.",
@@ -190,6 +205,7 @@ object LanguageManager {
         "home" to "होम",
         "projects" to "प्रोजेक्ट्स",
         "reports" to "रिपोर्ट",
+        "invoices" to "इनवॉइस",
         "settings" to "સેટિંગ્સ",
         "all_projects" to "प्रोजेक्ट्स",
 
@@ -321,6 +337,20 @@ object LanguageManager {
         "logout" to "लॉग आउट करें",
         "logged_out" to "सफलतापूर्वक लॉग आउट हुए",
 
+        // Invoices Strings
+        "invoices_title" to "इनवॉइस",
+        "manage_invoices_sub" to "क्लाइंट के बिल और इनवॉइस प्रबंधित करें",
+        "create_invoice" to "इनवॉइस बनाएं",
+        "party_name" to "पार्टी का नाम",
+        "sq_feet" to "कुल वर्ग फीट",
+        "price_per_sqft" to "प्रति वर्ग फीट मूल्य",
+        "add_other_item" to "+ अन्य आइटम जोड़ें",
+        "discount" to "छूट",
+        "total_amount" to "कुल राशि",
+        "invoice_no" to "इनवॉइस नंबर",
+        "notes" to "नोट्स / शर्तें",
+        "no_invoices_yet" to "अभी तक कोई इनवॉइस नहीं बनाया गया। बनाने के लिए नीचे '+' पर टैप करें!",
+
         // New Errors and Notifications
         "err_phone_pass_empty" to "कृपया फोन और पासवर्ड दोनों दर्ज करें।",
         "err_fill_required" to "कृपया सभी आवश्यक फ़ील्ड भरें।",
@@ -357,6 +387,7 @@ object LanguageManager {
         "home" to "હોમ",
         "projects" to "પ્રોજેક્ટ્સ",
         "reports" to "રિપોર્ટ",
+        "invoices" to "ઇન્વોઇસ",
         "settings" to "સેટિંગ્સ",
         "all_projects" to "પ્રોજેક્ટ્સ",
 
@@ -488,6 +519,20 @@ object LanguageManager {
         "logout" to "લોગ આઉટ કરો",
         "logged_out" to "સફળતાપૂર્વક લોગ આઉટ થયા",
 
+        // Invoices Strings
+        "invoices_title" to "ઇન્વોઇસ",
+        "manage_invoices_sub" to "ક્લાયન્ટના બિલ અને ઇન્વોઇસ મેનેજ કરો",
+        "create_invoice" to "ઇન્વોઇસ બનાવો",
+        "party_name" to "પાર્ટીનું નામ",
+        "sq_feet" to "કુલ સ્ક્વેર ફીટ",
+        "price_per_sqft" to "પ્રતિ સ્ક્વેર ફીટ ભાવ",
+        "add_other_item" to "+ અન્ય વસ્તુ ઉમેરો",
+        "discount" to "ડિસ્કાઉન્ટ",
+        "total_amount" to "કુલ રકમ",
+        "invoice_no" to "ઇન્વોઇસ નં.",
+        "notes" to "નોંધ / શરતો",
+        "no_invoices_yet" to "હજુ સુધી કોઈ ઇન્વોઇસ બનાવ્યા નથી. નવો ઇન્વોઇસ બનાવવા માટે નીચે '+' પર ટેપ કરો!",
+
         // New Errors and Notifications
         "err_phone_pass_empty" to "કૃપા કરીને ફોન અને પાસવર્ડ બંને દાખલ કરો.",
         "err_fill_required" to "કૃપા કરીને બધી જરૂરી વિગતો ભરો.",
@@ -514,7 +559,7 @@ object LanguageManager {
         "verify_number" to "નંબર વેરીફાઈ કરો",
         "enter_otp_to_verify" to "વેરીફાઈ કરવા ઓટીપી લખો",
         "resend_otp" to "ઓટીપી ફરી મોકલો",
-        "confirm_otp" to "ઓટીપી કન્ફર્મ કરો",
+        "confirm_otp" to "ઓტიપી કન્ફર્મ કરો",
         "generated_via" to "દ્વારા બનાવેલ",
         "window_calc" to "વિન્ડો કેલ્ક્યુલેટર",
         "password_updated" to "પાસવર્ડ સફળતાપૂર્વક અપડેટ થયો!"
