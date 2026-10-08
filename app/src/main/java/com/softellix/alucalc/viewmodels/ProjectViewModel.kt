@@ -282,13 +282,19 @@ class ProjectViewModel(
     }
 
     fun resetProject() {
-        projectName = ""
-        contactInfo = ""
-        streetAddress = ""
+        // Base logic for sequential Project Number
+        val totalProjects = projectsList.size + recentProjectsList.size
+        val nextId = 101 + totalProjects
+
+        projectName = "Project_$nextId"
+        contactInfo = "9876543210"
+        streetAddress = "Surat"
+
         selectedProfile = "40mm"
         currentProjectId = null
         reportResponse = null
         _addedWindows.clear()
+        clearErrorMessage()
     }
 
     private fun mapProfileType(profile: String): String {

@@ -228,13 +228,13 @@ fun ReportScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // 2. Top & Side Section
-        SectionCard(title = LanguageManager.tr("sec_top_side")) {
+        SectionCard(title = LanguageManager.tr("sec_top_bottom")) {
             windowModels.forEach { win ->
                 SinglePieceRow(
                     title = win.title,
                     badgeText = win.trackQty,
-                    valueText = "${win.topSideVal}\"",
-                    pcsText = "(${win.topSidePcs} ${LanguageManager.tr("pcs_unit")})",
+                    valueText = "${win.topBottomVal}\"",
+                    pcsText = "(${win.topBottomPcs} ${LanguageManager.tr("pcs_unit")})",
                     accentColor = Color(0xFF2E7D32)
                 )
             }
@@ -243,13 +243,13 @@ fun ReportScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // 3. Top & Bottom Section
-        SectionCard(title = LanguageManager.tr("sec_top_bottom")) {
+        SectionCard(title = LanguageManager.tr("sec_top_side")) {
             windowModels.forEach { win ->
                 SinglePieceRow(
                     title = win.title,
                     badgeText = win.trackQty,
-                    valueText = "${win.topBottomVal}\"",
-                    pcsText = "(${win.topBottomPcs} ${LanguageManager.tr("pcs_unit")})",
+                    valueText = "${win.topSideVal}\"",
+                    pcsText = "(${win.topSidePcs} ${LanguageManager.tr("pcs_unit")})",
                     accentColor = Color(0xFF2E7D32)
                 )
             }

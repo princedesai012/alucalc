@@ -109,8 +109,8 @@ object LanguageManager {
         "share_report" to "Share Complete Report",
 
         "sec_interlock_handle" to "1. Interlock & Handle",
-        "sec_top_side" to "2. Top & Side",
-        "sec_top_bottom" to "3. Top & Bottom",
+        "sec_top_side" to "2. Top, Bottom & Side",
+        "sec_top_bottom" to "3. Baring Patti",
         "sec_glass_dimensions" to "4. Glass Dimensions (Width & Height)",
         "window_prefix" to "Window",
         "track_unit" to "Track",
@@ -276,8 +276,8 @@ object LanguageManager {
         "share_report" to "संपूर्ण रिपोर्ट साझा करें",
 
         "sec_interlock_handle" to "1. इंटरलॉक और हैंडल",
-        "sec_top_side" to "2. टॉप और साइड",
-        "sec_top_bottom" to "3. टॉप और बॉटम",
+        "sec_top_side" to "2. टॉप, बॉटम और साइड",
+        "sec_top_bottom" to "3. बैरिंग पट्टी",
         "sec_glass_dimensions" to "4. कांच का आकार (चौड़ाई और ऊंचाई)",
         "window_prefix" to "विंडो",
         "track_unit" to "ट्रैक",
@@ -443,8 +443,8 @@ object LanguageManager {
         "share_report" to "સંપૂર્ણ રિપોર્ટ શેર કરો",
 
         "sec_interlock_handle" to "૧. ઈન્ટરલોક અને હેન્ડલ",
-        "sec_top_side" to "૨. ટોપ અને સાઈડ",
-        "sec_top_bottom" to "૩. ટોપ અને બોટમ",
+        "sec_top_side" to "૨. ટોપ, બોટમ અને સાઈડ",
+        "sec_top_bottom" to "૩. બેરિંગ પટ્ટી",
         "sec_glass_dimensions" to "૪. કાચનું માપ (પહોળાઈ અને ઊંચાઈ)",
         "window_prefix" to "વિન્ડો",
         "track_unit" to "ટ્રેક",
