@@ -25,6 +25,7 @@ import com.softellix.alucalc.viewmodels.ProjectViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 data class ReportItemUI(
     val id: String,
@@ -39,25 +40,48 @@ fun formatReportDate(rawDate: String?): String {
         return SimpleDateFormat("MMM dd, yyyy", Locale.US).format(Date())
     }
     return try {
-        if (rawDate.length >= 10) {
-            val datePart = rawDate.substring(0, 10)
-            val parts = datePart.split("-")
-            if (parts.size == 3) {
-                val year = parts[0].toIntOrNull() ?: 2026
-                val month = parts[1].toIntOrNull() ?: 1
-                val day = parts[2].toIntOrNull() ?: 1
-                val cal = java.util.Calendar.getInstance().apply {
-                    set(year, month - 1, day)
-                }
-                SimpleDateFormat("MMM dd, yyyy", Locale.US).format(cal.time)
-            } else {
-                datePart
-            }
+        // Handle ISO 8601 strings like "2026-10-10T12:34:56Z" or "2026-10-10T12:34:56.789Z"
+        val parser = if (rawDate.contains(".")) {
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+        } else if (rawDate.contains("T")) {
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
         } else {
-            rawDate
+            SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        }
+        
+        if (rawDate.endsWith("Z")) {
+            parser.timeZone = TimeZone.getTimeZone("UTC")
+        }
+
+        val dateObj = parser.parse(rawDate)
+        if (dateObj != null) {
+            SimpleDateFormat("MMM dd, yyyy", Locale.US).format(dateObj)
+        } else {
+            rawDate.take(10) // fallback
         }
     } catch (e: Exception) {
-        rawDate.take(10)
+        // Very safe fallback to standard substring logic if parsing completely fails
+        try {
+            if (rawDate.length >= 10) {
+                val datePart = rawDate.substring(0, 10)
+                val parts = datePart.split("-")
+                if (parts.size == 3) {
+                    val year = parts[0].toIntOrNull() ?: 2026
+                    val month = parts[1].toIntOrNull() ?: 1
+                    val day = parts[2].toIntOrNull() ?: 1
+                    val cal = java.util.Calendar.getInstance().apply {
+                        set(year, month - 1, day)
+                    }
+                    SimpleDateFormat("MMM dd, yyyy", Locale.US).format(cal.time)
+                } else {
+                    datePart
+                }
+            } else {
+                rawDate
+            }
+        } catch (inner: Exception) {
+            rawDate.take(10)
+        }
     }
 }
 
@@ -71,18 +95,23 @@ fun ReportsHistoryScreen(
         viewModel.fetchRecentProjects()
     }
 
-    // Sort by p.rawDate newest first
-    val sortedProjects = viewModel.recentProjectsList.sortedByDescending { p ->
+    // Sort by chronological order first (oldest to newest) to assign consistent IDs
+    val chronologicalProjects = viewModel.recentProjectsList.sortedBy { p ->
         p.rawDate ?: ""
     }
 
-    val reports = sortedProjects.mapIndexed { idx, p ->
-        val codeNumber = 100 + (sortedProjects.size - idx)
+    val projectsWithId = chronologicalProjects.mapIndexed { idx, p ->
+        val resolvedNumber = p.projectNumber ?: (101 + idx)
+        p to resolvedNumber
+    }
+
+    // Finally sort them newest first for display
+    val reports = projectsWithId.sortedByDescending { it.first.rawDate ?: "" }.map { (p, num) ->
         val formattedDate = formatReportDate(p.rawDate)
         ReportItemUI(
             id = p.id,
             projectTitle = p.projectName,
-            reportCode = "#AP-$codeNumber",
+            reportCode = "#AP-$num",
             estimator = viewModel.currentUser?.name ?: "Ram",
             date = formattedDate
         )

@@ -29,6 +29,7 @@ import com.softellix.alucalc.viewmodels.ProjectViewModel
 data class ProjectItemUI(
     val id: String,
     val name: String,
+    val projectCode: String,
     val address: String
 )
 
@@ -45,11 +46,23 @@ fun ProjectsListScreen(
         viewModel.fetchProjectsList()
     }
 
-    // Newest / Latest projects on top
-    val liveProjects = viewModel.projectsList.reversed().map { p ->
+    // Sort by chronological order first (oldest to newest) to assign consistent IDs
+    val chronologicalProjects = viewModel.projectsList.sortedBy { p ->
+        p.rawDate ?: ""
+    }
+
+    // Assign project number based on absolute chronological position
+    val projectsWithId = chronologicalProjects.mapIndexed { idx, p ->
+        val resolvedNumber = p.projectNumber ?: (101 + idx)
+        p to resolvedNumber
+    }
+
+    // Finally sort them newest first for display
+    val liveProjects = projectsWithId.sortedByDescending { it.first.rawDate ?: "" }.map { (p, num) ->
         ProjectItemUI(
             id = p.id,
             name = p.projectName,
+            projectCode = "#AP-$num",
             address = p.projectAddress ?: ""
         )
     }
@@ -137,13 +150,10 @@ fun ProjectsListScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(
-                                        project.name, 
-                                        fontWeight = FontWeight.Bold, 
-                                        fontSize = 16.sp, 
-                                        color = PrimaryFont,
-                                        modifier = Modifier.weight(1f)
-                                    )
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(project.name, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = PrimaryFont)
+                                        Text(project.projectCode, color = Color.Gray, fontSize = 12.sp)
+                                    }
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Icon(
                                         Icons.AutoMirrored.Filled.ArrowForward,
@@ -153,7 +163,7 @@ fun ProjectsListScreen(
                                     )
                                 }
                                 if (project.address.isNotBlank()) {
-                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Spacer(modifier = Modifier.height(8.dp))
                                     Text(project.address, color = Color.Gray, fontSize = 12.sp)
                                 }
                             }
