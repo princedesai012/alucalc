@@ -76,11 +76,22 @@ class AuthViewModel(
                 if (response.isSuccessful && response.body() != null) {
                     val authBody = response.body()!!
                     val token = authBody.accessToken ?: ""
-                    val userObj = authBody.user
+                    
+                    // Set token temporarily so getMe() works with authInterceptor
+                    tokenStore.updateAccessToken(token)
+
+                    // Fetch full user profile via GET /api/auth/me to get accurate name & business name
+                    val meResponse = try {
+                        apiService.getMe()
+                    } catch (e: Exception) {
+                        null
+                    }
+
+                    val userObj = meResponse?.body()?.user ?: authBody.user
                     val userId = userObj?.id
-                    val userName = userObj?.name?.ifBlank { null } ?: fallbackName.ifBlank { "User" }
+                    val userName = userObj?.name?.ifBlank { null } ?: fallbackName.ifBlank { userObj?.name ?: "User" }
                     val uPhone = userObj?.phone ?: phone
-                    val uBusiness = userObj?.businessName ?: "AluCalc Client"
+                    val uBusiness = userObj?.businessName ?: "Barimap Client"
 
                     tokenStore.saveSession(
                         token = token,

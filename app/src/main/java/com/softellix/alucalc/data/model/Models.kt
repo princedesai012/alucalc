@@ -104,14 +104,14 @@ data class ProjectResponse(
     val contactInformation: String? = null,
     val profileType: String? = null,
     val windowType: String? = null,
-    @SerialName("createdAt") val createdAtCamel: String? = null,
     @SerialName("created_at") val createdAtSnake: String? = null,
+    @SerialName("createdAt") val createdAtCamel: String? = null,
     @SerialName("createdDate") val createdDateCamel: String? = null,
     @SerialName("created_date") val createdDateSnake: String? = null,
     @SerialName("date") val dateField: String? = null
 ) {
     val rawDate: String?
-        get() = createdAtCamel ?: createdAtSnake ?: createdDateCamel ?: createdDateSnake ?: dateField
+        get() = createdAtSnake ?: createdAtCamel ?: createdDateCamel ?: createdDateSnake ?: dateField
 }
 
 @Serializable
@@ -158,6 +158,7 @@ data class WindowCalculationResponse(
 data class ProjectReportResponse(
     val projectId: String,
     val projectName: String,
+    val projectNumber: Int? = null,
     val projectAddress: String? = null,
     val contactInformation: String? = null,
     @SerialName("createdDate") val createdDateCamel: String? = null,
@@ -168,5 +169,5 @@ data class ProjectReportResponse(
     val windows: List<WindowCalculationResponse> = emptyList()
 ) {
     val createdDate: String?
-        get() = createdDateCamel ?: createdDateSnake ?: createdAtCamel ?: createdAtSnake
+        get() = createdAtSnake ?: createdAtCamel ?: createdDateCamel ?: createdDateSnake
 }

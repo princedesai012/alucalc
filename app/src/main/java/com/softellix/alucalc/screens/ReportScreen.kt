@@ -67,6 +67,7 @@ fun ReportScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchReportOnBackend()
         viewModel.fetchCurrentUser()
+        viewModel.fetchProjectsList()
         val name = tokenStore.getUserName()
         if (!name.isNullOrBlank() && name != "User") {
             estimatorName = name
@@ -94,6 +95,30 @@ fun ReportScreen(
     }
 
     val projectName = reportData?.projectName ?: viewModel.projectName.ifBlank { "Project Estimation" }
+    
+    // Resolve project number dynamically
+    val projectNo = reportData?.projectNumber ?: run {
+        // If not from report API directly, try to find it in the recent projects list via matching ID
+        val pId = viewModel.currentProjectId ?: reportData?.projectId
+        val foundProject = viewModel.recentProjectsList.find { it.id == pId } ?: viewModel.projectsList.find { it.id == pId }
+        foundProject?.projectNumber
+    }
+    
+    // Calculate fallback index if projectNo is completely missing
+    val fallbackIdx = remember(viewModel.projectsList, viewModel.currentProjectId) {
+        val pId = viewModel.currentProjectId
+        val list = viewModel.projectsList
+        val index = list.indexOfFirst { it.id == pId }
+        if (index != -1) {
+            100 + list.size - index
+        } else {
+            val idx = viewModel.recentProjectsList.indexOfFirst { it.id == pId }
+            if (idx != -1) 100 + viewModel.recentProjectsList.size - idx else 101
+        }
+    }
+    
+    val displayProjectCode = if (projectNo != null) "#AP-$projectNo" else "#AP-$fallbackIdx"
+    
     val projectAddress = viewModel.streetAddress.takeIf { it.isNotBlank() } ?: reportData?.projectAddress ?: ""
     val contactInfo = viewModel.contactInfo.takeIf { it.isNotBlank() } ?: reportData?.contactInformation ?: ""
 
@@ -194,7 +219,7 @@ fun ReportScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(projectName, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = PrimaryFont)
-                    Text("#AP-098", color = Color.Gray, fontSize = 14.sp)
+                    Text(displayProjectCode, color = Color.Gray, fontSize = 14.sp)
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
@@ -212,7 +237,7 @@ fun ReportScreen(
         Text(LanguageManager.tr("calc_breakdown"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
         Spacer(modifier = Modifier.height(12.dp))
 
-        // 1. Interlock & Handle Section (Bifurcated Handle vs Interlock Pieces)
+        // 1. Interlock & Handle Section
         SectionCard(title = LanguageManager.tr("sec_interlock_handle")) {
             windowModels.forEach { win ->
                 SinglePieceRow(
@@ -227,7 +252,7 @@ fun ReportScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 2. Top & Side Section
+        // 2. Top, Bottom and Side (combining the UI section name locally)
         SectionCard(title = LanguageManager.tr("sec_top_side")) {
             windowModels.forEach { win ->
                 SinglePieceRow(
@@ -242,7 +267,7 @@ fun ReportScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 3. Top & Bottom Section
+        // 3. Bearing Patti (Top Bottom)
         SectionCard(title = LanguageManager.tr("sec_top_bottom")) {
             windowModels.forEach { win ->
                 SinglePieceRow(

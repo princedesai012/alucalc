@@ -4,12 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -108,22 +107,21 @@ fun CreateAccountScreen(
             }
         }
 
-        // Verification UI Block
+        // Verification UI Block (Prominent Buttons)
         if (!viewModel.isRegPhoneVerified && phone.length == 10) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             if (!viewModel.isRegOtpSent) {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    Text(
-                        text = "Verify Number",
-                        color = Color(0xFF2563EB),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 13.sp,
-                        modifier = Modifier.clickable { viewModel.sendRegistrationOtp(phone) }
-                    )
+                Button(
+                    onClick = { viewModel.sendRegistrationOtp(phone) },
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB))
+                ) {
+                    Text("Verify Number", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp)
                 }
             } else {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text("Enter OTP to verify", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text("Enter OTP sent to your phone", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 OtpInputBoxes(
@@ -133,20 +131,23 @@ fun CreateAccountScreen(
                 )
                 
                 Spacer(modifier = Modifier.height(12.dp))
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(
-                        text = "Resend OTP",
-                        color = Color.Gray,
-                        fontSize = 12.sp,
-                        modifier = Modifier.clickable { viewModel.resendRegistrationOtp(phone) }
-                    )
-                    Text(
-                        text = "Confirm OTP",
-                        color = Color(0xFF2563EB),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 13.sp,
-                        modifier = Modifier.clickable { viewModel.verifyRegistrationOtp(phone, otp) }
-                    )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TextButton(onClick = { viewModel.resendRegistrationOtp(phone) }) {
+                        Text(LanguageManager.tr("resend_otp"), color = Color.Gray, fontSize = 12.sp)
+                    }
+                    
+                    Button(
+                        onClick = { viewModel.verifyRegistrationOtp(phone, otp) },
+                        modifier = Modifier.height(40.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB))
+                    ) {
+                        Text("Confirm OTP", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                    }
                 }
             }
         }
