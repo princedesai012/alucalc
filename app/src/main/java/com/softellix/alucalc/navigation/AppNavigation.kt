@@ -22,6 +22,7 @@ import com.softellix.alucalc.screens.*
 import com.softellix.alucalc.ui.theme.BackgroundGray
 import com.softellix.alucalc.viewmodels.AuthViewModel
 import com.softellix.alucalc.viewmodels.ProjectViewModel
+import com.softellix.alucalc.viewmodels.InvoiceViewModel
 import kotlinx.coroutines.launch
 
 class AuthViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
@@ -78,6 +79,7 @@ fun AppNavigation() {
         factory = AuthViewModelFactory(context)
     )
     val sharedViewModel: ProjectViewModel = viewModel()
+    val invoiceViewModel: InvoiceViewModel = viewModel()
 
     if (isCheckingSession) {
         Box(
@@ -216,6 +218,7 @@ fun AppNavigation() {
             // Route 5b: Invoices List
             composable("invoices_list") {
                 InvoicesListScreen(
+                    viewModel = invoiceViewModel,
                     onCreateInvoiceClick = {
                         navController.navigate("create_invoice")
                     },
@@ -237,11 +240,13 @@ fun AppNavigation() {
             // Route 5c: Create Invoice
             composable("create_invoice") {
                 CreateInvoiceScreen(
+                    viewModel = invoiceViewModel,
+                    projectViewModel = sharedViewModel,
                     onBackClick = {
                         navController.popBackStack()
                     },
-                    onGenerateInvoiceClick = {
-                        navController.navigate("invoice_detail/new") {
+                    onGenerateInvoiceClick = { newId ->
+                        navController.navigate("invoice_detail/$newId") {
                             popUpTo("invoices_list")
                         }
                     }
@@ -253,6 +258,7 @@ fun AppNavigation() {
                 val invoiceId = backStackEntry.arguments?.getString("invoiceId") ?: "1"
                 InvoiceDetailScreen(
                     invoiceId = invoiceId,
+                    viewModel = invoiceViewModel,
                     onBackClick = {
                         navController.popBackStack()
                     }

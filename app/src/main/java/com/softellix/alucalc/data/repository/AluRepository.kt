@@ -13,8 +13,15 @@ class AluRepository {
         return try {
             val response = block()
             if (response.isSuccessful) {
-                response.body()?.let { Result.success(it) }
-                    ?: Result.failure(Exception("Empty response from server"))
+                val body = response.body()
+                if (body != null) {
+                    Result.success(body)
+                } else if (response.code() == 201 || response.code() == 204 || response.code() == 200) {
+                    @Suppress("UNCHECKED_CAST")
+                    Result.success(Unit as T)
+                } else {
+                    Result.failure(Exception("Empty response from server"))
+                }
             } else {
                 val errorBodyStr = response.errorBody()?.string()
                 val parsedErrorMsg = extractErrorMessage(errorBodyStr) ?: "Request failed"
@@ -70,4 +77,11 @@ class AluRepository {
     suspend fun getWindows(projectId: String) = safeCall { api.getWindows(projectId) }
     suspend fun updateWindow(projectId: String, windowId: String, req: AddWindowRequest) = safeCall { api.updateWindow(projectId, windowId, req) }
     suspend fun deleteWindow(projectId: String, windowId: String) = safeCall { api.deleteWindow(projectId, windowId) }
+
+    // 5. Invoices (Routed to primary backend as requested)
+    suspend fun createInvoice(req: InvoiceRequest) = safeCall { api.createInvoice(req) }
+    suspend fun getInvoices() = safeCall { api.getInvoices() }
+    suspend fun getInvoice(invoiceId: String) = safeCall { api.getInvoice(invoiceId) }
+    suspend fun deleteInvoice(invoiceId: String) = safeCall { api.deleteInvoice(invoiceId) }
+    suspend fun downloadInvoicePdf(invoiceId: String) = safeCall { api.downloadInvoicePdf(invoiceId) }
 }

@@ -23,28 +23,20 @@ import com.softellix.alucalc.ui.theme.BorderGray
 import com.softellix.alucalc.ui.theme.PrimaryDark
 import com.softellix.alucalc.ui.theme.PrimaryFont
 import com.softellix.alucalc.utils.LanguageManager
-
-data class InvoiceItemUI(
-    val id: String,
-    val invoiceNo: String,
-    val partyName: String,
-    val date: String,
-    val totalAmount: String
-)
+import com.softellix.alucalc.viewmodels.InvoiceViewModel
 
 @Composable
 fun InvoicesListScreen(
+    viewModel: InvoiceViewModel,
     onCreateInvoiceClick: () -> Unit,
     onInvoiceClick: (String) -> Unit,
     onTabSelected: (Int) -> Unit
 ) {
-    val sampleInvoices = remember {
-        listOf(
-            InvoiceItemUI("1", "#INV-001", "Smit Desai", "Oct 01, 2026", "₹ 15,400"),
-            InvoiceItemUI("2", "#INV-002", "Rajeshbhai Patel", "Sep 28, 2026", "₹ 28,900"),
-            InvoiceItemUI("3", "#INV-003", "Kirit Shah", "Sep 25, 2026", "₹ 9,500")
-        )
+    LaunchedEffect(Unit) {
+        viewModel.fetchInvoices()
     }
+
+    val invoices = viewModel.invoicesList.sortedByDescending { it.createdAt ?: "" }
 
     Scaffold(
         bottomBar = {
@@ -75,10 +67,17 @@ fun InvoicesListScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text("${LanguageManager.tr("generated_reports_count")} (${sampleInvoices.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
+            Text("${LanguageManager.tr("invoices_title")} (${invoices.size})", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryFont)
             Spacer(modifier = Modifier.height(12.dp))
 
-            if (sampleInvoices.isEmpty()) {
+            if (viewModel.isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else if (invoices.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxWidth().weight(1f),
                     contentAlignment = Alignment.Center
@@ -90,7 +89,10 @@ fun InvoicesListScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.fillMaxWidth().weight(1f)
                 ) {
-                    items(sampleInvoices) { inv ->
+                    items(invoices) { inv ->
+                        val dateDisp = formatReportDate(inv.createdAt)
+                        val totalDisp = "₹ %.2f".format(inv.finalTotal)
+                        
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -107,10 +109,10 @@ fun InvoicesListScreen(
                                 ) {
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(inv.partyName, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = PrimaryFont)
-                                        Text(inv.invoiceNo, color = Color.Gray, fontSize = 12.sp)
+                                        Text(inv.invoiceNumber ?: "INV", color = Color.Gray, fontSize = 12.sp)
                                     }
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text(inv.totalAmount, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color(0xFF16A34A))
+                                    Text(totalDisp, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color(0xFF16A34A))
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Icon(
                                         Icons.AutoMirrored.Filled.ArrowForward,
@@ -127,7 +129,7 @@ fun InvoicesListScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text("${LanguageManager.tr("created_on")} ${inv.date}", fontSize = 11.sp, color = Color.Gray)
+                                    Text("${LanguageManager.tr("created_on")} $dateDisp", fontSize = 11.sp, color = Color.Gray)
                                 }
                             }
                         }

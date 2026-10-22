@@ -90,4 +90,21 @@ interface ApiService {
 
     @DELETE("api/projects/{projectId}/windows/{windowId}")
     suspend fun deleteWindow(@Path("projectId") projectId: String, @Path("windowId") windowId: String): Response<Unit>
+
+    // 5. Invoices Endpoints (Now uses the same main API base URL)
+    @POST("api/invoices")
+    suspend fun createInvoice(@Body body: InvoiceRequest): Response<InvoiceResponse>
+
+    @GET("api/invoices")
+    suspend fun getInvoices(): Response<List<InvoiceResponse>>
+
+    @GET("api/invoices/{invoiceId}")
+    suspend fun getInvoice(@Path("invoiceId") invoiceId: String): Response<InvoiceResponse>
+
+    @DELETE("api/invoices/{invoiceId}")
+    suspend fun deleteInvoice(@Path("invoiceId") invoiceId: String): Response<Unit>
+
+    @GET("api/invoices/{invoiceId}/pdf")
+    @Streaming
+    suspend fun downloadInvoicePdf(@Path("invoiceId") invoiceId: String): Response<ResponseBody>
 }

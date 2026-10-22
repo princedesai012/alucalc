@@ -166,6 +166,25 @@ class ProjectViewModel(
         }
     }
 
+    suspend fun getProjectSquareFeet(projectId: String): Double {
+        return try {
+            // First call calculate to ensure backend generates the windows list
+            repository.calculateProject(projectId)
+            
+            // Then fetch the report to get windows width and height
+            val res = repository.getProjectReport(projectId)
+            if (res.isSuccess) {
+                val report = res.getOrNull()
+                val windows = report?.windows ?: emptyList()
+                windows.sumOf { (it.width * it.height / 144.0) * it.quantity }
+            } else {
+                0.0
+            }
+        } catch (e: Exception) {
+            0.0
+        }
+    }
+
     fun loadProjectReport(projectId: String) {
         currentProjectId = projectId
         reportResponse = null
@@ -282,13 +301,19 @@ class ProjectViewModel(
     }
 
     fun resetProject() {
-        projectName = ""
-        contactInfo = ""
-        streetAddress = ""
+        // Base logic for sequential Project Number
+        val totalProjects = projectsList.size + recentProjectsList.size
+        val nextId = 101 + totalProjects
+
+        projectName = "Project_$nextId"
+        contactInfo = "9876543210"
+        streetAddress = "Surat"
+        
         selectedProfile = "40mm"
         currentProjectId = null
         reportResponse = null
         _addedWindows.clear()
+        clearErrorMessage()
     }
 
     private fun mapProfileType(profile: String): String {

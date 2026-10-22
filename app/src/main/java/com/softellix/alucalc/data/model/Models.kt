@@ -161,13 +161,68 @@ data class ProjectReportResponse(
     val projectNumber: Int? = null,
     val projectAddress: String? = null,
     val contactInformation: String? = null,
+    @SerialName("created_at") val createdAtSnake: String? = null,
+    @SerialName("createdAt") val createdAtCamel: String? = null,
     @SerialName("createdDate") val createdDateCamel: String? = null,
     @SerialName("created_date") val createdDateSnake: String? = null,
-    @SerialName("createdAt") val createdAtCamel: String? = null,
-    @SerialName("created_at") val createdAtSnake: String? = null,
     val selectedProfile: String? = null,
     val windows: List<WindowCalculationResponse> = emptyList()
 ) {
     val createdDate: String?
         get() = createdAtSnake ?: createdAtCamel ?: createdDateCamel ?: createdDateSnake
 }
+
+@Serializable
+data class InvoiceItemRequest(
+    val projectId: String, // MUST BE NON-NULL
+    val squareFeet: Double,
+    val pricePerSquareFeet: Double
+)
+
+@Serializable
+data class InvoiceRequest(
+    val partyName: String,
+    val invoiceDate: String? = null,
+    val terms: String? = null,
+    val note: String? = null,
+    val discountType: String? = null, // PERCENTAGE, FIXED
+    val discountValue: Double? = null,
+    val items: List<InvoiceItemRequest>
+)
+
+@Serializable
+data class InvoiceUser(
+    val name: String? = null,
+    val businessName: String? = null,
+    val phone: String? = null,
+    val address: String? = null
+)
+
+@Serializable
+data class InvoiceItemResponse(
+    val id: String? = null,
+    val projectId: String? = null,
+    val projectName: String? = null,
+    val description: String? = null,
+    val squareFeet: Double? = null,
+    val pricePerSquareFeet: Double? = null,
+    val amount: Double? = null
+)
+
+@Serializable
+data class InvoiceResponse(
+    val id: String,
+    val invoiceNumber: String? = null,
+    val partyName: String,
+    val invoiceDate: String? = null,
+    val terms: String? = null,
+    val subtotal: Double? = null,
+    val discountType: String? = null,
+    val discountValue: Double? = null,
+    val discountAmount: Double? = null,
+    val finalTotal: Double? = null,
+    val note: String? = null,
+    @SerialName("createdAt") val createdAt: String? = null,
+    val items: List<InvoiceItemResponse> = emptyList(),
+    val user: InvoiceUser? = null
+)
