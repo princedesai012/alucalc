@@ -55,8 +55,11 @@ fun AddWindowsScreen(
             val decimalWidth = wInchVal + (wDoroVal / 8.0)
             val decimalHeight = hInchVal + (hDoroVal / 8.0)
 
-            val wDisplay = if (wDoroVal > 0) "${widthInch}\" ${widthDoro.toInt()}d" else "${widthInch}\""
-            val hDisplay = if (hDoroVal > 0) "${heightInch}\" ${heightDoro.toInt()}d" else "${heightInch}\""
+            val wDoroStr = if (wDoroVal % 1.0 == 0.0) wDoroVal.toInt().toString() else wDoroVal.toString()
+            val hDoroStr = if (hDoroVal % 1.0 == 0.0) hDoroVal.toInt().toString() else hDoroVal.toString()
+
+            val wDisplay = if (wDoroVal > 0) "${widthInch}\" ${wDoroStr}d" else "${widthInch}\""
+            val hDisplay = if (hDoroVal > 0) "${heightInch}\" ${hDoroStr}d" else "${heightInch}\""
 
             val finalQty = if (quantity.isBlank() || quantity == "0") "1" else quantity
 

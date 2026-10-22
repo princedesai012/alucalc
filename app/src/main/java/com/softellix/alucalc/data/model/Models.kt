@@ -108,10 +108,12 @@ data class ProjectResponse(
     @SerialName("createdAt") val createdAtCamel: String? = null,
     @SerialName("createdDate") val createdDateCamel: String? = null,
     @SerialName("created_date") val createdDateSnake: String? = null,
+    @SerialName("updatedAt") val updatedAtCamel: String? = null,
+    @SerialName("updated_at") val updatedAtSnake: String? = null,
     @SerialName("date") val dateField: String? = null
 ) {
     val rawDate: String?
-        get() = createdAtSnake ?: createdAtCamel ?: createdDateCamel ?: createdDateSnake ?: dateField
+        get() = createdAtSnake ?: createdAtCamel ?: updatedAtCamel ?: updatedAtSnake ?: createdDateCamel ?: createdDateSnake ?: dateField
 }
 
 @Serializable
@@ -165,18 +167,22 @@ data class ProjectReportResponse(
     @SerialName("createdAt") val createdAtCamel: String? = null,
     @SerialName("createdDate") val createdDateCamel: String? = null,
     @SerialName("created_date") val createdDateSnake: String? = null,
+    @SerialName("updatedAt") val updatedAtCamel: String? = null,
+    @SerialName("updated_at") val updatedAtSnake: String? = null,
     val selectedProfile: String? = null,
     val windows: List<WindowCalculationResponse> = emptyList()
 ) {
     val createdDate: String?
-        get() = createdAtSnake ?: createdAtCamel ?: createdDateCamel ?: createdDateSnake
+        get() = createdAtSnake ?: createdAtCamel ?: updatedAtCamel ?: updatedAtSnake ?: createdDateCamel ?: createdDateSnake
 }
 
 @Serializable
 data class InvoiceItemRequest(
-    val projectId: String, // MUST BE NON-NULL
-    val squareFeet: Double,
-    val pricePerSquareFeet: Double
+    val projectId: String? = null,
+    val description: String? = null,
+    val squareFeet: Double? = null,
+    val pricePerSquareFeet: Double? = null,
+    val amount: Double? = null
 )
 
 @Serializable

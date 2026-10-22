@@ -157,6 +157,9 @@ fun AppNavigation() {
                     onReportHistoryClick = {
                         navController.navigate("reports_history")
                     },
+                    onInvoicesClick = {
+                        navController.navigate("invoices_list")
+                    },
                     onProfileClick = {
                         navController.navigate("settings")
                     },

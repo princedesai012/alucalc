@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material3.*
@@ -38,6 +39,7 @@ fun DashboardScreen(
     onNewProjectClick: () -> Unit,
     onRecentProjectsClick: () -> Unit = {},
     onReportHistoryClick: () -> Unit = {},
+    onInvoicesClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
     onTabSelected: (Int) -> Unit = {}
 ) {
@@ -141,6 +143,22 @@ fun DashboardScreen(
                     value = if (viewModel.isLoading) "..." else "${viewModel.recentProjectsList.size} ${LanguageManager.tr("reports")}",
                     icon = Icons.Outlined.Description,
                     onClick = onReportHistoryClick,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Third Summary Card: Invoices
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                SummaryCard(
+                    title = LanguageManager.tr("invoices_title"),
+                    value = LanguageManager.tr("manage_invoices_sub"),
+                    icon = Icons.Default.Receipt,
+                    onClick = onInvoicesClick,
                     modifier = Modifier.weight(1f)
                 )
             }
